@@ -1,0 +1,4787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base target="_top">
+
+  <!-- Importamos Chart.js y su plugin para las etiquetas de datos sobre las barras -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+  <style>
+    :root {
+      --bbva-navy: #001B44;
+      --bbva-dark: #004481;
+      --bbva-core: #00549F;
+      --bbva-light-blue: #D4EDFC;
+      --bbva-aqua: #00AEEF;
+      --bbva-yellow: #F6B40E;
+      --bbva-bg: #F4F7FA;
+      --bbva-card: #FFFFFF;
+      --bbva-border: #E4E9F2;
+      --bbva-text: #121212;
+      --bbva-muted: #8A98B3;
+      --bbva-shadow: 0 4px 16px rgba(7, 33, 70, 0.06);
+      
+      /* Chart Colors */
+      --chart-ref: #8A98B3;
+      --chart-ref-line: #6AA84F;
+      --chart-aut: #3F7DDA;
+      --chart-eje: #BFD7F6;
+      --chart-ava: #FCD34D;
+      --kpi-ref: #94A3B8;
+      --kpi-aut: #004481;
+      --kpi-exe: #1464A5;
+      --kpi-pct: #FCD34D;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bbva-bg);
+      color: var(--bbva-text);
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scrollbar-color: transparent transparent;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb {
+      background: transparent !important;
+      border: none !important;
+    }
+
+    /* --- TOP HEADER --- */
+    .top-header {
+      background: #FFFFFF;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 2px solid var(--bbva-aqua);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      color: var(--bbva-dark);
+    }
+
+    .header-titles h1 {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--bbva-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill-oficina {
+      font-size: 9px;
+      background: var(--bbva-bg);
+      color: var(--bbva-dark);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles .subtitle {
+      font-size: 11px;
+      color: var(--bbva-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .main-nav a {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--bbva-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .main-nav a:hover, .main-nav a.active {
+      color: var(--bbva-dark);
+    }
+
+    .main-nav a.active {
+      background: var(--bbva-bg);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--bbva-border);
+    }
+
+    .status-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--bbva-border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      color: var(--bbva-dark);
+      text-align: right;
+      line-height: 1.3;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #4CAF50;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    /* --- LAYOUT WRAPPER --- */
+    .site-wrapper {
+      padding: 14px 24px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* --- FILTERS SHELL --- */
+    .filters-shell {
+      background: transparent;
+      margin-bottom: 18px;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1.25fr auto;
+      gap: 18px;
+      align-items: end;
+      background: var(--bbva-card);
+      border: 1px solid var(--bbva-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: var(--bbva-shadow);
+    }
+
+    .filters-grid.ftes-mode {
+      grid-template-columns: 1.25fr 1.25fr auto;
+    }
+
+    .filter-block { min-width: 0; }
+
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 7px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--bbva-muted);
+    }
+
+    .filter-label svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--bbva-muted);
+    }
+
+    .select-box {
+      position: relative;
+      height: 42px;
+      border: 1px solid #CFDCE8;
+      border-radius: 6px;
+      background: #F8FAFD;
+      display: flex;
+      align-items: center;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .select-box:hover {
+      border-color: var(--bbva-core);
+      background: #FFFFFF;
+    }
+
+    .select-icon {
+      width: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: 8px;
+      color: var(--bbva-dark);
+    }
+
+    .select-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    select {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: var(--bbva-dark);
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+      appearance: none;
+      padding-right: 42px;
+      cursor: pointer;
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--bbva-muted);
+    }
+
+    .select-arrow svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+    }
+
+    /* --- CURRENCY SWITCH (Mantenido intacto) --- */
+    .currency-control {
+      min-width: 178px;
+      transition: opacity 0.3s ease;
+    }
+
+    .currency-switch-card {
+      height: 42px;
+      border: 1px solid #CFDCE8;
+      border-radius: 6px;
+      background: #F8FAFD;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inner-text-switch {
+      position: relative;
+      display: inline-block;
+      width: 86px;
+      height: 32px;
+    }
+
+    .inner-text-switch input { opacity: 0; width: 0; height: 0; }
+
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: var(--bbva-core);
+      border-radius: 999px;
+      transition: 0.35s;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 12px;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .switch-track::after { content: attr(data-off); }
+
+    .switch-track::before {
+      content: "";
+      position: absolute;
+      height: 26px;
+      width: 26px;
+      left: 3px;
+      top: 3px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      transition: 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .inner-text-switch input:checked + .switch-track {
+      background: var(--bbva-dark);
+      justify-content: flex-start;
+      padding: 0 10px;
+    }
+
+    .inner-text-switch input:checked + .switch-track::after { content: attr(data-on); }
+    .inner-text-switch input:checked + .switch-track::before { transform: translateX(54px); }
+
+    /* --- REPORT BTN --- */
+    .report-btn {
+      height: 42px;
+      min-width: 128px;
+      border: 1px solid #CFDCE8;
+      border-radius: 6px;
+      background: #FFFFFF;
+      color: var(--bbva-dark);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .report-btn:hover {
+      background: #F8FAFD;
+      border-color: var(--bbva-core);
+    }
+
+    .report-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+    }
+    /* --- TABS TIPO GOOGLE SITES --- */
+    .tabs-zone {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 36px;
+      margin-bottom: 14px;
+      padding: 0 22px;
+      min-height: 52px;
+      background: #FFFFFF;
+      border: 1px solid var(--bbva-border);
+      border-radius: 16px 16px 0 0;
+      box-shadow: var(--bbva-shadow);
+      overflow: hidden;
+    }
+
+    .tab-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      color: var(--bbva-muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      border-radius: 0;
+      padding: 17px 0 14px;
+      min-width: 132px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      box-shadow: none;
+    }
+
+    .tab-btn svg {
+      display: none;
+    }
+
+    .tab-btn::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      border-radius: 999px 999px 0 0;
+      background: transparent;
+      transition: background 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--bbva-dark);
+    }
+
+    .tab-btn.active {
+      background: transparent;
+      color: var(--bbva-dark);
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .tab-btn.active::after {
+      background: var(--bbva-dark);
+    }
+
+    /* --- DASHBOARD PANEL --- */
+    .dashboard-panel {
+      width: 100%;
+      background: var(--bbva-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--bbva-border);
+    }
+
+    .panel-header {
+      height: 68px;
+      background: #FFFFFF;
+      color: var(--bbva-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--bbva-border);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--bbva-dark);
+    }
+
+    .panel-title::before {
+      content: "";
+      width: 5px;
+      height: 17px;
+      border-radius: 999px;
+      background: var(--bbva-aqua);
+      display: inline-block;
+    }
+
+    .panel-title svg { display: none; }
+
+    .up-btn {
+      border: 1px solid var(--bbva-border);
+      background: #F8FAFD;
+      color: var(--bbva-dark);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .up-btn:hover { background: #FFFFFF; border-color: var(--bbva-core); }
+
+    .panel-body {
+      padding: 20px 24px 24px;
+    }
+
+    /* --- KPIs --- */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    #ftesKpiGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .ftes-chart-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      min-height: 315px;
+      height: 335px;
+    }
+
+    .ftes-chart-card {
+      margin-top: 18px;
+    }
+
+    .ftes-assigned-legend {
+      margin: 0 0 14px 0;
+      gap: 18px;
+    }
+
+    .ftes-assigned-legend .legend-item {
+      color: var(--bbva-dark);
+      font-size: 12px;
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    .ftes-x-axis-flags {
+      margin-top: 8px;
+    }
+
+    .ftes-x-axis-flags .flag-icon {
+      width: 24px !important;
+      height: 16px !important;
+      border-radius: 2px !important;
+    }
+
+    .ftes-x-axis-flags .flag-global,
+    .ftes-x-axis-flags .flag-holding {
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 50% !important;
+    }
+
+    .ftes-charts-grid {
+      align-items: stretch;
+    }
+
+    .ftes-structure-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 315px;
+      justify-content: center;
+    }
+
+    .ftes-structure-legend {
+      margin: 0 0 12px 0;
+      gap: 22px;
+    }
+
+    .ftes-structure-row {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ftes-structure-country {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      color: var(--bbva-dark);
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      min-width: 0;
+    }
+
+    .ftes-structure-country .flag-icon {
+      width: 24px !important;
+      height: 16px !important;
+      border-radius: 2px !important;
+    }
+
+    .ftes-structure-country .flag-global,
+    .ftes-structure-country .flag-holding {
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 50% !important;
+    }
+
+    .ftes-structure-country-name {
+      display: none !important;
+    }
+
+    .ftes-structure-bar {
+      height: 42px;
+      display: flex;
+      width: 100%;
+      background: #E4E9F2;
+      border-radius: 4px;
+      overflow: visible;
+      position: relative;
+    }
+
+    .ftes-structure-segment {
+      height: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: default;
+      transition: transform 0.16s ease, filter 0.16s ease;
+    }
+
+    .ftes-structure-segment.internal {
+      background: #3F8DCA;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .ftes-structure-segment.external {
+      background: #DCE8F8;
+      color: var(--bbva-dark);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .ftes-structure-segment:hover {
+      transform: scaleY(1.08);
+      filter: brightness(1.03);
+      z-index: 5;
+    }
+
+    .ftes-structure-tooltip {
+      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border: 1px solid #DCE5F0;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(7, 33, 70, 0.16);
+      padding: 10px 13px;
+      min-width: 190px;
+      color: var(--bbva-dark);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      white-space: nowrap;
+      pointer-events: none;
+      text-align: left;
+    }
+
+    .ftes-structure-tooltip strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .ftes-structure-segment:hover .ftes-structure-tooltip {
+      display: block;
+    }
+
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid var(--bbva-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: var(--bbva-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+    }
+
+    .kpi-card.type-ref::before { background: var(--kpi-ref); }
+    .kpi-card.type-aut::before { background: var(--kpi-aut); }
+    .kpi-card.type-ava::before { background: var(--kpi-pct); }
+    .kpi-card.type-exe::before { background: var(--kpi-exe); }
+
+    .kpi-info { flex: 1; }
+
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: var(--bbva-muted);
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .kpi-card.type-ref .kpi-value { color: var(--kpi-ref); }
+    .kpi-card.type-aut .kpi-value { color: var(--kpi-aut); }
+    .kpi-card.type-ava .kpi-value { color: var(--kpi-pct); }
+    .kpi-card.type-exe .kpi-value { color: var(--kpi-exe); }
+
+    .kpi-sub {
+      display: none;
+    }
+
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      background: #F4F7FA;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bbva-dark);
+      flex-shrink: 0;
+    }
+
+    .kpi-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    /* --- CHARTS & SUMMARY PANEL --- */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .chart-card {
+      background: #FFFFFF;
+      border: 1px solid var(--bbva-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: var(--bbva-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      margin-bottom: 14px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--bbva-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .chart-title::before {
+      content: "";
+      width: 4px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--bbva-aqua);
+      display: inline-block;
+    }
+
+    .chart-subtitle {
+      font-size: 11px;
+      color: var(--bbva-muted);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .chart-body {
+      flex: 1;
+      position: relative;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      min-height: 260px;
+    }
+
+    .bottom-chart-section {
+      margin-top: 18px;
+    }
+
+    /* --- REFERENCIA VS EJECUTADO ACUMULADO (HTML BARS) --- */
+    .accumulated-execution-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 270px;
+      justify-content: center;
+    }
+
+    .accumulated-execution-legend {
+      justify-content: flex-start;
+      margin: 0 0 4px 0;
+      gap: 18px;
+    }
+
+    .accumulated-execution-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) 74px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .accumulated-execution-country {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+    }
+
+    .accumulated-execution-country .flag-icon {
+      width: 28px;
+      height: 19px;
+      border-radius: 2px;
+    }
+
+    .accumulated-execution-country .flag-global,
+    .accumulated-execution-country .flag-holding {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+    }
+
+    .accumulated-execution-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .accumulated-execution-bar-line {
+      position: relative;
+      height: 22px;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .accumulated-execution-track {
+      position: relative;
+      width: 100%;
+      height: 22px;
+      overflow: visible;
+      border-radius: 2px;
+      min-width: 0;
+    }
+
+    .accumulated-execution-bar {
+      height: 20px;
+      border-radius: 2px;
+      min-width: 2px;
+      position: absolute;
+      left: 0;
+      top: 1px;
+    }
+
+    .accumulated-execution-bar.ref {
+      background: var(--bbva-dark);
+    }
+
+    .accumulated-execution-bar.exe {
+      background: #AFC7E3;
+    }
+
+    .accumulated-execution-bar {
+      cursor: pointer;
+    }
+
+    .accumulated-execution-bar::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: calc(100% + 12px);
+      top: 50%;
+      transform: translateY(-50%) scale(0.96);
+      min-width: 190px;
+      max-width: 260px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px solid #DCE5F0;
+      box-shadow: 0 10px 26px rgba(7, 33, 70, 0.20);
+      color: var(--bbva-dark);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.25;
+      white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 200;
+      transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s ease;
+    }
+
+    .accumulated-execution-bar.ref::after {
+      border-left: 5px solid var(--bbva-dark);
+    }
+
+    .accumulated-execution-bar.exe::after {
+      border-left: 5px solid #AFC7E3;
+    }
+
+    .accumulated-execution-bar:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) scale(1);
+    }
+
+    .accumulated-execution-value {
+      position: absolute;
+      left: var(--label-x, calc(var(--bar-w, 0%) + 8px));
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      color: var(--bbva-dark);
+      line-height: 1;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .accumulated-execution-pct {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0087A8;
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* --- DONUT REFERENCIA --- */
+    .reference-distribution-body {
+      display: grid;
+      grid-template-columns: minmax(210px, 0.95fr) minmax(230px, 1.1fr);
+      align-items: center;
+      gap: 20px;
+      min-height: 270px;
+    }
+
+    .reference-donut-container {
+      position: relative;
+      width: 100%;
+      min-height: 225px;
+      height: 245px;
+    }
+
+    .reference-legend-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+    }
+
+    .reference-legend-head {
+      display: grid;
+      grid-template-columns: 16px minmax(120px, 1fr) 72px;
+      align-items: center;
+      gap: 16px;
+      padding: 0 0 10px 0;
+      border-bottom: 1px solid #DCE5F0;
+      margin-bottom: 2px;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--bbva-muted);
+    }
+
+    .reference-legend-head .reference-legend-pct-head {
+      white-space: nowrap;
+    }
+
+    .reference-legend-pct-head,
+    .reference-legend-pct {
+      text-align: right;
+    }
+
+    .reference-legend-note {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--bbva-muted);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .reference-legend-row {
+      display: grid;
+      grid-template-columns: 16px minmax(120px, 1fr) 72px;
+      align-items: center;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid #ECF0F5;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--bbva-dark);
+    }
+
+    .reference-legend-row:last-child {
+      border-bottom: none;
+    }
+
+    .reference-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .reference-legend-country {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 8px;
+    }
+
+    .reference-legend-pct {
+      color: var(--bbva-aqua);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      min-width: 72px;
+    }
+
+    @media (max-width: 900px) {
+      .reference-distribution-body {
+        grid-template-columns: 1fr;
+      }
+
+      .accumulated-execution-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .accumulated-execution-country {
+        justify-content: flex-start;
+        min-height: auto;
+      }
+
+      .accumulated-execution-pct {
+        text-align: left;
+      }
+    }
+
+    /* Leyendas personalizadas HTML */
+    .custom-legend {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 0 0 18px 0;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--bbva-muted);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .legend-line {
+      width: 28px;
+      height: 3px;
+      border-radius: 999px;
+    }
+
+    /* Eje X personalizado con banderas */
+    .x-axis-flags {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 9px;
+      padding: 0;
+      transition: padding 0.2s ease;
+    }
+
+    .x-axis-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--bbva-muted);
+      flex: 1 1 0;
+      min-width: 0;
+      justify-content: center;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* --- DESGLOSE PRESUPUESTO 2026 --- */
+    .breakdown-section {
+      margin-top: 18px;
+    }
+
+    .breakdown-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #DCE5F0;
+    }
+
+    .breakdown-table-wrap::-webkit-scrollbar { height: 0; }
+    .breakdown-table-wrap { scrollbar-width: none; }
+
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+      font-size: 13px;
+      color: var(--bbva-dark);
+    }
+
+    .breakdown-table thead tr:first-child th {
+      background: #EEF4FB;
+      color: var(--bbva-dark);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      text-align: center;
+      padding: 12px 10px;
+      border-bottom: 1px solid #C9D8EA;
+    }
+
+    .breakdown-table thead tr:nth-child(2) th {
+      background: #FFFFFF;
+      color: var(--bbva-dark);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+      padding: 11px 10px;
+      border-bottom: 2px solid #AFC7E3;
+    }
+
+    .breakdown-table th.breakdown-country-head {
+      background: #FFFFFF !important;
+      font-style: italic;
+      text-transform: none !important;
+      letter-spacing: 0 !important;
+    }
+
+    .breakdown-table th.q1-head { background: #F0F0F0 !important; }
+    .breakdown-table th.q2-head { background: #E3EDF8 !important; }
+    .breakdown-table th.q3-head { background: #D5E5F6 !important; }
+
+    .breakdown-table tbody td {
+      padding: 13px 12px;
+      border-bottom: 1px solid #DCE5F0;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      overflow: visible;
+    }
+
+    .breakdown-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .breakdown-country-cell {
+      text-align: left !important;
+      font-weight: 900 !important;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .breakdown-country-cell .flag-icon {
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
+    }
+
+    .breakdown-country-cell .flag-global,
+    .breakdown-country-cell .flag-holding {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+
+    .breakdown-country-cell.only-flag {
+      justify-content: center;
+      text-align: center !important;
+      gap: 0;
+    }
+
+    .breakdown-total-row td {
+      background: #DCEAF7;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .breakdown-empty {
+      padding: 34px 16px;
+      text-align: center;
+      color: var(--bbva-muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+
+    /* --- AMPLIACIÓN DE NÚMEROS AL PASAR EL RATÓN --- */
+    .numeric-pop {
+      display: inline-block;
+      cursor: zoom-in;
+      transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+      transform-origin: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .numeric-pop:hover {
+      transform: scale(1.45);
+      background: #FFFFFF;
+      color: var(--bbva-dark) !important;
+      border: 1px solid #DCE5F0;
+      border-radius: 6px;
+      padding: 3px 7px;
+      box-shadow: 0 8px 22px rgba(7, 33, 70, 0.18);
+      z-index: 80;
+    }
+
+    .accumulated-execution-value.numeric-pop:hover {
+      transform: translateY(-50%) scale(1.12);
+      transform-origin: left center;
+    }
+
+    .accumulated-execution-pct .numeric-pop:hover {
+      transform: scale(1.12);
+    }
+
+    .breakdown-number.numeric-pop:hover,
+    .reference-legend-pct.numeric-pop:hover {
+      transform: scale(1.32);
+    }
+    /* --- RESUMEN FTES 2026 --- */
+    .ftes-summary-section {
+      margin-top: 18px;
+    }
+
+    .ftes-summary-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #DCE5F0;
+    }
+
+    .ftes-summary-table-wrap::-webkit-scrollbar { height: 0; }
+    .ftes-summary-table-wrap { scrollbar-width: none; }
+
+    .ftes-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      font-size: 13px;
+      color: var(--bbva-dark);
+    }
+
+    .ftes-summary-table thead th {
+      background: #F7F9FC;
+      color: var(--bbva-dark);
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+      padding: 13px 12px;
+      border-bottom: 2px solid #AFC7E3;
+    }
+
+    .ftes-summary-table thead th.coverage-head {
+      border-bottom-color: #19C5C7;
+    }
+
+    .ftes-summary-table thead th.gap-head {
+      border-bottom-color: var(--bbva-dark);
+    }
+
+    .ftes-summary-table thead th:first-child {
+      text-align: center;
+      padding-left: 12px;
+      width: 74px;
+    }
+
+    .ftes-people-table thead th {
+      font-size: 14px;
+    }
+
+    .ftes-people-table tbody td {
+      font-size: 13px;
+    }
+
+    .ftes-summary-table tbody td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #DCE5F0;
+      text-align: center;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ftes-summary-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ftes-summary-country-cell {
+      text-align: center !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    .ftes-summary-country-cell .flag-icon {
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
+    }
+
+    .ftes-summary-country-cell .flag-global,
+    .ftes-summary-country-cell .flag-holding {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+
+    .ftes-summary-total-row td {
+      background: #DCEAF7;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .ftes-summary-gap-negative {
+      color: #C0002B;
+    }
+
+    .ftes-summary-gap-positive {
+      color: #008C95;
+    }
+
+    .ftes-summary-coverage {
+      color: #008C95;
+    }
+
+    .ftes-summary-empty {
+      padding: 34px 16px;
+      text-align: center;
+      color: var(--bbva-muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+
+    /* --- PERSONAS Y RATIO FTEs: TARJETAS 3 x 2 --- */
+    .ftes-people-section {
+      margin-top: 18px;
+    }
+
+    .ftes-people-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .ftes-people-card {
+      border: 1px solid #CFE0F2;
+      border-radius: 18px;
+      background: #FFFFFF;
+      box-shadow: 0 6px 16px rgba(7, 33, 70, 0.08);
+      padding: 13px 14px 14px;
+      min-width: 0;
+    }
+
+    .ftes-people-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 9px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #D6E3F3;
+    }
+
+    .ftes-people-card-header .flag-icon {
+      width: 36px;
+      height: 24px;
+      border-radius: 4px;
+    }
+
+    .ftes-people-card-header .flag-global,
+    .ftes-people-card-header .flag-holding {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+    }
+
+    .ftes-people-mini-table {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 86px repeat(var(--quarters-count, 4), minmax(0, 1fr));
+      align-items: center;
+      row-gap: 7px;
+      column-gap: 8px;
+      min-width: 0;
+    }
+
+    .ftes-people-mini-cell {
+      min-width: 0;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ftes-people-mini-label {
+      text-align: left;
+      color: var(--bbva-muted);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .ftes-people-mini-quarter {
+      color: #4E6D96;
+      font-size: 11.5px;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 0 5px;
+      border: 1px solid #D6E3F3;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #F7FAFE 0%, #EDF4FC 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .ftes-people-value,
+    .ftes-people-percent {
+      color: var(--bbva-dark);
+      font-size: 13.5px;
+      font-weight: 900;
+      font-style: normal;
+      line-height: 1.18;
+      white-space: nowrap;
+      letter-spacing: 0;
+    }
+
+    .ftes-people-main-value {
+      font-size: 14.5px;
+    }
+
+    .ftes-people-ratio-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ftes-ratio-good {
+      background: #E3F3DE;
+      color: #6FBD68;
+    }
+
+    .ftes-ratio-mid {
+      background: #FFEBD8;
+      color: #F29D53;
+    }
+
+    .ftes-ratio-low {
+      background: #FAD1D1;
+      color: #E85B5B;
+    }
+
+    .ftes-ratio-empty {
+      background: #EEF2F7;
+      color: #7B8BA5;
+      min-width: 28px;
+    }
+
+    .ftes-people-legend {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 14px;
+      color: var(--bbva-dark);
+      font-size: 12px;
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    .ftes-people-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .ftes-people-legend-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    @media (max-width: 1180px) {
+      .ftes-people-cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .ftes-people-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* SUMMARY LIST PROGRESS BARS */
+    .summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .summary-flag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .summary-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .summary-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .summary-title-country {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--bbva-dark);
+      text-transform: uppercase;
+    }
+
+    .summary-pct {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--bbva-core);
+    }
+
+    .progress-track {
+      height: 8px;
+      background: var(--bbva-border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.8s ease;
+    }
+
+    /* --- FLAGS --- */
+    .flag-icon {
+      display: inline-block;
+      width: 38px;
+      height: 26px;
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(7, 33, 70, 0.15);
+      flex: 0 0 auto;
+      background: #DDE6F0;
+    }
+
+    .flag-global {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background-color: transparent;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><clipPath id='c1'><circle cx='50' cy='18' r='16'/></clipPath><clipPath id='c2'><circle cx='80' cy='40' r='16'/></clipPath><clipPath id='c3'><circle cx='69' cy='76' r='16'/></clipPath><clipPath id='c4'><circle cx='31' cy='76' r='16'/></clipPath><clipPath id='c5'><circle cx='20' cy='40' r='16'/></clipPath></defs><circle cx='50' cy='50' r='32' fill='none' stroke='%23004481' stroke-width='7'/><g clip-path='url(%23c1)'><rect x='34' y='2' width='32' height='32' fill='%23AA151B'/><rect x='34' y='10' width='32' height='16' fill='%23F1BF00'/><circle cx='45' cy='18' r='2' fill='%23AA151B'/></g><g clip-path='url(%23c2)'><rect x='64' y='24' width='32' height='16' fill='%23FCD116'/><rect x='64' y='40' width='32' height='8' fill='%23003893'/><rect x='64' y='48' width='32' height='8' fill='%23CE1126'/></g><g clip-path='url(%23c3)'><rect x='53' y='60' width='10.7' height='32' fill='%23D91023'/><rect x='63.7' y='60' width='10.6' height='32' fill='%23FFFFFF'/><rect x='74.3' y='60' width='10.7' height='32' fill='%23D91023'/><circle cx='69' cy='76' r='2.5' fill='%23F1BF00'/></g><g clip-path='url(%23c4)'><rect x='15' y='60' width='32' height='10.7' fill='%2374ACDF'/><rect x='15' y='70.7' width='32' height='10.6' fill='%23FFFFFF'/><rect x='15' y='81.3' width='32' height='10.7' fill='%2374ACDF'/><circle cx='31' cy='76' r='2.5' fill='%23F6B40E'/></g><g clip-path='url(%23c5)'><rect x='4' y='24' width='10.7' height='32' fill='%23006847'/><rect x='14.7' y='24' width='10.6' height='32' fill='%23FFFFFF'/><rect x='25.3' y='24' width='10.7' height='32' fill='%23CE1126'/><circle cx='20' cy='40' r='2.5' fill='%238B4513'/></g></svg>");
+      background-size: cover;
+    }
+
+    .flag-holding {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background-color: transparent;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300549F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><path d='M2 12h20'></path><path d='M12 2a15.3 15.3 0 0 1 0 20'></path><path d='M12 2a15.3 15.3 0 0 0 0 20'></path></svg>");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .flag-spain { background: linear-gradient(to bottom, #AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%); }
+    .flag-mexico { background: linear-gradient(to right, #006847 0 33.33%, #FFFFFF 33.33% 66.66%, #CE1126 66.66% 100%); }
+    .flag-peru { background: linear-gradient(to right, #D91023 0 33.33%, #FFFFFF 33.33% 66.66%, #D91023 66.66% 100%); }
+    .flag-colombia { background: linear-gradient(to bottom, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%); }
+    .flag-argentina { background: linear-gradient(to bottom, #74ACDF 0 33.33%, #FFFFFF 33.33% 66.66%, #74ACDF 66.66% 100%); }
+    .flag-argentina::after {
+      content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+      background: #F6B40E; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    }
+
+    .flag-sm {
+      width: 22px !important;
+      height: 15px !important;
+      border-radius: 2px !important;
+    }
+
+    .flag-global.flag-sm, .flag-holding.flag-sm {
+      width: 18px !important;
+      height: 18px !important;
+      border-radius: 50% !important;
+    }
+
+    .flag-kpi {
+      width: 28px !important;
+      height: 19px !important;
+      border-radius: 2px !important;
+    }
+
+    .flag-global.flag-kpi, .flag-holding.flag-kpi {
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 50% !important;
+    }
+
+    /* Utilitarios */
+    .empty-state {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      color: var(--bbva-muted); font-size: 12px; font-weight: 800; text-transform: uppercase;
+    }
+    .hidden { display: none !important; }
+
+    @media (max-width: 1200px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      #ftesKpiGrid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+
+    @media (max-height: 920px) and (min-width: 1000px) {
+      .site-wrapper { padding-top: 10px; }
+      .tabs-zone { min-height: 48px; margin-bottom: 12px; }
+      .tab-btn { padding-top: 15px; padding-bottom: 12px; }
+      .filters-grid { padding: 14px 18px; }
+      .kpi-card { padding-top: 14px; padding-bottom: 14px; }
+      .chart-card { padding-top: 16px; padding-bottom: 16px; }
+      .chart-body { min-height: 280px; }
+      .accumulated-execution-body { gap: 10px; min-height: 250px; }
+      .accumulated-execution-country { min-height: 48px; }
+      .reference-donut-container { height: 230px; min-height: 215px; }
+    }
+
+
+    /* --- FTES KPIs PRODUCTIVIDAD / LT / CT --- */
+    .ftes-kpis-section {
+      margin-top: 22px;
+    }
+    .ftes-kpis-body {
+      padding: 6px 12px 12px;
+    }
+    .ftes-kpis-wrapper {
+      width: 100%;
+      overflow-x: hidden;
+      padding-bottom: 2px;
+    }
+    .ftes-kpis-svg {
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 980px;
+      height: auto;
+      display: block;
+    }
+    .ftes-kpis-empty {
+      padding: 26px 12px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .ftes-kpi-main-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      fill: var(--bbva-dark);
+      letter-spacing: 0.2px;
+    }
+    .ftes-kpi-unit-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-style: normal;
+      font-weight: 800;
+      fill: var(--bbva-dark);
+      letter-spacing: 0;
+    }
+    .ftes-kpi-legend-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .ftes-kpi-value-primary {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .ftes-kpi-value-target {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      fill: #BDBDBD;
+    }
+    .ftes-kpi-hover-target {
+      cursor: pointer;
+    }
+    .ftes-kpi-hover-band {
+      fill: transparent;
+      transition: fill .15s ease;
+    }
+    .ftes-kpi-hover-band:hover {
+      fill: rgba(62, 167, 255, 0.08);
+    }
+    .ftes-kpi-hover-point {
+      cursor: pointer;
+    }
+    .ftes-kpi-country-tooltip {
+      position: fixed;
+      z-index: 5000;
+      pointer-events: none;
+      background: #fff;
+      color: var(--bbva-dark);
+      border: 1px solid #dbe7f5;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(24,39,75,.16);
+      padding: 10px 12px;
+      min-width: 188px;
+      transform: translate(14px, 14px);
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .ftes-kpi-country-tooltip.visible {
+      opacity: 1;
+    }
+    .ftes-kpi-country-tooltip .tooltip-country {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .ftes-kpi-country-tooltip .tooltip-line {
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--bbva-dark);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .ftes-kpi-country-tooltip .tooltip-line span,
+    .ftes-kpi-country-tooltip .tooltip-line strong {
+      color: var(--bbva-dark);
+    }
+    .ftes-kpi-country-tooltip .tooltip-line strong {
+      font-weight: 900;
+    }
+
+
+    /* --- BOTONES DE QUARTER SOLO PARA PRODUCTIVIDAD --- */
+    .ftes-kpis-section .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .ftes-kpis-quarter-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid #D6E3F3;
+      border-radius: 999px;
+      background: #F7FAFE;
+      flex-shrink: 0;
+    }
+
+    .ftes-kpis-quarter-btn {
+      border: none;
+      background: transparent;
+      color: var(--bbva-muted);
+      min-width: 38px;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .ftes-kpis-quarter-btn:hover {
+      color: var(--bbva-dark);
+      background: #FFFFFF;
+    }
+
+    .ftes-kpis-quarter-btn.active {
+      background: var(--bbva-dark);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(0, 68, 129, 0.18);
+    }
+
+
+    /* --- HISTÓRICO PRODUCTIVIDAD POR PAÍS --- */
+    .ftes-kpis-history-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px 0;
+      padding: 0 2px;
+      color: var(--bbva-muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .ftes-kpis-back-btn {
+      border: 1px solid #CFE0F2;
+      background: #FFFFFF;
+      color: var(--bbva-dark);
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(7, 33, 70, 0.06);
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .ftes-kpis-back-btn:hover {
+      background: #F7FAFE;
+      border-color: var(--bbva-core);
+      transform: translateY(-1px);
+    }
+
+    .ftes-kpi-flag-click-target {
+      cursor: pointer;
+      fill: transparent;
+      pointer-events: all;
+    }
+
+    .ftes-kpi-quarter-axis-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      fill: var(--bbva-dark);
+    }
+
+    .ftes-kpi-coming-soon {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      fill: #8A98B3;
+      letter-spacing: 0.2px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="site-wrapper">
+<!-- TABS -->
+    <section class="tabs-zone">
+      <button class="tab-btn active" id="tabPresupuesto" type="button">Presupuestos</button>
+      <button class="tab-btn" id="tabFtes" type="button">FTEs</button>
+    </section>
+
+    
+
+
+    <!-- FILTROS -->
+    <section class="filters-shell" id="topFilters">
+      <div class="filters-grid">
+
+        <div class="filter-block">
+          <div class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2">
+              <path d="M12 21s7-4.35 7-11a7 7 0 0 0-14 0c0 6.65 7 11 7 11z"></path>
+              <circle cx="12" cy="10" r="2"></circle>
+            </svg>
+            Visión geográfica
+          </div>
+
+          <div class="select-box">
+            <div class="select-icon" id="countryFilterIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M2 12h20"></path>
+                <path d="M12 2a15.3 15.3 0 0 1 0 20"></path>
+                <path d="M12 2a15.3 15.3 0 0 0 0 20"></path>
+              </svg>
+            </div>
+
+            <select id="countryFilter">
+              <option value="ALL">Global (Todas)</option>
+            </select>
+
+            <div class="select-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+              <path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path>
+            </svg>
+            Trimestre principal
+          </div>
+
+          <div class="select-box">
+            <div class="select-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M3 3v18h18"></path><path d="M7 15l4-4 3 3 5-7"></path>
+              </svg>
+            </div>
+
+            <select id="quarterFilter">
+              <option value="Q1">26Q1</option>
+              <option value="Q2">26Q2</option>
+              <option value="Q3">26Q3</option>
+              <option value="Q4">26Q4</option>
+              <option value="TOTAL_2026" selected>Total 2026</option>
+            </select>
+
+            <div class="select-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-block currency-control" id="currencyFilterBlock">
+          <div class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 1v22"></path>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Vista moneda
+          </div>
+          <div class="currency-switch-card">
+            <label class="inner-text-switch">
+              <input type="checkbox" id="currencySwitch">
+              <span class="switch-track" data-on="LOCAL" data-off="EURO"></span>
+            </label>
+          </div>
+        </div>
+</div>
+    </section>
+<!-- MAIN PANEL -->
+    <main class="dashboard-panel">
+      <div class="panel-body">
+        <section id="presupuestoPanel">
+          
+          <!-- KPIs -->
+          <div class="kpi-grid" id="kpiGrid">
+            <!-- Inyectados por JS -->
+          </div>
+
+          <!-- CHARTS TOP -->
+          <div class="charts-grid">
+            
+            <!-- PANEL IZQUIERDO: Referencia vs ejecutado acumulado -->
+            <article class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title" id="accumulatedExecutionTitle">REFERENCIA VS EJECUTADO ACUMULADO</div>
+                <div class="chart-subtitle" id="accumulatedExecutionSubtitle">Referencia anual por país y ejecutado acumulado del periodo</div>
+              </div>
+              <div class="chart-body" id="accumulatedExecutionBody">
+                <!-- Inyectado via JS -->
+              </div>
+            </article>
+
+            <!-- PANEL DERECHO: Distribución de referencia por país -->
+            <article class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title" id="referenceDistributionTitle">DISTRIBUCIÓN REFERENCIA 2026</div>
+                <div class="chart-subtitle" id="referenceDistributionSubtitle">Distribución de la referencia entre los países</div>
+              </div>
+              <div class="chart-body" id="referenceDistributionBody">
+                <!-- Inyectado via JS -->
+              </div>
+            </article>
+
+          </div>
+
+          <!-- CHART BOTTOM -->
+          <article class="chart-card bottom-chart-section">
+            <div class="chart-header">
+              <div class="chart-title" id="barChartTitle">EJECUTADO VS AUTORIZADO</div>
+              <div class="chart-subtitle">Comparativa del importe ejecutado frente al presupuesto autorizado</div>
+            </div>
+            <div class="chart-body">
+              <div class="custom-legend">
+                <div class="legend-item"><div class="legend-line" style="background:var(--chart-ref-line)"></div>Referencia</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--chart-aut)"></div>Autorizado</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--chart-eje)"></div>Ejecutado</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="barChart"></canvas>
+              </div>
+              <div class="x-axis-flags" id="barChartFlags"></div>
+            </div>
+          </article>
+
+          <!-- DESGLOSE 2026 -->
+          <article class="chart-card breakdown-section">
+            <div class="chart-header">
+              <div class="chart-title">DESGLOSE 2026</div>
+            </div>
+            <div id="budgetBreakdownTableBody">
+              <!-- Inyectado via JS -->
+            </div>
+          </article>
+        </section>
+        <section id="ftesPanel" class="hidden">
+          <div class="kpi-grid" id="ftesKpiGrid">
+            <!-- KPIs FTEs inyectados por JS -->
+          </div>
+
+          <div class="charts-grid ftes-charts-grid">
+            <article class="chart-card ftes-chart-card">
+              <div class="chart-header">
+                <div class="chart-title" id="ftesAssignedTitle">FTES ASIGNADOS - CONSOLIDADO 2026</div>
+                <div class="chart-subtitle" id="ftesAssignedSubtitle">Referencia 2026 y asignados según el trimestre seleccionado</div>
+              </div>
+              <div class="chart-body">
+                <div class="custom-legend ftes-assigned-legend" id="ftesAssignedLegend">
+                  <!-- Leyenda FTEs inyectada por JS -->
+                </div>
+                <div class="ftes-chart-container">
+                  <canvas id="ftesAssignedChart"></canvas>
+                </div>
+                <div class="x-axis-flags ftes-x-axis-flags" id="ftesAssignedFlags"></div>
+              </div>
+            </article>
+
+            <article class="chart-card ftes-chart-card">
+              <div class="chart-header">
+                <div class="chart-title" id="ftesStructureTitle">ESTRUCTURA INT + PART VS EXT</div>
+                <div class="chart-subtitle" id="ftesStructureSubtitle">Distribución porcentual por país</div>
+              </div>
+              <div class="chart-body" id="ftesStructureBody">
+                <!-- Estructura FTEs inyectada por JS -->
+              </div>
+            </article>
+          </div>
+
+          <article class="chart-card ftes-people-section">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title" id="ftesPeopleTitle">FTEs vs Personas Reales</div>
+                <div class="chart-subtitle" id="ftesPeopleSubtitle">FTEs, personas, dedicación y % de personas al 100%</div>
+              </div>
+            </div>
+            <div id="ftesPeopleTableBody">
+              <!-- Cards personas FTEs inyectadas por JS -->
+            </div>
+          </article>
+
+          <article class="chart-card ftes-kpis-section">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title" id="ftesKpisTitle">PRODUCTIVIDAD Q2 2026 (FEATURE/FTE)</div>
+                <div class="chart-subtitle" id="ftesKpisSubtitle">Productividad, Lead Time y Cycle Time vs target</div>
+              </div>
+              <div class="ftes-kpis-quarter-switch" id="ftesKpisQuarterSwitch" aria-label="Filtro trimestre productividad">
+                <button class="ftes-kpis-quarter-btn" type="button" data-ftes-kpi-quarter="Q1">Q1</button>
+                <button class="ftes-kpis-quarter-btn active" type="button" data-ftes-kpi-quarter="Q2">Q2</button>
+                <button class="ftes-kpis-quarter-btn" type="button" data-ftes-kpi-quarter="Q3">Q3</button>
+                <button class="ftes-kpis-quarter-btn" type="button" data-ftes-kpi-quarter="Q4">Q4</button>
+              </div>
+            </div>
+            <div class="ftes-kpis-body" id="ftesKpisBody">
+              <!-- KPIs de productividad/LT/CT inyectados por JS -->
+            </div>
+          </article>
+
+          <article class="chart-card ftes-summary-section">
+            <div class="chart-header">
+              <div class="chart-title" id="ftesSummaryTitle">RESUMEN FTES 2026</div>
+            </div>
+            <div id="ftesSummaryTableBody">
+              <!-- Tabla resumen FTEs inyectada por JS -->
+            </div>
+          </article>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- VARIABLES Y CONFIGURACIÓN ---
+    let presupuestoRows = [];
+    let ftesRows = [];
+    let ftesPeopleRows = [];
+    let ftesKpisRows = [];
+    let ftesKpisSelectedQuarter = 'Q2';
+    let ftesKpisHistoricalCountry = null;
+    const DEFAULT_FTES_KPIS_Q1 = [
+      { pais: 'ESPANA', quarter: 'Q1', productividad: 1.63, targetProductividad: 1.34, lt: 86, targetLt: 68, ct: 56, targetCt: 63 },
+      { pais: 'MEXICO', quarter: 'Q1', productividad: 1.51, targetProductividad: 1.36, lt: 77, targetLt: 123, ct: 110, targetCt: 66 },
+      { pais: 'PERU', quarter: 'Q1', productividad: 1.38, targetProductividad: 1.40, lt: 51, targetLt: 60, ct: 45, targetCt: 42 },
+      { pais: 'COLOMBIA', quarter: 'Q1', productividad: 2.38, targetProductividad: 1.00, lt: 73, targetLt: 79, ct: 63, targetCt: 68 },
+      { pais: 'ARGENTINA', quarter: 'Q1', productividad: 2.06, targetProductividad: 1.25, lt: 66, targetLt: 63, ct: 52, targetCt: 56 }
+    ];
+    let selectedCountry = 'ALL';
+    let activeModule = 'presupuesto';
+    let barChartInstance = null;
+    let referenceDoughnutInstance = null;
+    let ftesAssignedChartInstance = null;
+
+    // Registrar el plugin de Datalabels si existe (se cargó via CDN)
+    if (typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+
+    const BAR_AUTORIZADO_COLOR = '#3F7DDA';
+    const BAR_EJECUTADO_COLOR = '#BFD7F6';
+    const REFERENCIA_LINE_COLOR = '#6AA84F';
+
+    // Plugin propio para pintar la referencia como una rayita verde encima de cada grupo de barras.
+    const referenceLinePlugin = {
+      id: 'referenceLinePlugin',
+      afterDatasetsDraw(chart) {
+        const opts = chart.options.plugins.referenceLinePlugin || {};
+        const values = Array.isArray(opts.values) ? opts.values : [];
+        if (!values.length) return;
+
+        const { ctx, chartArea, scales } = chart;
+        const xScale = scales.x;
+        const yScale = scales.y;
+        const stepWidth = chartArea.width / Math.max(values.length, 1);
+        const halfSegment = Math.min(stepWidth * 0.36, 90);
+        const color = opts.color || REFERENCIA_LINE_COLOR;
+        const formatter = typeof opts.formatter === 'function' ? opts.formatter : formatNumber;
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = opts.lineWidth || 2;
+        ctx.lineCap = 'round';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.font = '900 13px Arial, Helvetica, sans-serif';
+
+        values.forEach((value, index) => {
+          const refValue = Number(value || 0);
+          if (!Number.isFinite(refValue) || refValue <= 0) return;
+
+          const firstVisibleMeta = chart.data.datasets
+            .map((_, datasetIndex) => chart.getDatasetMeta(datasetIndex))
+            .find(meta => !meta.hidden && meta.data && meta.data[index]);
+
+          const x = firstVisibleMeta && firstVisibleMeta.data[index]
+            ? firstVisibleMeta.data[index].x
+            : xScale.getPixelForValue(index);
+          const yRaw = yScale.getPixelForValue(refValue);
+          const y = Math.max(chartArea.top + 8, Math.min(yRaw, chartArea.bottom));
+          if (y > chartArea.bottom) return;
+
+          ctx.beginPath();
+          ctx.moveTo(x - halfSegment, y);
+          ctx.lineTo(x + halfSegment, y);
+          ctx.stroke();
+          ctx.fillText(formatter(refValue), x, y - 6);
+        });
+
+        ctx.restore();
+      }
+    };
+
+    // Plugin para escribir el total en el centro del gráfico circular.
+    const doughnutCenterTextPlugin = {
+      id: 'doughnutCenterTextPlugin',
+      afterDraw(chart) {
+        const opts = chart.options.plugins.centerText || {};
+        if (!opts.display) return;
+
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || !meta.data || !meta.data.length) return;
+
+        const { ctx } = chart;
+        const centerX = meta.data[0].x;
+        const centerY = meta.data[0].y;
+
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        ctx.fillStyle = '#8A98B3';
+        ctx.font = '900 12px Arial, Helvetica, sans-serif';
+        ctx.fillText(opts.topText || 'TOTAL', centerX, centerY - 22);
+
+        ctx.fillStyle = '#004481';
+        ctx.font = '900 35px Arial, Helvetica, sans-serif';
+        ctx.fillText(opts.mainText || '', centerX, centerY + 2);
+
+        ctx.fillStyle = '#8A98B3';
+        ctx.font = '900 12px Arial, Helvetica, sans-serif';
+        ctx.fillText(opts.bottomText || '2026', centerX, centerY + 27);
+        ctx.restore();
+      }
+    };
+
+    Chart.register(referenceLinePlugin, doughnutCenterTextPlugin);
+
+    const QUARTER_ORDER = { Q1: 1, Q2: 2, Q3: 3, Q4: 4 };
+
+    function normalizeQuarter(q) {
+      const str = String(q || '').trim().toUpperCase();
+      if (str.includes('Q1') || str.includes('1T')) return 'Q1';
+      if (str.includes('Q2') || str.includes('2T')) return 'Q2';
+      if (str.includes('Q3') || str.includes('3T')) return 'Q3';
+      if (str.includes('Q4') || str.includes('4T')) return 'Q4';
+      return str;
+    }
+
+    const COUNTRY_ORDER = ['HOLDING', 'ESPANA', 'MEXICO', 'PERU', 'COLOMBIA', 'ARGENTINA'];
+
+    const COUNTRY_FLAG_CLASS = {
+      'ALL': 'flag-global',
+      'HOLDING': 'flag-holding',
+      'ESPANA': 'flag-spain',
+      'MEXICO': 'flag-mexico',
+      'PERU': 'flag-peru',
+      'COLOMBIA': 'flag-colombia',
+      'ARGENTINA': 'flag-argentina'
+    };
+
+    const COUNTRY_COLORS = {
+      'HOLDING': '#47A8F5',
+      'ESPANA': '#00549F',
+      'MEXICO': '#8A98B3',
+      'COLOMBIA': '#F6B40E',
+      'PERU': '#E77D22',
+      'ARGENTINA': '#174A96',
+      'ALL': '#D4EDFC'
+    };
+
+    const DISTRIBUTION_COLORS = {
+      'HOLDING': '#4BA3F2',
+      'ESPANA': '#00549F',
+      'MEXICO': '#7B61FF',
+      'COLOMBIA': '#F5B400',
+      'PERU': '#EA7E22',
+      'ARGENTINA': '#17A398',
+      'ALL': '#D4EDFC'
+    };
+
+    // --- API APPS SCRIPT PARA GOOGLE SITES / HTML EXTERNO ---
+    const APPS_SCRIPT_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwlciajOHldg2zgQenD6bDE9TtePO1gAjX6a9ZkQ9xNaa6ZQ2RXbET-vVUUVVgA0Xxqbg/exec';
+
+    function callAppsScriptApi(action) {
+      return new Promise((resolve, reject) => {
+        const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+
+        window[callbackName] = function (response) {
+          try {
+            delete window[callbackName];
+
+            const script = document.getElementById(callbackName);
+            if (script) script.remove();
+
+            if (!response || response.status !== 'ok') {
+              reject(new Error(response && response.message ? response.message : 'Respuesta incorrecta de Apps Script'));
+              return;
+            }
+
+            resolve(response.data);
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        const script = document.createElement('script');
+        script.id = callbackName;
+        script.src =
+          APPS_SCRIPT_API_URL +
+          '?api=1' +
+          '&action=' + encodeURIComponent(action) +
+          '&callback=' + encodeURIComponent(callbackName) +
+          '&t=' + Date.now();
+
+        script.onerror = function () {
+          delete window[callbackName];
+          reject(new Error('No se pudo conectar con Apps Script. Revisa despliegue, permisos y URL /exec.'));
+        };
+
+        document.body.appendChild(script);
+
+        setTimeout(() => {
+          if (window[callbackName]) {
+            delete window[callbackName];
+            const pendingScript = document.getElementById(callbackName);
+            if (pendingScript) pendingScript.remove();
+            reject(new Error('Timeout: Apps Script no respondió'));
+          }
+        }, 20000);
+      });
+    }
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', function () {
+      initClock();
+      bindStaticEvents();
+      loadPresupuestoData();
+      loadFtesData();
+      loadFtesPeopleData();
+      loadFtesKpisData();
+    });
+
+    function initClock() {
+      const clockEl = document.getElementById('clock');
+      if (!clockEl) return;
+      setInterval(() => {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('es-ES', { hour12: false });
+      }, 1000);
+    }
+
+    function bindStaticEvents() {
+      document.getElementById('quarterFilter').addEventListener('change', () => renderActiveModule());
+      document.getElementById('currencySwitch').addEventListener('change', () => renderActiveModule());
+      bindFtesKpisQuarterButtons();
+
+      document.getElementById('countryFilter').addEventListener('change', function () {
+        selectedCountry = this.value;
+        updateFilterIcon();
+        renderActiveModule();
+      });
+
+      const upButton = document.getElementById('upBtn');
+      if (upButton) {
+        upButton.addEventListener('click', () => {
+          document.getElementById('topFilters').scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+
+      document.getElementById('tabPresupuesto').addEventListener('click', () => setActiveTab('presupuesto'));
+      document.getElementById('tabFtes').addEventListener('click', () => setActiveTab('ftes'));
+
+      window.addEventListener('resize', () => {
+        window.clearTimeout(window.__barFlagsResizeTimer);
+        window.__barFlagsResizeTimer = window.setTimeout(() => {
+          alignBarChartFlags();
+          alignFtesAssignedFlags();
+        }, 80);
+      });
+    }
+
+
+    function bindFtesKpisQuarterButtons() {
+      document.querySelectorAll('[data-ftes-kpi-quarter]').forEach(button => {
+        button.addEventListener('click', function () {
+          setFtesKpisQuarter(this.dataset.ftesKpiQuarter);
+        });
+      });
+      updateFtesKpisQuarterButtons();
+    }
+
+    function setFtesKpisQuarter(quarter) {
+      const normalized = normalizeQuarter(quarter || 'Q2');
+      ftesKpisHistoricalCountry = null;
+      ftesKpisSelectedQuarter = ['Q1', 'Q2', 'Q3', 'Q4'].includes(normalized) ? normalized : 'Q2';
+      updateFtesKpisQuarterButtons();
+      renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
+    }
+
+    function updateFtesKpisQuarterButtons() {
+      document.querySelectorAll('[data-ftes-kpi-quarter]').forEach(button => {
+        const q = normalizeQuarter(button.dataset.ftesKpiQuarter || '');
+        button.classList.toggle('active', q === ftesKpisSelectedQuarter);
+      });
+    }
+
+    // --- CARGA DE DATOS ---
+    function loadPresupuestoData() {
+      callAppsScriptApi('getPresupuestoData')
+        .then(function (data) {
+          presupuestoRows = Array.isArray(data) ? data : [];
+          setupCountryFilter();
+          renderPresupuesto();
+        })
+        .catch(function (error) {
+          console.error('Error al cargar presupuesto:', error);
+          const container = document.getElementById('kpiGrid');
+          if (container) {
+            container.innerHTML = '<div class="empty-state">Error al cargar datos de presupuesto</div>';
+          }
+        });
+    }
+
+    // --- CARGA DE DATOS FTES ---
+    function loadFtesData() {
+      callAppsScriptApi('getFtesData')
+        .then(function (data) {
+          ftesRows = Array.isArray(data) ? data : [];
+          if (activeModule === 'ftes') renderFtes();
+        })
+        .catch(function (error) {
+          console.error('Error al cargar FTEs:', error);
+          const container = document.getElementById('ftesKpiGrid');
+          if (container) {
+            container.innerHTML = '<div class="empty-state">Error al cargar datos FTEs</div>';
+          }
+        });
+    }
+
+    // --- RENDERIZADO PRINCIPAL ---
+    function setActiveTab(tab) {
+      activeModule = tab === 'ftes' ? 'ftes' : 'presupuesto';
+
+      const isFtes = activeModule === 'ftes';
+      document.getElementById('tabPresupuesto').classList.toggle('active', !isFtes);
+      document.getElementById('tabFtes').classList.toggle('active', isFtes);
+
+      const dashboardPanel = document.querySelector('.dashboard-panel');
+      if (dashboardPanel) dashboardPanel.classList.remove('hidden');
+
+      const presupuestoPanel = document.getElementById('presupuestoPanel');
+      if (presupuestoPanel) presupuestoPanel.classList.toggle('hidden', isFtes);
+
+      const ftesPanel = document.getElementById('ftesPanel');
+      if (ftesPanel) ftesPanel.classList.toggle('hidden', !isFtes);
+
+      const currencyBlock = document.getElementById('currencyFilterBlock');
+      if (currencyBlock) currencyBlock.classList.toggle('hidden', isFtes);
+
+      const filtersGrid = document.querySelector('.filters-grid');
+      if (filtersGrid) filtersGrid.classList.toggle('ftes-mode', isFtes);
+
+      renderActiveModule();
+    }
+
+    function loadFtesPeopleData() {
+      callAppsScriptApi('getFtesPersonasData')
+        .then(function (data) {
+          ftesPeopleRows = Array.isArray(data) ? data : [];
+          if (activeModule === 'ftes') renderFtes();
+        })
+        .catch(function (error) {
+          console.error('Error al cargar FTEs personas:', error);
+          const container = document.getElementById('ftesPeopleTableBody');
+          if (container) {
+            container.innerHTML = '<div class="ftes-summary-empty">Error al cargar la tabla de personas FTEs</div>';
+          }
+        });
+    }
+
+    function loadFtesKpisData() {
+      callAppsScriptApi('getFtesKpisData')
+        .then(function (data) {
+          ftesKpisRows = Array.isArray(data) ? data : [];
+          if (activeModule === 'ftes') renderFtes();
+        })
+        .catch(function (error) {
+          console.error('Error al cargar KPIs FTEs:', error);
+          const container = document.getElementById('ftesKpisBody');
+          if (container) {
+            container.innerHTML = '<div class="ftes-kpis-empty">Error al cargar la gráfica de productividad</div>';
+          }
+        });
+    }
+
+
+    function renderActiveModule() {
+      if (activeModule === 'ftes') {
+        renderFtes();
+      } else {
+        renderPresupuesto();
+      }
+    }
+
+    function setupCountryFilter() {
+
+      const select = document.getElementById('countryFilter');
+      const countries = [...new Set(
+        presupuestoRows.filter(row => isQuarterRow(row)).map(row => normalizeCountry(row.pais)).filter(Boolean)
+      )];
+      countries.sort(sortCountries);
+      const allCountries = ['ALL', ...countries];
+
+      select.innerHTML = allCountries.map(c => `<option value="${c}">${escapeHtml(toNiceCountryName(c))}</option>`).join('');
+      select.value = selectedCountry;
+      updateFilterIcon();
+    }
+
+    function updateFilterIcon() {
+      const iconContainer = document.getElementById('countryFilterIcon');
+      if (iconContainer) iconContainer.innerHTML = flagHTML(selectedCountry, 'flag-sm');
+    }
+
+    function renderPresupuesto() {
+      const selectedQuarter = document.getElementById('quarterFilter').value;
+      const currencyInput = document.getElementById('currencySwitch');
+      const currencyBlock = document.getElementById('currencyFilterBlock');
+
+      // Forzar EURO y bloquear switch si es vista agregada (Global o Holding) o España
+      if (selectedCountry === 'ALL' || selectedCountry === 'HOLDING' || selectedCountry === 'ESPANA') {
+        currencyInput.checked = false;
+        currencyBlock.style.opacity = '0.4';
+        currencyBlock.style.pointerEvents = 'none';
+      } else {
+        currencyBlock.style.opacity = '1';
+        currencyBlock.style.pointerEvents = 'auto';
+      }
+
+      const currencyMode = currencyInput.checked ? 'MONEDA LOCAL' : 'EURO';
+      const qText = getQuarterDisplay(selectedQuarter);
+      
+      document.getElementById('barChartTitle').textContent = 'EJECUTADO VS AUTORIZADO';
+
+      const grouped = aggregatePresupuestoByCountry(presupuestoRows, selectedQuarter, currencyMode, selectedCountry);
+
+      const accumulatedGrouped = aggregateReferenceVsExecutedAccumByCountry(presupuestoRows, selectedQuarter, currencyMode, selectedCountry);
+
+      const budgetKpiTotals = calculateBudgetKpiTotals(presupuestoRows, selectedQuarter, currencyMode, selectedCountry);
+
+      renderKpis(budgetKpiTotals, currencyMode, selectedQuarter);
+      renderAccumulatedExecutionChart(accumulatedGrouped, currencyMode, selectedQuarter);
+      renderReferenceDistribution(grouped, currencyMode, selectedQuarter);
+      renderMainChart(grouped, currencyMode, selectedQuarter);
+      renderBudgetBreakdownTable(presupuestoRows, currencyMode, selectedCountry);
+    }
+    function renderFtes() {
+      const container = document.getElementById('ftesKpiGrid');
+      if (!container) return;
+
+      if (!ftesRows || !ftesRows.length) {
+        container.innerHTML = '<div class="empty-state">Cargando datos FTEs</div>';
+        renderFtesAssignedChart([], 'Q1');
+        renderFtesStructureChart([], 'Q1');
+        renderFtesSummaryTable([], 'Q1');
+        renderFtesPeopleCards([], document.getElementById('quarterFilter')?.value || 'TOTAL_2026', selectedCountry);
+        renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
+        return;
+      }
+
+      const selectedQuarterRaw = document.getElementById('quarterFilter').value;
+      const periodQuarter = resolveFtesSelectedQuarter(selectedQuarterRaw, ftesRows, selectedCountry);
+      const isTotalView = ['TOTAL_2026', 'ALL', 'TODOS'].includes(String(selectedQuarterRaw || '').toUpperCase());
+      const periodLabel = isTotalView
+        ? `Último Q (${getQuarterDisplay(periodQuarter)})`
+        : getQuarterDisplay(periodQuarter);
+
+      const rows = getFtesRowsForQuarter(ftesRows, periodQuarter, selectedCountry);
+
+      if (!rows.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos FTEs disponibles</div>';
+        renderFtesAssignedChart([], periodQuarter);
+        renderFtesStructureChart([], periodQuarter);
+        renderFtesSummaryTable([], periodQuarter);
+        renderFtesPeopleCards(ftesPeopleRows, selectedQuarterRaw, selectedCountry);
+        renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
+        return;
+      }
+
+      const ftesTotals = calculateFtesKpiTotals(rows);
+      const referencia = ftesTotals.referencia;
+      const asig = ftesTotals.asig;
+      const cobertura = referencia > 0 ? asig / referencia : 0;
+
+      container.innerHTML = `
+        <article class="kpi-card type-ref">
+          <div class="kpi-info">
+            <div class="kpi-label">REFERENCIA ${periodLabel}</div>
+            <div class="kpi-value">${formatFteNumber(referencia)}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+        </article>
+
+        <article class="kpi-card type-exe">
+          <div class="kpi-info">
+            <div class="kpi-label">ASIGNADO ${periodLabel}</div>
+            <div class="kpi-value">${formatFteNumber(asig)}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        </article>
+
+        <article class="kpi-card type-ava">
+          <div class="kpi-info">
+            <div class="kpi-label">% COBERTURA ${periodLabel}</div>
+            <div class="kpi-value">${formatPercent(cobertura, 2)}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+        </article>
+      `;
+
+      renderFtesAssignedChart(ftesRows, periodQuarter);
+      renderFtesStructureChart(ftesRows, periodQuarter);
+      renderFtesSummaryTable(rows, periodQuarter);
+      renderFtesPeopleCards(ftesPeopleRows, selectedQuarterRaw, selectedCountry);
+      renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
+    }
+
+    function calculateFtesKpiTotals(rows) {
+      const refGroups = {};
+      let asig = 0;
+
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const programa = normalizeGeneric(row.programa || row.program || row.nombrePrograma || row.endProduct || row.end_product || row.producto || 'TOTAL');
+        const key = `${pais}__${programa}`;
+        if (!refGroups[key]) refGroups[key] = { reference: 0 };
+        refGroups[key].reference = Math.max(refGroups[key].reference, getFteReferenceValue(row));
+        asig += getFteAssignedValue(row);
+      });
+
+      const referencia = Object.values(refGroups).reduce((sum, item) => sum + toNumber(item.reference), 0);
+      return { referencia, asig };
+    }
+
+
+    function renderFtesKpisChart(rows, quarterFilter, countryFilter) {
+      const body = document.getElementById('ftesKpisBody');
+      const titleEl = document.getElementById('ftesKpisTitle');
+      const subtitleEl = document.getElementById('ftesKpisSubtitle');
+      if (!body) return;
+
+      try {
+        const rawQuarterFilter = String(quarterFilter || '').trim().toUpperCase();
+        let actualQuarter = rawQuarterFilter === 'TOTAL_2026'
+          ? 'Q2'
+          : normalizeQuarter(quarterFilter || 'Q2');
+
+        if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(actualQuarter)) actualQuarter = 'Q2';
+        ftesKpisSelectedQuarter = actualQuarter;
+        updateFtesKpisQuarterButtons();
+
+        let allRows = Array.isArray(rows) ? rows.map(normalizeFtesKpisRowForChart).filter(Boolean) : [];
+
+        // Evita que el bloque se quede vacío si Apps Script todavía no devuelve la nueva pestaña.
+        // Solo aplica para Q1; en Q2/Q3/Q4 no se fuerza Q1.
+        if (!allRows.length && actualQuarter === 'Q1') {
+          allRows = DEFAULT_FTES_KPIS_Q1.map(normalizeFtesKpisRowForChart).filter(Boolean);
+        }
+
+        const filtered = allRows.filter(r => {
+          const pais = normalizeCountry(r.pais);
+          const countryOk = !countryFilter || countryFilter === 'ALL' ? true : pais === normalizeCountry(countryFilter);
+          return countryOk;
+        });
+
+        let quarterRows = filtered.filter(r => normalizeQuarter(r.quarter) === actualQuarter && hasAnyKpiValue(r));
+
+        if (!quarterRows.length) {
+          body.innerHTML = `<div class="ftes-kpis-empty">No hay datos disponibles de Productividad, Lead Time y Cycle Time para ${escapeHtml(actualQuarter)}.</div>`;
+          if (titleEl) titleEl.textContent = `PRODUCTIVIDAD ${actualQuarter} 2026 (FEATURE/FTE)`;
+          if (subtitleEl) subtitleEl.textContent = 'Sin datos cargados para el trimestre seleccionado';
+          return;
+        }
+
+        quarterRows = quarterRows.slice().sort((a, b) => sortCountries(a.pais, b.pais));
+
+        if (titleEl) titleEl.textContent = `PRODUCTIVIDAD ${actualQuarter} 2026 (FEATURE/FTE)`;
+        if (subtitleEl) {
+          subtitleEl.textContent = 'Productividad, Lead Time y Cycle Time vs target';
+        }
+
+        const metrics = [
+          {
+            key: 'productividad', targetKey: 'targetProductividad',
+            label: 'Productividad', unit: 'Feature/FTE', color: '#E4B321', targetColor: '#CFCFCF',
+            valueFormatter: v => formatNumber(v), targetFormatter: v => formatNumber(v)
+          },
+          {
+            key: 'lt', targetKey: 'targetLt',
+            label: 'Lead Time', unit: 'Días', color: '#124C88', targetColor: '#CFCFCF',
+            valueFormatter: v => formatInteger(v), targetFormatter: v => formatInteger(v)
+          },
+          {
+            key: 'ct', targetKey: 'targetCt',
+            label: 'Cycle Time', unit: 'Días', color: '#49C3D1', targetColor: '#CFCFCF',
+            valueFormatter: v => formatInteger(v), targetFormatter: v => formatInteger(v)
+          }
+        ];
+
+        const svg = buildFtesKpiSvg(quarterRows, metrics);
+
+        body.innerHTML = `
+          <div class="ftes-kpis-wrapper">
+            ${svg}
+          </div>
+          <div class="ftes-kpi-country-tooltip" id="ftesKpiTooltip"></div>
+        `;
+        bindFtesKpiTooltip(quarterRows, actualQuarter);
+        bindFtesKpiFlagHistoryClicks();
+      } catch (error) {
+        console.error('Error renderizando productividad:', error);
+        body.innerHTML = '<div class="ftes-kpis-empty">Error al pintar la gráfica de Productividad. Revisa la consola del navegador.</div>';
+      }
+    }
+
+    function normalizeFtesKpisRowForChart(row) {
+      if (!row) return null;
+      return {
+        pais: row.pais,
+        quarter: normalizeQuarter(row.quarter),
+        productividad: getFirstNumericValue(row, ['productividad', 'Productividad']),
+        targetProductividad: getFirstNumericValue(row, ['targetProductividad', 'target_productividad', 'targetProductividadRaw', 'Target Productividad']),
+        lt: getFirstNumericValue(row, ['lt', 'LT']),
+        targetLt: getFirstNumericValue(row, ['targetLt', 'target_lt', 'Target LT']),
+        ct: getFirstNumericValue(row, ['ct', 'CT']),
+        targetCt: getFirstNumericValue(row, ['targetCt', 'target_ct', 'Target CT'])
+      };
+    }
+
+    function getFirstNumericValue(row, keys) {
+      for (const key of keys) {
+        if (row[key] !== undefined && row[key] !== null && row[key] !== '') return toNumber(row[key]);
+      }
+      return 0;
+    }
+
+    function buildFtesKpiSvg(rows, metrics) {
+      const width = 1880;
+      const plotLeft = 245;
+      const plotRight = 1840;
+      const top = 18;
+      const sectionGap = 168;
+      const sectionHeight = 88;
+      const bottomFlagsY = top + sectionGap * (metrics.length - 1) + sectionHeight + 58;
+      const height = bottomFlagsY + 44;
+      const xPositions = computeKpiXPositions(rows.length, plotLeft, plotRight);
+      const bandWidth = rows.length > 1 ? Math.min(180, ((plotRight - plotLeft) / (rows.length - 1)) * 0.64) : 180;
+
+      let parts = [`<svg class="ftes-kpis-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">`];
+
+      metrics.forEach((metric, idx) => {
+        const sectionTop = top + idx * sectionGap;
+        const values = rows.map(r => Number(r[metric.key] || 0));
+        const targetValues = rows.map(r => Number(r[metric.targetKey] || 0));
+        const points = computeMetricPoints(values, targetValues, xPositions, sectionTop + 18, sectionHeight - 22);
+
+        parts.push(`<text x="8" y="${sectionTop + 64}" class="ftes-kpi-main-label" font-size="23">${escapeHtml(metric.label)}</text>`);
+        parts.push(`<text x="8" y="${sectionTop + 82}" class="ftes-kpi-unit-label" font-size="13">${escapeHtml(metric.unit)}</text>`);
+        parts.push(`<circle cx="14" cy="${sectionTop + 112}" r="5.3" fill="${metric.color}"></circle>`);
+        parts.push(`<text x="26" y="${sectionTop + 116}" class="ftes-kpi-legend-text" fill="${metric.color}">${escapeHtml(metric.label === 'Productividad' ? 'Productividad' : metric.label === 'Lead Time' ? 'LT' : 'CT')}</text>`);
+        parts.push(`<circle cx="14" cy="${sectionTop + 130}" r="5.3" fill="${metric.targetColor}"></circle>`);
+        parts.push(`<text x="26" y="${sectionTop + 134}" class="ftes-kpi-legend-text" fill="#8D96A8">Target</text>`);
+
+        rows.forEach((row, i) => {
+          const x = xPositions[i];
+          const countryName = toNiceCountryName(row.pais);
+          const value = Number(row[metric.key] || 0);
+          const target = Number(row[metric.targetKey] || 0);
+          parts.push(`<rect x="${x - bandWidth / 2}" y="${sectionTop + 10}" width="${bandWidth}" height="${sectionHeight + 38}" rx="12" class="ftes-kpi-hover-target ftes-kpi-hover-band" data-country="${escapeHtml(countryName)}" data-quarter="${escapeHtml(normalizeQuarter(row.quarter))}" data-label="${escapeHtml(metric.label)}" data-target-label="Target ${escapeHtml(metric.label)}" data-value="${escapeHtml(metric.valueFormatter(value))}" data-target-value="${escapeHtml(metric.targetFormatter(target))}" data-unit="${escapeHtml(metric.unit)}"></rect>`);
+        });
+
+        parts.push(`<line x1="${plotLeft}" y1="${sectionTop + sectionHeight}" x2="${plotRight}" y2="${sectionTop + sectionHeight}" stroke="#EDF2F9" stroke-width="1"></line>`);
+        parts.push(`<path d="${linePath(points.primary)}" fill="none" stroke="${metric.color}" stroke-width="2.4"></path>`);
+        parts.push(`<path d="${linePath(points.target)}" fill="none" stroke="${metric.targetColor}" stroke-width="2"></path>`);
+
+        rows.forEach((row, i) => {
+          const p = points.primary[i];
+          const t = points.target[i];
+          const primaryVal = Number(row[metric.key] || 0);
+          const targetVal = Number(row[metric.targetKey] || 0);
+          const countryName = toNiceCountryName(row.pais);
+
+          parts.push(`<line x1="${p.x}" y1="${top + 12}" x2="${p.x}" y2="${bottomFlagsY - 8}" stroke="#E4EAF4" stroke-dasharray="4 4" stroke-width="1"></line>`);
+          parts.push(`<circle cx="${t.x}" cy="${t.y}" r="4.8" fill="${metric.targetColor}"></circle>`);
+          parts.push(`<circle cx="${p.x}" cy="${p.y}" r="5" fill="${metric.color}" class="ftes-kpi-hover-target ftes-kpi-hover-point" data-country="${escapeHtml(countryName)}" data-quarter="${escapeHtml(normalizeQuarter(row.quarter))}" data-label="${escapeHtml(metric.label)}" data-target-label="Target ${escapeHtml(metric.label)}" data-value="${escapeHtml(metric.valueFormatter(primaryVal))}" data-target-value="${escapeHtml(metric.targetFormatter(targetVal))}" data-unit="${escapeHtml(metric.unit)}"></circle>`);
+
+          const pLabelY = p.y - 10;
+          const tLabelY = t.y + 18;
+          parts.push(`<text x="${p.x}" y="${pLabelY}" text-anchor="middle" class="ftes-kpi-value-primary" fill="${metric.color}">${escapeHtml(metric.valueFormatter(primaryVal))}</text>`);
+          parts.push(`<text x="${t.x}" y="${tLabelY}" text-anchor="middle" class="ftes-kpi-value-target">${escapeHtml(metric.targetFormatter(targetVal))}</text>`);
+        });
+      });
+
+      rows.forEach((row, i) => {
+        const x = xPositions[i];
+        const countryCode = normalizeCountry(row.pais);
+        const countryName = toNiceCountryName(row.pais);
+        parts.push(`<rect x="${x - 34}" y="${bottomFlagsY - 2}" width="68" height="44" rx="12" class="ftes-kpi-flag-click-target" data-country-code="${escapeHtml(countryCode)}" data-country-name="${escapeHtml(countryName)}"></rect>`);
+        parts.push(`<foreignObject x="${x - 30}" y="${bottomFlagsY}" width="60" height="38" pointer-events="none" style="pointer-events:none;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;width:60px;height:38px;pointer-events:none;">${flagHTML(row.pais, 'flag-kpi')}</div></foreignObject>`);
+      });
+
+      parts.push('</svg>');
+      return parts.join('');
+    }
+
+    function computeKpiXPositions(count, left, right) {
+      if (count <= 1) return [(left + right) / 2];
+      const step = (right - left) / (count - 1);
+      return Array.from({ length: count }, (_, i) => left + step * i);
+    }
+
+    function computeMetricPoints(values, targetValues, xPositions, top, height) {
+      const all = values.concat(targetValues).filter(v => Number.isFinite(v));
+      let min = Math.min.apply(null, all);
+      let max = Math.max.apply(null, all);
+      if (!Number.isFinite(min)) min = 0;
+      if (!Number.isFinite(max)) max = 1;
+      if (min === max) {
+        min = min - 1;
+        max = max + 1;
+      }
+
+      // Escala más ajustada para que los picos y valles se perciban mejor visualmente.
+      const range = (max - min) || 1;
+      const pad = range * 0.02;
+      min = Math.max(0, min - pad);
+      max = max + pad;
+
+      const innerTop = top;
+      const innerHeight = height + 22;
+      const scaleY = val => innerTop + innerHeight - ((val - min) / (max - min)) * innerHeight;
+
+      return {
+        primary: values.map((v, i) => ({ x: xPositions[i], y: scaleY(v) })),
+        target: targetValues.map((v, i) => ({ x: xPositions[i], y: scaleY(v) }))
+      };
+    }
+
+    function linePath(points) {
+      if (!points.length) return '';
+      return points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+    }
+
+    function hasAnyKpiValue(row) {
+      return Number(row.productividad || 0) !== 0 || Number(row.targetProductividad || 0) !== 0 ||
+        Number(row.lt || 0) !== 0 || Number(row.targetLt || 0) !== 0 ||
+        Number(row.ct || 0) !== 0 || Number(row.targetCt || 0) !== 0;
+    }
+
+    function bindFtesKpiTooltip(rows, quarter) {
+      const tooltip = document.getElementById('ftesKpiTooltip');
+      if (!tooltip) return;
+      const points = document.querySelectorAll('.ftes-kpi-hover-target');
+      const show = (event) => {
+        const el = event.currentTarget;
+        const data = el.dataset;
+        const unitSuffix = data.unit && data.unit.toLowerCase() === 'días' ? ` ${data.unit.toLowerCase()}` : '';
+        tooltip.innerHTML = `
+          <div class="tooltip-country">${escapeHtml(data.country)}</div>
+          <div class="tooltip-line"><span>Quarter</span><strong>${escapeHtml(data.quarter || quarter)}</strong></div>
+          <div class="tooltip-line"><span>${escapeHtml(data.label)}</span><strong>${escapeHtml(data.value)}${escapeHtml(unitSuffix)}</strong></div>
+          <div class="tooltip-line"><span>${escapeHtml(data.targetLabel)}</span><strong>${escapeHtml(data.targetValue)}${escapeHtml(unitSuffix)}</strong></div>
+        `;
+        tooltip.classList.add('visible');
+        move(event);
+      };
+      const move = (event) => {
+        tooltip.style.left = `${event.clientX}px`;
+        tooltip.style.top = `${event.clientY}px`;
+      };
+      const hide = () => tooltip.classList.remove('visible');
+      points.forEach(point => {
+        point.addEventListener('mouseenter', show);
+        point.addEventListener('mousemove', move);
+        point.addEventListener('mouseleave', hide);
+      });
+    }
+
+    function bindFtesKpiFlagHistoryClicks() {
+      document.querySelectorAll('.ftes-kpi-flag-click-target').forEach(flagTarget => {
+        flagTarget.addEventListener('click', function () {
+          const countryCode = this.dataset.countryCode;
+          if (!countryCode) return;
+          ftesKpisHistoricalCountry = normalizeCountry(countryCode);
+          renderFtesKpisHistoricalChart(ftesKpisRows, ftesKpisHistoricalCountry);
+        });
+      });
+    }
+
+    function renderFtesKpisHistoricalChart(rows, countryCode) {
+      const body = document.getElementById('ftesKpisBody');
+      const titleEl = document.getElementById('ftesKpisTitle');
+      const subtitleEl = document.getElementById('ftesKpisSubtitle');
+      if (!body) return;
+
+      try {
+        const normalizedCountry = normalizeCountry(countryCode);
+        const countryName = toNiceCountryName(normalizedCountry);
+        const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+
+        let allRows = Array.isArray(rows) ? rows.map(normalizeFtesKpisRowForChart).filter(Boolean) : [];
+
+        // Mantiene el fallback de Q1 solo para evitar pantalla vacía si la pestaña aún no devuelve datos.
+        if (!allRows.length) {
+          allRows = DEFAULT_FTES_KPIS_Q1.map(normalizeFtesKpisRowForChart).filter(Boolean);
+        }
+
+        const countryRows = allRows
+          .filter(r => normalizeCountry(r.pais) === normalizedCountry)
+          .filter(r => ['Q1', 'Q2', 'Q3', 'Q4'].includes(normalizeQuarter(r.quarter)) && hasAnyKpiValue(r));
+
+        if (!countryRows.length) {
+          body.innerHTML = `
+            <div class="ftes-kpis-history-toolbar">
+              <button class="ftes-kpis-back-btn" type="button" id="ftesKpisBackBtn">← Volver al consolidado</button>
+            </div>
+            <div class="ftes-kpis-empty">No hay histórico disponible para ${escapeHtml(countryName)}.</div>
+          `;
+          bindFtesKpisBackButton();
+          if (titleEl) titleEl.textContent = `HISTÓRICO PRODUCTIVIDAD - ${countryName.toUpperCase()}`;
+          if (subtitleEl) subtitleEl.textContent = 'Sin datos cargados para este país';
+          return;
+        }
+
+        const rowByQuarter = {};
+        countryRows.forEach(row => {
+          const q = normalizeQuarter(row.quarter);
+          rowByQuarter[q] = row;
+        });
+
+        const historicalRows = quarters.map(q => {
+          if (rowByQuarter[q]) {
+            return Object.assign({}, rowByQuarter[q], { quarter: q, isPendingQuarter: false });
+          }
+          return {
+            pais: normalizedCountry,
+            quarter: q,
+            productividad: null,
+            targetProductividad: null,
+            lt: null,
+            targetLt: null,
+            ct: null,
+            targetCt: null,
+            isPendingQuarter: true
+          };
+        });
+
+        const metrics = [
+          {
+            key: 'productividad', targetKey: 'targetProductividad',
+            label: 'Productividad', unit: 'Feature/FTE', color: '#E4B321', targetColor: '#CFCFCF',
+            valueFormatter: v => formatNumber(v), targetFormatter: v => formatNumber(v)
+          },
+          {
+            key: 'lt', targetKey: 'targetLt',
+            label: 'Lead Time', unit: 'Días', color: '#124C88', targetColor: '#CFCFCF',
+            valueFormatter: v => formatInteger(v), targetFormatter: v => formatInteger(v)
+          },
+          {
+            key: 'ct', targetKey: 'targetCt',
+            label: 'Cycle Time', unit: 'Días', color: '#49C3D1', targetColor: '#CFCFCF',
+            valueFormatter: v => formatInteger(v), targetFormatter: v => formatInteger(v)
+          }
+        ];
+
+        if (titleEl) titleEl.textContent = `HISTÓRICO PRODUCTIVIDAD - ${countryName.toUpperCase()}`;
+        if (subtitleEl) subtitleEl.textContent = 'Evolución trimestral Q1-Q4 por país · los trimestres sin datos quedan preparados para próximos valores';
+
+        body.innerHTML = `
+          <div class="ftes-kpis-history-toolbar">
+            <button class="ftes-kpis-back-btn" type="button" id="ftesKpisBackBtn">← Volver al consolidado</button>
+            <span>${escapeHtml(countryName)} · Histórico Q1-Q4</span>
+          </div>
+          <div class="ftes-kpis-wrapper">
+            ${buildFtesKpiHistoricalSvg(historicalRows, metrics)}
+          </div>
+          <div class="ftes-kpi-country-tooltip" id="ftesKpiTooltip"></div>
+        `;
+
+        bindFtesKpisBackButton();
+        bindFtesKpiTooltip(historicalRows.filter(r => !r.isPendingQuarter), 'Histórico');
+      } catch (error) {
+        console.error('Error renderizando histórico productividad:', error);
+        body.innerHTML = '<div class="ftes-kpis-empty">Error al pintar el histórico de Productividad. Revisa la consola del navegador.</div>';
+      }
+    }
+
+    function bindFtesKpisBackButton() {
+      const backBtn = document.getElementById('ftesKpisBackBtn');
+      if (!backBtn) return;
+      backBtn.addEventListener('click', function () {
+        ftesKpisHistoricalCountry = null;
+        renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
+      });
+    }
+
+    function buildFtesKpiHistoricalSvg(rows, metrics) {
+      const width = 1880;
+      const plotLeft = 245;
+      const plotRight = 1840;
+      const top = 18;
+      const sectionGap = 168;
+      const sectionHeight = 88;
+      const bottomAxisY = top + sectionGap * (metrics.length - 1) + sectionHeight + 56;
+      const height = bottomAxisY + 58;
+      const xPositions = computeKpiXPositions(rows.length, plotLeft, plotRight);
+      const bandWidth = rows.length > 1 ? Math.min(190, ((plotRight - plotLeft) / (rows.length - 1)) * 0.55) : 190;
+
+      let parts = [`<svg class="ftes-kpis-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">`];
+
+      // Líneas verticales y eje Q1-Q4 fijos, aunque no haya datos todavía.
+      rows.forEach((row, i) => {
+        const x = xPositions[i];
+        parts.push(`<line x1="${x}" y1="${top + 12}" x2="${x}" y2="${bottomAxisY - 4}" stroke="#E4EAF4" stroke-dasharray="4 4" stroke-width="1"></line>`);
+        parts.push(`<text x="${x}" y="${bottomAxisY + 22}" text-anchor="middle" class="ftes-kpi-quarter-axis-label">${escapeHtml(row.quarter)}</text>`);
+        if (row.isPendingQuarter) {
+          parts.push(`<text x="${x}" y="${bottomAxisY + 41}" text-anchor="middle" class="ftes-kpi-coming-soon">Próximamente</text>`);
+        }
+      });
+
+      metrics.forEach((metric, idx) => {
+        const sectionTop = top + idx * sectionGap;
+        const values = rows.map(r => normalizeNullableKpiValue(r[metric.key]));
+        const targetValues = rows.map(r => normalizeNullableKpiValue(r[metric.targetKey]));
+        const points = computeHistoricalMetricPoints(values, targetValues, xPositions, sectionTop + 18, sectionHeight - 22);
+
+        parts.push(`<text x="8" y="${sectionTop + 64}" class="ftes-kpi-main-label" font-size="23">${escapeHtml(metric.label)}</text>`);
+        parts.push(`<text x="8" y="${sectionTop + 82}" class="ftes-kpi-unit-label" font-size="13">${escapeHtml(metric.unit)}</text>`);
+        parts.push(`<circle cx="14" cy="${sectionTop + 112}" r="5.3" fill="${metric.color}"></circle>`);
+        parts.push(`<text x="26" y="${sectionTop + 116}" class="ftes-kpi-legend-text" fill="${metric.color}">${escapeHtml(metric.label === 'Productividad' ? 'Productividad' : metric.label === 'Lead Time' ? 'LT' : 'CT')}</text>`);
+        parts.push(`<circle cx="14" cy="${sectionTop + 130}" r="5.3" fill="${metric.targetColor}"></circle>`);
+        parts.push(`<text x="26" y="${sectionTop + 134}" class="ftes-kpi-legend-text" fill="#8D96A8">Target</text>`);
+
+        rows.forEach((row, i) => {
+          if (row.isPendingQuarter) return;
+          const x = xPositions[i];
+          const value = normalizeNullableKpiValue(row[metric.key]);
+          const target = normalizeNullableKpiValue(row[metric.targetKey]);
+          if (value === null && target === null) return;
+          parts.push(`<rect x="${x - bandWidth / 2}" y="${sectionTop + 10}" width="${bandWidth}" height="${sectionHeight + 38}" rx="12" class="ftes-kpi-hover-target ftes-kpi-hover-band" data-country="${escapeHtml(toNiceCountryName(row.pais))}" data-quarter="${escapeHtml(normalizeQuarter(row.quarter))}" data-label="${escapeHtml(metric.label)}" data-target-label="Target ${escapeHtml(metric.label)}" data-value="${value === null ? '-' : escapeHtml(metric.valueFormatter(value))}" data-target-value="${target === null ? '-' : escapeHtml(metric.targetFormatter(target))}" data-unit="${escapeHtml(metric.unit)}"></rect>`);
+        });
+
+        parts.push(`<line x1="${plotLeft}" y1="${sectionTop + sectionHeight}" x2="${plotRight}" y2="${sectionTop + sectionHeight}" stroke="#EDF2F9" stroke-width="1"></line>`);
+        parts.push(`<path d="${segmentedLinePath(points.primary)}" fill="none" stroke="${metric.color}" stroke-width="2.4"></path>`);
+        parts.push(`<path d="${segmentedLinePath(points.target)}" fill="none" stroke="${metric.targetColor}" stroke-width="2"></path>`);
+
+        rows.forEach((row, i) => {
+          if (row.isPendingQuarter) return;
+          const p = points.primary[i];
+          const t = points.target[i];
+          const primaryVal = normalizeNullableKpiValue(row[metric.key]);
+          const targetVal = normalizeNullableKpiValue(row[metric.targetKey]);
+          const countryName = toNiceCountryName(row.pais);
+
+          if (t) {
+            parts.push(`<circle cx="${t.x}" cy="${t.y}" r="4.8" fill="${metric.targetColor}"></circle>`);
+            parts.push(`<text x="${t.x}" y="${t.y + 18}" text-anchor="middle" class="ftes-kpi-value-target">${escapeHtml(metric.targetFormatter(targetVal))}</text>`);
+          }
+
+          if (p) {
+            parts.push(`<circle cx="${p.x}" cy="${p.y}" r="5" fill="${metric.color}" class="ftes-kpi-hover-target ftes-kpi-hover-point" data-country="${escapeHtml(countryName)}" data-quarter="${escapeHtml(normalizeQuarter(row.quarter))}" data-label="${escapeHtml(metric.label)}" data-target-label="Target ${escapeHtml(metric.label)}" data-value="${escapeHtml(metric.valueFormatter(primaryVal))}" data-target-value="${targetVal === null ? '-' : escapeHtml(metric.targetFormatter(targetVal))}" data-unit="${escapeHtml(metric.unit)}"></circle>`);
+            parts.push(`<text x="${p.x}" y="${p.y - 10}" text-anchor="middle" class="ftes-kpi-value-primary" fill="${metric.color}">${escapeHtml(metric.valueFormatter(primaryVal))}</text>`);
+          }
+        });
+      });
+
+      parts.push('</svg>');
+      return parts.join('');
+    }
+
+    function normalizeNullableKpiValue(value) {
+      if (value === null || value === undefined || value === '') return null;
+      const number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function computeHistoricalMetricPoints(values, targetValues, xPositions, top, height) {
+      const all = values.concat(targetValues)
+        .filter(v => v !== null && Number.isFinite(Number(v)))
+        .map(v => Number(v));
+      let min = Math.min.apply(null, all);
+      let max = Math.max.apply(null, all);
+      if (!Number.isFinite(min)) min = 0;
+      if (!Number.isFinite(max)) max = 1;
+      if (min === max) {
+        min = min - 1;
+        max = max + 1;
+      }
+
+      const range = (max - min) || 1;
+      const pad = range * 0.02;
+      min = Math.max(0, min - pad);
+      max = max + pad;
+
+      const innerTop = top;
+      const innerHeight = height + 22;
+      const scaleY = val => innerTop + innerHeight - ((Number(val) - min) / (max - min)) * innerHeight;
+
+      return {
+        primary: values.map((v, i) => v === null ? null : { x: xPositions[i], y: scaleY(v) }),
+        target: targetValues.map((v, i) => v === null ? null : { x: xPositions[i], y: scaleY(v) })
+      };
+    }
+
+    function segmentedLinePath(points) {
+      let d = '';
+      let segmentOpen = false;
+      points.forEach(point => {
+        if (!point) {
+          segmentOpen = false;
+          return;
+        }
+        if (!segmentOpen) {
+          d += `M ${point.x} ${point.y} `;
+          segmentOpen = true;
+        } else {
+          d += `L ${point.x} ${point.y} `;
+        }
+      });
+      return d.trim();
+    }
+
+    function renderFtesSummaryTable(rows, periodQuarter) {
+      const container = document.getElementById('ftesSummaryTableBody');
+      const title = document.getElementById('ftesSummaryTitle');
+      const q = normalizeQuarter(periodQuarter);
+      const periodText = getQuarterDisplay(q);
+
+      if (title) title.textContent = `RESUMEN FTES ${periodText} 2026`;
+      if (!container) return;
+
+      if (!rows || !rows.length) {
+        container.innerHTML = '<div class="ftes-summary-empty">Sin datos FTEs disponibles</div>';
+        return;
+      }
+
+      const tableRows = rows
+        .map(row => {
+          const reference = getFteReferenceValue(row);
+          const assigned = getFteAssignedValue(row);
+          const coverage = reference > 0 ? assigned / reference : null;
+          const gap = assigned - reference;
+          return {
+            pais: normalizeCountry(row.pais),
+            reference,
+            assigned,
+            coverage,
+            gap
+          };
+        })
+        .sort((a, b) => sortCountries(a.pais, b.pais));
+
+      const totalReference = tableRows.reduce((sum, row) => sum + row.reference, 0);
+      const totalAssigned = tableRows.reduce((sum, row) => sum + row.assigned, 0);
+      const totalCoverage = totalReference > 0 ? totalAssigned / totalReference : null;
+      const totalGap = totalAssigned - totalReference;
+
+      const assignedHeader = `Asignado ${q}`;
+
+      container.innerHTML = `
+        <div class="ftes-summary-table-wrap">
+          <table class="ftes-summary-table">
+            <thead>
+              <tr>
+                <th>País</th>
+                <th>Ref. 2026</th>
+                <th>${escapeHtml(assignedHeader)}</th>
+                <th class="coverage-head">Cobertura</th>
+                <th class="gap-head">Gap vs Ref.</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows.map(row => {
+                const countryName = toNiceCountryName(row.pais);
+                const gapClass = row.gap < 0 ? 'ftes-summary-gap-negative' : 'ftes-summary-gap-positive';
+                return `
+                  <tr>
+                    <td class="ftes-summary-country-cell" title="${escapeHtml(countryName)}">
+                      ${flagHTML(row.pais, 'flag-sm')}
+                    </td>
+                    <td>${formatFteNumber(row.reference)}</td>
+                    <td>${formatFteNumber(row.assigned)}</td>
+                    <td class="ftes-summary-coverage">${row.coverage === null ? 'N/A' : formatPercent(row.coverage, 0)}</td>
+                    <td class="${gapClass}">${formatSignedFteNumber(row.gap)}</td>
+                  </tr>
+                `;
+              }).join('')}
+              <tr class="ftes-summary-total-row">
+                <td class="ftes-summary-country-cell">Total</td>
+                <td>${formatFteNumber(totalReference)}</td>
+                <td>${formatFteNumber(totalAssigned)}</td>
+                <td class="ftes-summary-coverage">${totalCoverage === null ? 'N/A' : formatPercent(totalCoverage, 0)}</td>
+                <td class="${totalGap < 0 ? 'ftes-summary-gap-negative' : 'ftes-summary-gap-positive'}">${formatSignedFteNumber(totalGap)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getFtesPeopleDisplayQuarters(quarterFilter) {
+      const q = String(quarterFilter || '').trim().toUpperCase();
+      if (['TOTAL_2026', 'ALL', 'TODOS', 'TOTAL'].includes(q)) return ['Q1', 'Q2', 'Q3', 'Q4'];
+      const normalized = normalizeQuarter(q);
+      return normalized ? [normalized] : ['Q1', 'Q2', 'Q3', 'Q4'];
+    }
+
+    function getFtesPeopleCardsData(rows, quarterFilter, countryFilter) {
+      const quarters = getFtesPeopleDisplayQuarters(quarterFilter);
+      const map = {};
+
+      (rows || []).forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        if (!quarters.includes(quarter)) return;
+        if (countryFilter !== 'ALL' && pais !== countryFilter) return;
+
+        if (!map[pais]) {
+          map[pais] = { pais, quarters: {} };
+        }
+
+        map[pais].quarters[quarter] = row;
+      });
+
+      return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function renderFtesPeopleCards(rows, quarterFilter, countryFilter) {
+      const container = document.getElementById('ftesPeopleTableBody');
+      const title = document.getElementById('ftesPeopleTitle');
+      const subtitle = document.getElementById('ftesPeopleSubtitle');
+      const quarters = getFtesPeopleDisplayQuarters(quarterFilter);
+      const isTotalView = quarters.length > 1;
+      const cards = getFtesPeopleCardsData(rows, quarterFilter, countryFilter);
+
+      if (title) title.textContent = isTotalView
+        ? 'FTEs vs Personas Reales'
+        : `FTEs vs Personas Reales · ${getQuarterDisplay(quarters[0])}`;
+
+      if (subtitle) subtitle.textContent = isTotalView
+        ? 'Q1, Q2, Q3 y Q4 por país · FTEs, personas, % Full Time y ratio de dedicación'
+        : `${getQuarterDisplay(quarters[0])} por país · FTEs, personas, % Full Time y ratio de dedicación`;
+
+      if (!container) return;
+
+      if (!cards.length) {
+        container.innerHTML = '<div class="ftes-summary-empty">Sin datos de personas FTEs disponibles</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="ftes-people-cards-grid">
+          ${cards.map(card => {
+            const countryName = toNiceCountryName(card.pais);
+            return `
+              <article class="ftes-people-card" title="${escapeHtml(countryName)}">
+                <div class="ftes-people-card-header">
+                  ${flagHTML(card.pais)}
+                </div>
+                ${renderFtesPeopleMiniTable(card, quarters)}
+              </article>
+            `;
+          }).join('')}
+        </div>
+        <div class="ftes-people-legend">
+          <span class="ftes-people-legend-item"><span class="ftes-people-legend-dot ftes-ratio-good"></span>≥ 0,70 FTEs/Persona</span>
+          <span class="ftes-people-legend-item"><span class="ftes-people-legend-dot ftes-ratio-mid"></span>0,60 - 0,70 FTEs/Persona</span>
+          <span class="ftes-people-legend-item"><span class="ftes-people-legend-dot ftes-ratio-low"></span>&lt; 0,60 FTEs/Persona</span>
+        </div>
+      `;
+    }
+
+    function renderFtesPeopleMiniTable(card, quarters) {
+      const valuesByQuarter = quarters.map(q => getFtesPeopleQuarterValues(card.quarters[q]));
+
+      return `
+        <div class="ftes-people-mini-table" style="--quarters-count:${quarters.length};">
+          <div class="ftes-people-mini-cell"></div>
+          ${quarters.map(q => `<div class="ftes-people-mini-cell ftes-people-mini-quarter">${escapeHtml(q)}</div>`).join('')}
+
+          <div class="ftes-people-mini-label">FTEs</div>
+          ${valuesByQuarter.map(v => `<div class="ftes-people-mini-cell ftes-people-value ftes-people-main-value">${v.ftes}</div>`).join('')}
+
+          <div class="ftes-people-mini-label">Personas</div>
+          ${valuesByQuarter.map(v => `<div class="ftes-people-mini-cell ftes-people-value">${v.personas}</div>`).join('')}
+
+          <div class="ftes-people-mini-label">% Full Time</div>
+          ${valuesByQuarter.map(v => `<div class="ftes-people-mini-cell ftes-people-percent">${v.pct}</div>`).join('')}
+
+          <div class="ftes-people-mini-label">Ratio dedic.</div>
+          ${valuesByQuarter.map(v => `<div class="ftes-people-mini-cell"><span class="ftes-people-ratio-chip ${v.ratioClass}">${v.ratio}</span></div>`).join('')}
+        </div>
+      `;
+    }
+
+    function getFtesPeopleQuarterValues(row) {
+      if (!row) {
+        return {
+          ftes: '-',
+          personas: '-',
+          pct: '-',
+          ratio: '-',
+          ratioClass: 'ftes-ratio-empty'
+        };
+      }
+
+      const ftes = getFtesPeopleMetric(row, ['ftes', 'FTEs']);
+      const personas = getFtesPeopleMetric(row, ['personas', 'Personas']);
+      const pct = getFtesPeoplePercent(row);
+      const ratio = getFtesPeopleMetric(row, ['ratioDedicacion', 'ratio_dedicacion', 'ratio', 'Ratio de dedicación']);
+      const hasRatio = ratio > 0;
+
+      return {
+        ftes: formatFteNumber(ftes),
+        personas: formatFteInteger(personas),
+        pct: pct > 0 ? formatPercent(pct, 1) : '-',
+        ratio: hasRatio ? formatRatioNumber(ratio) : '-',
+        ratioClass: getRatioClass(ratio)
+      };
+    }
+
+    function getRatioClass(ratio) {
+      const value = Number(ratio || 0);
+      if (!value) return 'ftes-ratio-empty';
+      if (value >= 0.70) return 'ftes-ratio-good';
+      if (value >= 0.60) return 'ftes-ratio-mid';
+      return 'ftes-ratio-low';
+    }
+
+    function getFtesPeopleRowsForQuarter(rows, quarterFilter, countryFilter) {
+      const q = normalizeQuarter(quarterFilter);
+      return (rows || [])
+        .filter(row => {
+          const pais = normalizeCountry(row.pais);
+          const quarter = normalizeQuarter(row.quarter);
+          if (quarter !== q) return false;
+          if (countryFilter !== 'ALL' && pais !== countryFilter) return false;
+          return true;
+        })
+        .sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function renderFtesPeopleTable(rows, periodQuarter) {
+      const container = document.getElementById('ftesPeopleTableBody');
+      const title = document.getElementById('ftesPeopleTitle');
+      const subtitle = document.getElementById('ftesPeopleSubtitle');
+      const q = normalizeQuarter(periodQuarter);
+      const periodText = getQuarterDisplay(q);
+
+      if (title) title.textContent = `FTEs vs Personas Reales · ${periodText}`;
+      if (subtitle) subtitle.textContent = `Detalle por país del trimestre ${periodText}`;
+      if (!container) return;
+
+      if (!rows || !rows.length) {
+        container.innerHTML = '<div class="ftes-summary-empty">Sin datos de personas FTEs disponibles</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="ftes-summary-table-wrap">
+          <table class="ftes-summary-table ftes-people-table">
+            <thead>
+              <tr>
+                <th>País</th>
+                <th>FTEs</th>
+                <th>Personas</th>
+                <th>% Personas al 100%</th>
+                <th>Ratio de dedicación</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => {
+                const countryName = toNiceCountryName(row.pais);
+                const ftes = getFtesPeopleMetric(row, ['ftes', 'FTEs']);
+                const personas = getFtesPeopleMetric(row, ['personas', 'Personas']);
+                const pct = getFtesPeoplePercent(row);
+                const ratio = getFtesPeopleMetric(row, ['ratioDedicacion', 'ratio_dedicacion', 'ratio', 'Ratio de dedicación']);
+
+                return `
+                  <tr>
+                    <td class="ftes-summary-country-cell" title="${escapeHtml(countryName)}">
+                      ${flagHTML(row.pais, 'flag-sm')}
+                    </td>
+                    <td>${formatFteNumber(ftes)}</td>
+                    <td>${formatFteNumber(personas)}</td>
+                    <td class="ftes-summary-coverage">${formatPercent(pct, 1)}</td>
+                    <td>${formatRatioNumber(ratio)}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getFtesPeopleMetric(row, keys) {
+      for (const key of keys) {
+        if (hasValue(row[key])) return toNumber(row[key]);
+      }
+      return 0;
+    }
+
+    function getFtesPeoplePercent(row) {
+      const keys = ['personasAl100', 'pctPersonasAl100', 'pctPersonas100', 'pct_personas100', 'pct_personas_100', 'personas100', 'personas_100', 'porcentajePersonas100', 'porcentaje_personas_100'];
+      for (const key of keys) {
+        if (hasValue(row[key])) {
+          const value = toNumber(row[key]);
+          return value > 1 ? value / 100 : value;
+        }
+      }
+      return 0;
+    }
+
+    function formatRatioNumber(value) {
+      return Number(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function renderFtesStructureChart(rows, periodQuarter) {
+      const container = document.getElementById('ftesStructureBody');
+      const title = document.getElementById('ftesStructureTitle');
+      const subtitle = document.getElementById('ftesStructureSubtitle');
+      if (!container) return;
+
+      const q = ['Q1', 'Q2', 'Q3', 'Q4'].includes(normalizeQuarter(periodQuarter)) ? normalizeQuarter(periodQuarter) : 'Q1';
+      const periodText = getQuarterDisplay(q);
+      if (title) title.textContent = `ASIGNADOS ${periodText} - ESTRUCTURA INT + PART VS EXT`;
+      if (subtitle) subtitle.textContent = `Distribución porcentual por país en ${periodText}`;
+
+      if (!rows || !rows.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos disponibles</div>';
+        return;
+      }
+
+      const quarterRows = getFtesRowsForQuarter(rows, q, selectedCountry);
+      const dataRows = quarterRows
+        .map(row => {
+          const share = getFteInternalExternalShare(row);
+          return {
+            pais: normalizeCountry(row.pais),
+            internal: share.internal,
+            external: share.external,
+            hasData: share.hasData
+          };
+        })
+        .filter(row => row.pais && row.hasData)
+        .sort((a, b) => sortCountries(a.pais, b.pais));
+
+      if (!dataRows.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos de estructura INT + PART / EXT</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="ftes-structure-body">
+          <div class="custom-legend ftes-structure-legend">
+            <div class="legend-item"><div class="legend-color" style="background:#3F8DCA"></div>Internos + Participadas</div>
+            <div class="legend-item"><div class="legend-color" style="background:#DCE8F8"></div>Externos</div>
+          </div>
+          ${dataRows.map(row => {
+            const countryName = toNiceCountryName(row.pais);
+            const internalLabel = `${formatPercent(row.internal / 100, 0)}`;
+            const externalLabel = `${formatPercent(row.external / 100, 0)}`;
+            return `
+              <div class="ftes-structure-row">
+                <div class="ftes-structure-country" title="${escapeHtml(countryName)}">
+                  ${flagHTML(row.pais, 'flag-sm')}
+                </div>
+                <div class="ftes-structure-bar">
+                  <div class="ftes-structure-segment internal" style="width:${row.internal}%">
+                    <span>${row.internal >= 8 ? internalLabel : ''}</span>
+                    <div class="ftes-structure-tooltip">
+                      <strong>${escapeHtml(countryName)}</strong>
+                      Internos + Participadas: ${internalLabel}
+                    </div>
+                  </div>
+                  <div class="ftes-structure-segment external" style="width:${row.external}%">
+                    <span>${row.external >= 8 ? externalLabel : ''}</span>
+                    <div class="ftes-structure-tooltip">
+                      <strong>${escapeHtml(countryName)}</strong>
+                      Externos: ${externalLabel}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function getFteInternalExternalShare(row) {
+      let internal = getFirstFtePercentValue(row, [
+        // Code.gs debe devolver la columna L como internosParticipadas / pctInternosParticipadas
+        'internosParticipadas', 'pctInternosParticipadas',
+        'internos_participadas', 'internos_participadas_pct', 'pct_internos_participadas',
+        'porcentajeInternosParticipadas', 'porcentaje_internos_participadas',
+        'internosMasParticipadas', 'internos_mas_participadas',
+        'internosYParticipadas', 'internos_y_participadas', 'intPart', 'int_part',
+        'internosPart', 'internos_part', 'inter_participadas', 'internos_parti',
+        'internos_particip', 'columnaL', 'columnL', 'col_l', 'l', 'internos'
+      ]);
+
+      let external = getFirstFtePercentValue(row, [
+        // Code.gs debe devolver la columna M como externos / pctExternos
+        'externos', 'pctExternos',
+        'externosPct', 'externos_pct', 'pct_externos',
+        'porcentajeExternos', 'porcentaje_externos', 'external', 'externo',
+        'columnaM', 'columnM', 'col_m', 'm'
+      ]);
+
+      internal = normalizeFtePercentValue(internal);
+      external = normalizeFtePercentValue(external);
+
+      if (internal > 0 && external <= 0) external = Math.max(0, 100 - internal);
+      if (external > 0 && internal <= 0) internal = Math.max(0, 100 - external);
+
+      const total = internal + external;
+      if (total <= 0) return { internal: 0, external: 0, hasData: false };
+
+      // Si los dos porcentajes no suman exactamente 100 por redondeos o por venir en otra escala,
+      // los normalizamos para que la barra apilada ocupe siempre el 100%.
+      if (Math.abs(total - 100) > 0.5) {
+        internal = (internal / total) * 100;
+        external = (external / total) * 100;
+      }
+
+      return {
+        internal: Math.max(0, Math.min(100, internal)),
+        external: Math.max(0, Math.min(100, external)),
+        hasData: true
+      };
+    }
+
+    function getFirstFtePercentValue(row, keys) {
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (row[key] !== undefined && row[key] !== null && row[key] !== '') return row[key];
+      }
+      return 0;
+    }
+
+    function normalizeFtePercentValue(value) {
+      if (value === null || value === undefined || value === '') return 0;
+      const num = toNumber(value);
+      if (!Number.isFinite(num) || num <= 0) return 0;
+      return num <= 1 ? num * 100 : num;
+    }
+
+    function resolveFtesSelectedQuarter(selectedQuarterRaw, rows, countryFilter) {
+      const raw = String(selectedQuarterRaw || '').trim().toUpperCase();
+      if (raw === 'TOTAL_2026' || raw === 'ALL' || raw === 'TODOS') {
+        return getLatestFtesQuarterWithData(rows, countryFilter);
+      }
+      const normalized = normalizeQuarter(raw);
+      return ['Q1', 'Q2', 'Q3', 'Q4'].includes(normalized) ? normalized : 'Q1';
+    }
+
+    function getFtesRowsForQuarter(rows, quarterFilter, countryFilter) {
+      const q = normalizeQuarter(quarterFilter);
+      return rows.filter(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const tipoFila = String(row.tipoFila || row.tipo_fila || '').trim().toLowerCase();
+
+        if (tipoFila && tipoFila !== 'quarter') return false;
+        if (quarter !== q) return false;
+        if (countryFilter !== 'ALL' && pais !== countryFilter) return false;
+        return true;
+      });
+    }
+
+    function renderFtesAssignedChart(rows, periodQuarter) {
+      const canvas = document.getElementById('ftesAssignedChart');
+      const subtitle = document.getElementById('ftesAssignedSubtitle');
+      const legendContainer = document.getElementById('ftesAssignedLegend');
+      const flagsContainer = document.getElementById('ftesAssignedFlags');
+
+      if (ftesAssignedChartInstance) {
+        ftesAssignedChartInstance.destroy();
+        ftesAssignedChartInstance = null;
+      }
+
+      if (!canvas) return;
+
+      const cleanPeriodQuarter = ['Q1', 'Q2', 'Q3', 'Q4'].includes(normalizeQuarter(periodQuarter)) ? normalizeQuarter(periodQuarter) : 'Q1';
+      const includedQuarters = ['Q1', 'Q2', 'Q3', 'Q4'].filter(q => QUARTER_ORDER[q] <= QUARTER_ORDER[cleanPeriodQuarter]);
+      const periodText = getQuarterDisplay(cleanPeriodQuarter);
+
+      if (subtitle) {
+        subtitle.textContent = includedQuarters.length === 1
+          ? `Referencia 2026 y asignado ${periodText}`
+          : `Referencia 2026 y asignados hasta ${periodText}`;
+      }
+
+      const quarterColors = {
+        Q1: '#24558F',
+        Q2: '#BFD7F6',
+        Q3: '#3F7DDA',
+        Q4: '#86B7EF'
+      };
+
+      if (legendContainer) {
+        legendContainer.innerHTML = `
+          <div class="legend-item"><div class="legend-line" style="background:${REFERENCIA_LINE_COLOR};"></div>Referencia 2026</div>
+          ${includedQuarters.map(q => `
+            <div class="legend-item"><div class="legend-color" style="background:${quarterColors[q] || '#3F7DDA'};"></div>Asignado ${q}</div>
+          `).join('')}
+        `;
+      }
+
+      const grouped = aggregateFtesAssignedByCountry(rows, includedQuarters, selectedCountry);
+      const ctx = canvas.getContext('2d');
+
+      if (!grouped.length) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (flagsContainer) flagsContainer.innerHTML = '';
+        return;
+      }
+
+      const referenceValues = grouped.map(row => toNumber(row.referencia2026));
+      const maxValue = Math.max(
+        0,
+        ...referenceValues,
+        ...includedQuarters.flatMap(q => grouped.map(row => toNumber(row.asigByQuarter[q])))
+      );
+
+      Chart.defaults.font.family = 'Arial, sans-serif';
+
+      ftesAssignedChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: grouped.map(row => toNiceCountryName(row.pais)),
+          datasets: [
+            {
+              type: 'line',
+              label: 'Referencia 2026',
+              data: referenceValues,
+              showLine: false,
+              borderColor: REFERENCIA_LINE_COLOR,
+              backgroundColor: REFERENCIA_LINE_COLOR,
+              pointStyle: 'line',
+              pointRadius: 28,
+              pointHoverRadius: 34,
+              pointBorderWidth: 3,
+              pointHitRadius: 18,
+              order: 0,
+              datalabels: {
+                color: REFERENCIA_LINE_COLOR,
+                anchor: 'end',
+                align: 'end',
+                offset: 6,
+                font: { size: 12, weight: '900' },
+                formatter: (value) => toNumber(value) > 0 ? formatFteNumber(value) : ''
+              }
+            },
+            ...includedQuarters.map(q => ({
+              label: `Asignado ${q}`,
+              data: grouped.map(row => toNumber(row.asigByQuarter[q])),
+              backgroundColor: quarterColors[q] || '#3F7DDA',
+              borderRadius: 4,
+              categoryPercentage: 0.70,
+              barPercentage: 0.78,
+              order: 1
+            }))
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            onComplete: () => alignFtesAssignedFlags()
+          },
+          onResize: () => {
+            setTimeout(alignFtesAssignedFlags, 80);
+          },
+          layout: { padding: { top: 38, right: 18, bottom: 0, left: 4 } },
+          plugins: {
+            legend: { display: false },
+            referenceLinePlugin: {
+              values: []
+            },
+            tooltip: {
+              enabled: true,
+              backgroundColor: '#FFFFFF',
+              titleColor: '#004481',
+              bodyColor: '#004481',
+              borderColor: '#DCE5F0',
+              borderWidth: 1,
+              cornerRadius: 6,
+              padding: 13,
+              displayColors: true,
+              titleFont: { size: 15, weight: '900' },
+              bodyFont: { size: 14, weight: '900' },
+              callbacks: {
+                title: (items) => items.length ? items[0].label : '',
+                label: (ctx) => `${ctx.dataset.label}: ${formatFteNumber(ctx.raw)}`,
+                afterBody: (items) => {
+                  if (!items.length) return '';
+                  const item = items[0];
+                  if (item.dataset && item.dataset.label === 'Referencia 2026') return '';
+                  const index = item.dataIndex;
+                  return `Referencia 2026: ${formatFteNumber(referenceValues[index])}`;
+                }
+              }
+            },
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'end',
+              offset: 3,
+              clip: false,
+              clamp: true,
+              color: (ctx) => ctx.dataset.label === 'Referencia 2026'
+                ? REFERENCIA_LINE_COLOR
+                : (ctx.dataset.backgroundColor || '#004481'),
+              font: { size: 12, weight: '900' },
+              formatter: (value) => toNumber(value) > 0 ? formatFteNumber(value) : ''
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              suggestedMax: maxValue > 0 ? maxValue * 1.24 : undefined,
+              border: { display: false },
+              grid: { color: '#E4E9F2', drawTicks: false },
+              ticks: {
+                color: '#8A98B3',
+                font: { size: 10, weight: '700' },
+                callback: (val) => formatFteNumber(val)
+              }
+            }
+          }
+        }
+      });
+
+      if (flagsContainer) {
+        flagsContainer.innerHTML = grouped.map(row => `
+          <div class="x-axis-item" title="${escapeHtml(toNiceCountryName(row.pais))}">
+            ${flagHTML(row.pais, 'flag-sm')}
+          </div>
+        `).join('');
+      }
+
+      setTimeout(alignFtesAssignedFlags, 80);
+    }
+
+    function alignFtesAssignedFlags() {
+      if (!ftesAssignedChartInstance) return;
+
+      const flagsContainer = document.getElementById('ftesAssignedFlags');
+      if (!flagsContainer || !ftesAssignedChartInstance.chartArea) return;
+
+      const chartArea = ftesAssignedChartInstance.chartArea;
+      flagsContainer.style.paddingLeft = `${Math.max(chartArea.left, 0)}px`;
+      flagsContainer.style.paddingRight = `${Math.max(ftesAssignedChartInstance.width - chartArea.right, 0)}px`;
+    }
+
+    function getFteReferenceValue(row) {
+      return toNumber(
+        row.referencia2026 !== undefined ? row.referencia2026 :
+        row.referencia_2026 !== undefined ? row.referencia_2026 :
+        row.referenciaAnual !== undefined ? row.referenciaAnual :
+        row.ref2026 !== undefined ? row.ref2026 :
+        row.referencia !== undefined ? row.referencia :
+        0
+      );
+    }
+
+    function getFteAssignedValue(row) {
+      return toNumber(
+        row.asig !== undefined ? row.asig :
+        row.asignado !== undefined ? row.asignado :
+        row.asignados !== undefined ? row.asignados :
+        row.asignado_q !== undefined ? row.asignado_q :
+        0
+      );
+    }
+
+    function getFteDemandValue(row) {
+      return toNumber(
+        row.demand !== undefined ? row.demand :
+        row.demandado !== undefined ? row.demandado :
+        0
+      );
+    }
+
+    function aggregateFtesAssignedByCountry(rows, includedQuarters, countryFilter) {
+      const map = {};
+
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const tipoFila = String(row.tipoFila || row.tipo_fila || '').trim().toLowerCase();
+
+        if (tipoFila && tipoFila !== 'quarter') return;
+        if (!includedQuarters.includes(quarter)) return;
+        if (countryFilter !== 'ALL' && pais !== countryFilter) return;
+
+        if (!map[pais]) {
+          map[pais] = {
+            pais,
+            referencia2026: 0,
+            asigByQuarter: { Q1: 0, Q2: 0, Q3: 0, Q4: 0 }
+          };
+        }
+
+        map[pais].referencia2026 = Math.max(map[pais].referencia2026, getFteReferenceValue(row));
+        map[pais].asigByQuarter[quarter] += getFteAssignedValue(row);
+      });
+
+      return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function wrapAxisLabel(label, maxChars) {
+      const words = String(label || '').split(' ');
+      const lines = [];
+      let current = '';
+      words.forEach(word => {
+        if ((current + ' ' + word).trim().length > maxChars && current) {
+          lines.push(current);
+          current = word;
+        } else {
+          current = (current + ' ' + word).trim();
+        }
+      });
+      if (current) lines.push(current);
+      return lines;
+    }
+
+    function getLatestFtesQuarterWithData(rows, countryFilter) {
+      const availableQuarters = rows
+        .filter(row => {
+          const pais = normalizeCountry(row.pais);
+          const quarter = normalizeQuarter(row.quarter);
+          const tipoFila = String(row.tipoFila || row.tipo_fila || '').trim().toLowerCase();
+          const hasQuarter = ['Q1', 'Q2', 'Q3', 'Q4'].includes(quarter);
+          const hasRealData = toNumber(row.asig) > 0 || toNumber(row.demand) > 0;
+
+          if (tipoFila && tipoFila !== 'quarter') return false;
+          if (!hasQuarter || !hasRealData) return false;
+          if (countryFilter !== 'ALL' && pais !== countryFilter) return false;
+          return true;
+        })
+        .map(row => normalizeQuarter(row.quarter));
+
+      if (!availableQuarters.length) {
+        const fallbackQuarters = rows
+          .filter(row => {
+            const pais = normalizeCountry(row.pais);
+            const quarter = normalizeQuarter(row.quarter);
+            const tipoFila = String(row.tipoFila || row.tipo_fila || '').trim().toLowerCase();
+            if (tipoFila && tipoFila !== 'quarter') return false;
+            if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(quarter)) return false;
+            if (countryFilter !== 'ALL' && pais !== countryFilter) return false;
+            return true;
+          })
+          .map(row => normalizeQuarter(row.quarter));
+
+        if (!fallbackQuarters.length) return 'Q4';
+        return fallbackQuarters.sort((a, b) => QUARTER_ORDER[b] - QUARTER_ORDER[a])[0];
+      }
+
+      return availableQuarters.sort((a, b) => QUARTER_ORDER[b] - QUARTER_ORDER[a])[0];
+    }
+
+    function calculateBudgetKpiTotals(rows, selectedQuarter, currencyMode, selectedCountryFilter) {
+      const isTotal2026 = selectedQuarter === 'TOTAL_2026';
+      const validQuarters = isTotal2026 ? ['Q1', 'Q2', 'Q3', 'Q4'] : [selectedQuarter];
+      const refGroups = {};
+      let referenciaPeriodo = 0;
+      let autorizado = 0;
+      let ejecutado = 0;
+
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
+
+        if (!isQuarterRow(row)) return;
+        if (vistaMoneda !== currencyMode) return;
+        if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
+
+        // Referencia anual 2026 exacta: una sola vez por país/programa, no se duplica por Q.
+        const programa = normalizeGeneric(row.programa || row.program || row.nombrePrograma || row.endProduct || row.end_product || row.producto || 'TOTAL');
+        const refKey = `${pais}__${programa}`;
+        if (!refGroups[refKey]) refGroups[refKey] = { annual: 0 };
+        refGroups[refKey].annual = Math.max(refGroups[refKey].annual, getAnnualReferenceValue(row));
+
+        if (!validQuarters.includes(quarter)) return;
+
+        // Q concreto = solo ese Q. Total 2026 = Q1 + Q2 + Q3 + Q4.
+        autorizado += getMetricValue(row, 'autorizado');
+        ejecutado += getMetricValue(row, 'ejecutado');
+        referenciaPeriodo += getPeriodReferenceValue(row);
+      });
+
+      const referenciaAnual = Object.values(refGroups).reduce((sum, item) => sum + toNumber(item.annual), 0);
+      const referencia = isTotal2026
+        ? referenciaAnual
+        : (referenciaPeriodo > 0 ? referenciaPeriodo : referenciaAnual);
+
+      return { referencia, autorizado, ejecutado };
+    }
+
+    function renderKpis(totals, currencyMode, selectedQuarter) {
+      const isTotal2026 = selectedQuarter === 'TOTAL_2026';
+      const periodLabel = isTotal2026 ? '2026' : getQuarterDisplay(selectedQuarter);
+
+      const ref = toNumber(totals && totals.referencia);
+      const aut = toNumber(totals && totals.autorizado);
+      const eje = toNumber(totals && totals.ejecutado);
+      const pctEjecucion = aut > 0 ? (eje / aut) : 0;
+      const suffix = getCurrencySuffix(selectedCountry, currencyMode);
+
+      document.getElementById('kpiGrid').innerHTML = `
+        <article class="kpi-card type-ref">
+          <div class="kpi-info">
+            <div class="kpi-label">REFERENCIA ${periodLabel}</div>
+            <div class="kpi-value">${formatNumber(ref)}${suffix}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+        </article>
+
+        <article class="kpi-card type-aut">
+          <div class="kpi-info">
+            <div class="kpi-label">AUTORIZADO ${periodLabel}</div>
+            <div class="kpi-value">${formatNumber(aut)}${suffix}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        </article>
+
+        <article class="kpi-card type-exe">
+          <div class="kpi-info">
+            <div class="kpi-label">EJECUTADO ${periodLabel}</div>
+            <div class="kpi-value">${formatNumber(eje)}${suffix}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+        </article>
+
+        <article class="kpi-card type-ava">
+          <div class="kpi-info">
+            <div class="kpi-label">% EJECUCIÓN ${periodLabel}</div>
+            <div class="kpi-value">${formatPercent(pctEjecucion, 2)}</div>
+          </div>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+        </article>
+      `;
+    }
+
+    function renderAccumulatedExecutionChart(grouped, currencyMode, selectedQuarter) {
+      const container = document.getElementById('accumulatedExecutionBody');
+      const subtitle = document.getElementById('accumulatedExecutionSubtitle');
+      const periodLabel = selectedQuarter === 'TOTAL_2026' ? '2026' : getQuarterDisplay(selectedQuarter);
+
+      if (subtitle) {
+        subtitle.textContent = selectedQuarter === 'TOTAL_2026'
+          ? 'Referencia anual por país y ejecutado acumulado en 2026'
+          : `Referencia anual por país y ejecutado acumulado hasta ${periodLabel}`;
+      }
+
+      if (!container) return;
+      if (!grouped.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos disponibles</div>';
+        return;
+      }
+
+      const maxScale = Math.max(
+        0,
+        ...grouped.map(row => Math.max(toNumber(row.referencia2026), toNumber(row.ejecutado)))
+      );
+
+      container.innerHTML = `
+        <div class="accumulated-execution-body">
+          <div class="custom-legend accumulated-execution-legend">
+            <div class="legend-item"><div class="legend-color" style="background:var(--bbva-dark)"></div>Referencia 2026</div>
+            <div class="legend-item"><div class="legend-color" style="background:#AFC7E3"></div>Ejecutado acumulado</div>
+            <div class="legend-item" style="color:#0087A8">% ejecución vs referencia</div>
+          </div>
+          ${grouped.map(row => {
+            const reference = toNumber(row.referencia2026);
+            const executed = toNumber(row.ejecutado);
+            const maxBarWidth = 72; // Reserva espacio a la derecha para el número y evita invadir el %.
+            const refWidth = maxScale > 0 ? Math.min(Math.max((reference / maxScale) * maxBarWidth, reference > 0 ? 3 : 0), maxBarWidth) : 0;
+            const exeWidth = maxScale > 0 ? Math.min(Math.max((executed / maxScale) * maxBarWidth, executed > 0 ? 3 : 0), maxBarWidth) : 0;
+            const refLabelX = Math.min(refWidth + 1.8, 80);
+            const exeLabelX = Math.min(exeWidth + 1.8, 80);
+            const pct = reference > 0 ? executed / reference : null;
+            const suffix = getCurrencySuffix(row.pais, currencyMode);
+            return `
+              <div class="accumulated-execution-row">
+                <div class="accumulated-execution-country" title="${escapeHtml(toNiceCountryName(row.pais))}">${flagHTML(row.pais)}</div>
+                <div class="accumulated-execution-bars">
+                  <div class="accumulated-execution-bar-line">
+                    <div class="accumulated-execution-track">
+                      <div class="accumulated-execution-bar ref" style="width:${refWidth}%" data-tooltip="${escapeHtml(toNiceCountryName(row.pais))} · Referencia 2026: ${formatNumber(reference)}${suffix}"></div>
+                      <span class="accumulated-execution-value numeric-pop" style="--bar-w:${refWidth}%; --label-x:${refLabelX}%" title="Referencia 2026: ${formatNumber(reference)}${suffix}">${formatNumber(reference)}${suffix}</span>
+                    </div>
+                  </div>
+                  <div class="accumulated-execution-bar-line">
+                    <div class="accumulated-execution-track">
+                      <div class="accumulated-execution-bar exe" style="width:${exeWidth}%" data-tooltip="${escapeHtml(toNiceCountryName(row.pais))} · Ejecutado acumulado: ${formatNumber(executed)}${suffix}"></div>
+                      <span class="accumulated-execution-value numeric-pop" style="--bar-w:${exeWidth}%; --label-x:${exeLabelX}%" title="Ejecutado acumulado: ${formatNumber(executed)}${suffix}">${formatNumber(executed)}${suffix}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="accumulated-execution-pct"><span class="numeric-pop" title="% ejecución vs referencia">${pct === null ? 'N/A' : formatPercent(pct, 0)}</span></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // --- GRÁFICO PRINCIPAL (ABAJO) ---
+    function renderMainChart(grouped, currencyMode, selectedQuarter) {
+      if (barChartInstance) barChartInstance.destroy();
+
+      const labels = grouped.map(r => toNiceCountryName(r.pais));
+      const referenceValues = grouped.map(row => getReferenceForPeriod(row, selectedQuarter));
+      const maxValue = Math.max(
+        0,
+        ...grouped.map(r => toNumber(r.autorizado)),
+        ...grouped.map(r => toNumber(r.ejecutado)),
+        ...referenceValues
+      );
+
+      Chart.defaults.font.family = 'Arial, sans-serif';
+
+      const ctxBar = document.getElementById('barChart').getContext('2d');
+      barChartInstance = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Autorizado',
+              data: grouped.map(r => r.autorizado),
+              backgroundColor: BAR_AUTORIZADO_COLOR,
+              borderRadius: 4,
+              categoryPercentage: 0.64,
+              barPercentage: 0.82
+            },
+            {
+              label: 'Ejecutado',
+              data: grouped.map(r => r.ejecutado),
+              backgroundColor: BAR_EJECUTADO_COLOR,
+              borderRadius: 4,
+              categoryPercentage: 0.64,
+              barPercentage: 0.82
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            onComplete: () => alignBarChartFlags()
+          },
+          onResize: () => {
+            setTimeout(alignBarChartFlags, 80);
+          },
+          plugins: {
+            legend: { display: false },
+            referenceLinePlugin: {
+              values: referenceValues,
+              color: REFERENCIA_LINE_COLOR,
+              lineWidth: 2
+            },
+            tooltip: {
+              backgroundColor: '#FFFFFF',
+              titleColor: '#004481',
+              bodyColor: '#004481',
+              borderColor: '#DCE5F0',
+              borderWidth: 1,
+              padding: 14,
+              titleFont: { size: 15, weight: '900' },
+              bodyFont: { size: 15, weight: '900' },
+              footerFont: { size: 14, weight: '900' },
+              displayColors: true,
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${formatNumber(ctx.raw)}${getCurrencySuffix(grouped[ctx.dataIndex].pais, currencyMode)}`,
+                afterBody: (items) => {
+                  if (!items.length) return '';
+                  const index = items[0].dataIndex;
+                  return `Referencia: ${formatNumber(referenceValues[index])}${getCurrencySuffix(grouped[index].pais, currencyMode)}`;
+                }
+              }
+            },
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'end',
+              offset: 2,
+              clamp: true,
+              clip: false,
+              color: (ctx) => ctx.dataset.label === 'Autorizado' ? BAR_AUTORIZADO_COLOR : '#9FC2EC',
+              font: { size: 13, weight: '900' },
+              formatter: (value) => toNumber(value) > 0 ? formatNumber(value) : ''
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              suggestedMax: maxValue > 0 ? maxValue * 1.24 : undefined,
+              border: { display: false },
+              grid: { color: '#E4E9F2', drawTicks: false },
+              ticks: {
+                font: { size: 12, weight: '700' },
+                color: '#8A98B3',
+                callback: (val) => `${val} M`
+              }
+            }
+          }
+        }
+      });
+
+      const flagsContainer = document.getElementById('barChartFlags');
+      flagsContainer.innerHTML = grouped.map(r => `
+        <div class="x-axis-item" title="${escapeHtml(toNiceCountryName(r.pais))}">
+          ${flagHTML(r.pais, 'flag-sm')}
+        </div>
+      `).join('');
+
+      setTimeout(alignBarChartFlags, 80);
+    }
+
+    function alignBarChartFlags() {
+      if (!barChartInstance) return;
+
+      const flagsContainer = document.getElementById('barChartFlags');
+      if (!flagsContainer || !barChartInstance.chartArea) return;
+
+      const chartArea = barChartInstance.chartArea;
+      flagsContainer.style.paddingLeft = `${Math.max(chartArea.left, 0)}px`;
+      flagsContainer.style.paddingRight = `${Math.max(barChartInstance.width - chartArea.right, 0)}px`;
+    }
+
+    // --- GRÁFICO CIRCULAR (DERECHA): DISTRIBUCIÓN REFERENCIA POR PAÍS ---
+    function renderReferenceDistribution(grouped, currencyMode, selectedQuarter) {
+      const container = document.getElementById('referenceDistributionBody');
+      const title = document.getElementById('referenceDistributionTitle');
+      const subtitle = document.getElementById('referenceDistributionSubtitle');
+
+      if (referenceDoughnutInstance) {
+        referenceDoughnutInstance.destroy();
+        referenceDoughnutInstance = null;
+      }
+
+      const periodLabel = selectedQuarter === 'TOTAL_2026' ? '2026' : getQuarterDisplay(selectedQuarter);
+      if (title) title.textContent = selectedQuarter === 'TOTAL_2026' ? 'DISTRIBUCIÓN REFERENCIA 2026' : `DISTRIBUCIÓN REFERENCIA ${periodLabel}`;
+      if (subtitle) subtitle.textContent = 'Distribución de la referencia entre los países · % sobre el total';
+
+      if (!grouped.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos disponibles</div>';
+        return;
+      }
+
+      const rows = grouped
+        .map(row => ({
+          pais: row.pais,
+          referencia: getReferenceForPeriod(row, selectedQuarter),
+          color: DISTRIBUTION_COLORS[normalizeCountry(row.pais)] || '#00549F'
+        }))
+        .sort((a, b) => sortCountries(a.pais, b.pais));
+
+      const total = rows.reduce((sum, row) => sum + toNumber(row.referencia), 0);
+      const suffix = getCurrencySuffix(selectedCountry, currencyMode);
+
+      if (!rows.length || total <= 0) {
+        container.innerHTML = '<div class="empty-state">Sin referencia disponible</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="reference-distribution-body">
+          <div class="reference-donut-container">
+            <canvas id="referenceDoughnutChart"></canvas>
+          </div>
+          <div class="reference-legend-list">
+            <div class="reference-legend-head">
+              <span></span>
+              <span>País</span>
+              <span class="reference-legend-pct-head">% total</span>
+            </div>
+            ${rows.map(row => {
+              const pct = total > 0 ? row.referencia / total : 0;
+              const rowSuffix = getCurrencySuffix(row.pais, currencyMode);
+              return `
+                <div class="reference-legend-row">
+                  <span class="reference-legend-color" style="background:${row.color};"></span>
+                  <span class="reference-legend-country">${escapeHtml(toNiceCountryName(row.pais))}</span>
+                  <span class="reference-legend-pct numeric-pop" title="% sobre el total: ${formatPercent(pct, 0)}">${formatPercent(pct, 0)}</span>
+                </div>
+              `;
+            }).join('')}
+            <div class="reference-legend-note">El porcentaje indica el peso de cada país sobre la referencia total del periodo seleccionado.</div>
+          </div>
+        </div>
+      `;
+
+      const ctx = document.getElementById('referenceDoughnutChart').getContext('2d');
+      referenceDoughnutInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: rows.map(row => toNiceCountryName(row.pais)),
+          datasets: [{
+            data: rows.map(row => row.referencia),
+            backgroundColor: rows.map(row => row.color),
+            borderColor: '#FFFFFF',
+            borderWidth: 2,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '58%',
+          plugins: {
+            legend: { display: false },
+            datalabels: { display: false },
+            centerText: {
+              display: true,
+              topText: 'TOTAL',
+              mainText: formatNumber(total),
+              bottomText: selectedQuarter === 'TOTAL_2026' ? '2026' : periodLabel
+            },
+            tooltip: {
+              backgroundColor: '#FFFFFF',
+              titleColor: '#004481',
+              bodyColor: '#004481',
+              borderColor: '#DCE5F0',
+              borderWidth: 1,
+              padding: 14,
+              titleFont: { size: 15, weight: '900' },
+              bodyFont: { size: 15, weight: '900' },
+              callbacks: {
+                label: (ctx) => {
+                  const value = toNumber(ctx.raw);
+                  const pct = total > 0 ? value / total : 0;
+                  const row = rows[ctx.dataIndex];
+                  return `${ctx.label}: ${formatNumber(value)}${getCurrencySuffix(row.pais, currencyMode)} (${formatPercent(pct, 0)})`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderBudgetBreakdownTable(rows, currencyMode, selectedCountryFilter) {
+      const container = document.getElementById('budgetBreakdownTableBody');
+      if (!container) return;
+
+      const grouped = aggregateBudgetBreakdownByCountry(rows, currencyMode, selectedCountryFilter);
+
+      if (!grouped.length) {
+        container.innerHTML = '<div class="breakdown-empty">Sin datos disponibles</div>';
+        return;
+      }
+
+      const totals = grouped.reduce((acc, row) => {
+        acc.q1Autorizado += row.q1Autorizado;
+        acc.q1Ejecutado += row.q1Ejecutado;
+        acc.q2Autorizado += row.q2Autorizado;
+        acc.q2Ejecutado += row.q2Ejecutado;
+        acc.q3Autorizado += row.q3Autorizado;
+        acc.q3Ejecutado += row.q3Ejecutado;
+        return acc;
+      }, { q1Autorizado: 0, q1Ejecutado: 0, q2Autorizado: 0, q2Ejecutado: 0, q3Autorizado: 0, q3Ejecutado: 0 });
+
+      const rowsHtml = grouped.map(row => `
+        <tr>
+          <td class="breakdown-country-cell only-flag" title="${escapeHtml(toNiceCountryName(row.pais))}">${flagHTML(row.pais)}</td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q1Autorizado)}">${formatNumber(row.q1Autorizado)}</span></td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q1Ejecutado)}">${formatNumber(row.q1Ejecutado)}</span></td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q2Autorizado)}">${formatNumber(row.q2Autorizado)}</span></td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q2Ejecutado)}">${formatNumber(row.q2Ejecutado)}</span></td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q3Autorizado)}">${formatNumber(row.q3Autorizado)}</span></td>
+          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q3Ejecutado)}">${formatNumber(row.q3Ejecutado)}</span></td>
+        </tr>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="breakdown-table-wrap">
+          <table class="breakdown-table">
+            <thead>
+              <tr>
+                <th class="breakdown-country-head" rowspan="2">País</th>
+                <th class="q1-head" colspan="2">Q1</th>
+                <th class="q2-head" colspan="2">Q2</th>
+                <th class="q3-head" colspan="2">Q3</th>
+              </tr>
+              <tr>
+                <th>Autorizado</th>
+                <th>Ejecutado</th>
+                <th>Autorizado</th>
+                <th>Ejecutado</th>
+                <th>Autorizado</th>
+                <th>Ejecutado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              <tr class="breakdown-total-row">
+                <td>Total</td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q1Autorizado)}">${formatNumber(totals.q1Autorizado)}</span></td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q1Ejecutado)}">${formatNumber(totals.q1Ejecutado)}</span></td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q2Autorizado)}">${formatNumber(totals.q2Autorizado)}</span></td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q2Ejecutado)}">${formatNumber(totals.q2Ejecutado)}</span></td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q3Autorizado)}">${formatNumber(totals.q3Autorizado)}</span></td>
+                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q3Ejecutado)}">${formatNumber(totals.q3Ejecutado)}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // --- HELPERS ---
+    function getReferenceForPeriod(row, selectedQuarter) {
+      const annualReference = getAnnualReferenceValue(row);
+      const periodReference = getPeriodReferenceValue(row);
+
+      if (selectedQuarter === 'TOTAL_2026') {
+        return annualReference > 0 ? annualReference : periodReference;
+      }
+
+      return periodReference > 0 ? periodReference : annualReference;
+    }
+
+    function getAnnualReferenceValue(row) {
+      const possibleKeys = [
+        'referencia2026',
+        'referencia_2026',
+        'referenciaAnual',
+        'referencia_anual',
+        'ref2026',
+        'ref_2026',
+        'reference2026',
+        'reference_2026'
+      ];
+
+      for (const key of possibleKeys) {
+        if (hasValue(row[key])) {
+          const value = toNumber(row[key]);
+          if (value > 0) return value;
+        }
+      }
+
+      return 0;
+    }
+
+    function getPeriodReferenceValue(row) {
+      const possibleKeys = [
+        'referencia',
+        'referenciaQ',
+        'referencia_q',
+        'referenciaQuarter',
+        'referencia_periodo',
+        'reference',
+        'reference_q'
+      ];
+
+      for (const key of possibleKeys) {
+        if (hasValue(row[key])) {
+          const value = toNumber(row[key]);
+          if (value > 0) return value;
+        }
+      }
+
+      return 0;
+    }
+
+    function aggregateBudgetBreakdownByCountry(rows, currencyMode, selectedCountryFilter) {
+      const map = {};
+
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
+
+        if (!isQuarterRow(row)) return;
+        if (!['Q1', 'Q2', 'Q3'].includes(quarter)) return;
+        if (vistaMoneda !== currencyMode) return;
+        if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
+
+        if (!map[pais]) {
+          map[pais] = {
+            pais,
+            q1Autorizado: 0,
+            q1Ejecutado: 0,
+            q2Autorizado: 0,
+            q2Ejecutado: 0,
+            q3Autorizado: 0,
+            q3Ejecutado: 0
+          };
+        }
+
+        if (quarter === 'Q1') {
+          map[pais].q1Autorizado += getMetricValue(row, 'autorizado');
+          map[pais].q1Ejecutado += getMetricValue(row, 'ejecutado');
+        }
+
+        if (quarter === 'Q2') {
+          map[pais].q2Autorizado += getMetricValue(row, 'autorizado');
+          map[pais].q2Ejecutado += getMetricValue(row, 'ejecutado');
+        }
+
+        if (quarter === 'Q3') {
+          map[pais].q3Autorizado += getMetricValue(row, 'autorizado');
+          map[pais].q3Ejecutado += getMetricValue(row, 'ejecutado');
+        }
+      });
+
+      return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function aggregatePresupuestoByCountry(rows, selectedQuarter, currencyMode, selectedCountryFilter) {
+      const validQuarters = selectedQuarter === 'TOTAL_2026' ? ['Q1', 'Q2', 'Q3', 'Q4'] : [selectedQuarter];
+      const countryMap = {};
+      const seriesMap = {};
+
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
+
+        if (!isQuarterRow(row)) return;
+        if (vistaMoneda !== currencyMode) return;
+        if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
+        if (!validQuarters.includes(quarter)) return;
+
+        const programa = normalizeGeneric(row.programa || row.program || row.nombrePrograma || row.endProduct || row.end_product || row.producto || 'TOTAL');
+        const key = `${pais}__${programa}`;
+        if (!seriesMap[key]) seriesMap[key] = [];
+        seriesMap[key].push(row);
+      });
+
+      Object.values(seriesMap).forEach(seriesRows => {
+        seriesRows.sort((a, b) => (QUARTER_ORDER[normalizeQuarter(a.quarter)] || 0) - (QUARTER_ORDER[normalizeQuarter(b.quarter)] || 0));
+
+        const pais = normalizeCountry(seriesRows[0].pais);
+        if (!countryMap[pais]) {
+          countryMap[pais] = {
+            pais,
+            referencia2026: 0,
+            referencia: 0,
+            demandado: 0,
+            autorizado: 0,
+            ejecutado: 0,
+            moneda: String(seriesRows[0].moneda || '').trim().toUpperCase()
+          };
+        }
+
+        const refAnual = Math.max(...seriesRows.map(row => getAnnualReferenceValue(row)), 0);
+        const refPeriodoRaw = seriesRows.reduce((sum, row) => sum + getPeriodReferenceValue(row), 0);
+        const refPeriodo = selectedQuarter === 'TOTAL_2026'
+          ? (refAnual > 0 ? refAnual : refPeriodoRaw)
+          : (refPeriodoRaw > 0 ? refPeriodoRaw : refAnual);
+
+        countryMap[pais].referencia2026 += refAnual;
+        countryMap[pais].referencia += refPeriodo;
+        countryMap[pais].demandado += sumSeriesMetric(seriesRows, 'demandado', selectedQuarter);
+        countryMap[pais].autorizado += sumSeriesMetric(seriesRows, 'autorizado', selectedQuarter);
+        countryMap[pais].ejecutado += sumSeriesMetric(seriesRows, 'ejecutado', selectedQuarter);
+      });
+
+      return Object.values(countryMap).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function sumSeriesMetric(seriesRows, metric, selectedQuarter) {
+      // Q concreto: devuelve únicamente el dato de ese trimestre.
+      // Total 2026: suma Q1 + Q2 + Q3 + Q4.
+      // Esto aplica también al ejecutado, porque en la vista anual necesitamos el total anual ejecutado.
+      return seriesRows.reduce((sum, row) => sum + getMetricValue(row, metric), 0);
+    }
+
+    function getLatestQuarterRow(seriesRows) {
+      return [...seriesRows].sort((a, b) => (QUARTER_ORDER[normalizeQuarter(b.quarter)] || 0) - (QUARTER_ORDER[normalizeQuarter(a.quarter)] || 0))[0];
+    }
+
+    function seriesHasExplicitQuarterMetric(seriesRows, metric) {
+      return seriesRows.some(row => getMetricExplicitQuarterKeys(metric).some(key => hasValue(row[key])));
+    }
+
+    function getMetricValue(row, metric) {
+      const explicitKeys = getMetricExplicitQuarterKeys(metric);
+      for (const key of explicitKeys) {
+        if (hasValue(row[key])) return toNumber(row[key]);
+      }
+
+      const fallbackKeys = getMetricFallbackKeys(metric);
+      for (const key of fallbackKeys) {
+        if (hasValue(row[key])) return toNumber(row[key]);
+      }
+
+      return 0;
+    }
+
+    function getMetricExplicitQuarterKeys(metric) {
+      const dict = {
+        autorizado: ['autorizadoQ', 'autorizado_q', 'autorizadoQuarter', 'autorizadoPeriodo', 'autorizado_periodo', 'autorizadoTrimestre', 'autorizado_trimestre'],
+        ejecutado: ['ejecutadoQ', 'ejecutado_q', 'ejecutadoQuarter', 'ejecutadoPeriodo', 'ejecutado_periodo', 'ejecutadoTrimestre', 'ejecutado_trimestre'],
+        demandado: ['demandadoQ', 'demandado_q', 'demandadoQuarter', 'demandadoPeriodo', 'demandado_periodo', 'demandadoTrimestre', 'demandado_trimestre']
+      };
+      return dict[metric] || [];
+    }
+
+    function getMetricFallbackKeys(metric) {
+      const dict = {
+        autorizado: ['autorizado', 'autorizadoAcumulado', 'autorizado_acumulado'],
+        ejecutado: ['ejecutado', 'ejecutadoAcumulado', 'ejecutado_acumulado'],
+        demandado: ['demandado', 'demandadoAcumulado', 'demandado_acumulado']
+      };
+      return dict[metric] || [metric];
+    }
+
+    function hasValue(value) {
+      return value !== undefined && value !== null && String(value).trim() !== '';
+    }
+
+    function normalizeGeneric(value) {
+      return String(value || '').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function aggregateReferenceVsExecutedAccumByCountry(rows, selectedQuarter, currencyMode, selectedCountryFilter) {
+      const quarterLimit = selectedQuarter === 'TOTAL_2026' ? 4 : (QUARTER_ORDER[selectedQuarter] || 0);
+      const seriesMap = {};
+      const countryMap = {};
+
+      // Primero agrupamos por país + programa con todos los quarters disponibles.
+      // Así la referencia anual 2026 no se reduce al Q seleccionado.
+      rows.forEach(row => {
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const quarterOrder = QUARTER_ORDER[quarter] || 0;
+        const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
+
+        if (!isQuarterRow(row)) return;
+        if (vistaMoneda !== currencyMode) return;
+        if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
+        if (quarterOrder === 0) return;
+
+        const programa = normalizeGeneric(row.programa || row.program || row.nombrePrograma || row.endProduct || row.end_product || row.producto || 'TOTAL');
+        const key = `${pais}__${programa}`;
+        if (!seriesMap[key]) seriesMap[key] = [];
+        seriesMap[key].push(row);
+      });
+
+      Object.values(seriesMap).forEach(seriesRows => {
+        seriesRows.sort((a, b) => (QUARTER_ORDER[normalizeQuarter(a.quarter)] || 0) - (QUARTER_ORDER[normalizeQuarter(b.quarter)] || 0));
+
+        const selectedRows = seriesRows.filter(row => {
+          const order = QUARTER_ORDER[normalizeQuarter(row.quarter)] || 0;
+          return order > 0 && order <= quarterLimit;
+        });
+
+        if (!selectedRows.length) return;
+
+        const pais = normalizeCountry(seriesRows[0].pais);
+        if (!countryMap[pais]) {
+          countryMap[pais] = {
+            pais,
+            referencia2026: 0,
+            ejecutado: 0,
+            moneda: String(seriesRows[0].moneda || '').trim().toUpperCase()
+          };
+        }
+
+        // Referencia anual robusta:
+        // 1) si referencia2026 ya viene anual, cogemos ese máximo;
+        // 2) si referencia2026 o referencia vienen repartidas por quarter, sumamos Q1+Q2+Q3+Q4;
+        // 3) nos quedamos con el mayor para evitar que la referencia anual se quede como un único Q.
+        const maxAnnualCandidate = Math.max(...seriesRows.map(row => getAnnualReferenceValue(row)), 0);
+        const periodReferenceTotal = seriesRows.reduce((sum, row) => sum + getPeriodReferenceValue(row), 0);
+        const annualReference = Math.max(maxAnnualCandidate, periodReferenceTotal);
+
+        countryMap[pais].referencia2026 += annualReference;
+        countryMap[pais].ejecutado += selectedRows.reduce((sum, row) => sum + getMetricValue(row, 'ejecutado'), 0);
+      });
+
+      return Object.values(countryMap).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function groupByCountry(rows) {
+      const map = {};
+      rows.forEach(row => {
+        const country = normalizeCountry(row.pais);
+        if (!map[country]) {
+          map[country] = {
+            pais: country, referencia2026: 0, referencia: 0, demandado: 0, autorizado: 0, ejecutado: 0,
+            moneda: String(row.moneda || '').trim().toUpperCase()
+          };
+        }
+        map[country].referencia2026 = Math.max(map[country].referencia2026, getAnnualReferenceValue(row));
+        map[country].referencia += getPeriodReferenceValue(row);
+        map[country].demandado += toNumber(row.demandado);
+        map[country].autorizado += toNumber(row.autorizado);
+        map[country].ejecutado += toNumber(row.ejecutado);
+        if (!map[country].moneda && row.moneda) map[country].moneda = String(row.moneda).trim().toUpperCase();
+      });
+      return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function flagHTML(country, extraClass = '') {
+      return `<span class="flag-icon ${getFlagClass(country)} ${extraClass}"></span>`;
+    }
+
+    function getFlagClass(country) {
+      const c = normalizeCountry(country);
+      return COUNTRY_FLAG_CLASS[c] || 'flag-global';
+    }
+
+    function goToPage(page) {
+      const baseUrl = window.location.href.split('?')[0];
+      window.location.href = `${baseUrl}?page=${encodeURIComponent(page)}`;
+    }
+
+    function isQuarterRow(row) {
+      const tipoFila = String(row.tipoFila || '').trim().toLowerCase();
+      const quarter = normalizeQuarter(row.quarter);
+      return tipoFila === 'quarter' && ['Q1', 'Q2', 'Q3', 'Q4'].includes(quarter);
+    }
+
+    function normalizeCountry(country) {
+      return String(country || '').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function toNiceCountryName(country) {
+      const c = normalizeCountry(country);
+      if (c === 'ALL') return 'Global (Todas)';
+      if (c === 'HOLDING') return 'Holding';
+      if (c === 'ESPANA') return 'España';
+      if (c === 'MEXICO') return 'México';
+      if (c === 'PERU') return 'Perú';
+      if (c === 'COLOMBIA') return 'Colombia';
+      if (c === 'ARGENTINA') return 'Argentina';
+      return country;
+    }
+
+    function sortCountries(a, b) {
+      const ia = COUNTRY_ORDER.indexOf(normalizeCountry(a));
+      const ib = COUNTRY_ORDER.indexOf(normalizeCountry(b));
+      if (ia === -1 && ib === -1) return normalizeCountry(a).localeCompare(normalizeCountry(b));
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    }
+
+    function getQuarterDisplay(value) {
+      const dict = { 'Q1':'26Q1', 'Q2':'26Q2', 'Q3':'26Q3', 'Q4':'26Q4', 'TOTAL_2026':'Total 2026' };
+      return dict[value] || value || '';
+    }
+
+    function toNumber(value) {
+      if (typeof value === 'number') return value;
+      if (!value) return 0;
+      let text = String(value).trim().replace(/[€%\s]/g, '').replace(/M/g, '').replace(/MXN|PEN|COP|ARS/g, '');
+      if (text.indexOf(',') !== -1 && text.indexOf('.') !== -1) {
+        if (text.lastIndexOf(',') > text.lastIndexOf('.')) text = text.replace(/\./g, '').replace(',', '.');
+        else text = text.replace(/,/g, '');
+      } else if (text.indexOf(',') !== -1) {
+        text = text.replace(',', '.');
+      }
+      const number = Number(text);
+      return isNaN(number) ? 0 : number;
+    }
+
+    function formatSignedFteNumber(value) {
+      const num = Number(value || 0);
+      const sign = num > 0 ? '+' : '';
+      return sign + num.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    }
+
+    function formatFteNumber(value) {
+      return Number(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    }
+
+    function formatFteInteger(value) {
+      return Math.round(Number(value || 0)).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function getCurrencySuffix(country, currencyMode) {
+      if (currencyMode === 'EURO') return ' M €';
+      const c = normalizeCountry(country);
+      if (['ESPANA', 'HOLDING', 'ALL'].includes(c)) return ' M €';
+      const dict = { 'MEXICO': ' M MXN', 'PERU': ' M PEN', 'COLOMBIA': ' M COP', 'ARGENTINA': ' M ARS' };
+      return dict[c] || ' M €';
+    }
+
+    function formatInteger(value) {
+      const num = Number(value || 0);
+      return Number.isFinite(num) ? String(Math.round(num)) : '0';
+    }
+
+    function formatPercent(value, decimals) {
+      return Number(value || 0).toLocaleString('de-DE', { style: 'percent', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1962 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KPIs EDC</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --navy: #004481;
+        --blue: #1464a5;
+        --light: #5bbeff;
+        --bg: #f1f5f9;
+        --border: #dde6f2;
+        --text: #043263;
+        --muted: #8a9ab0;
+        --green: #48ae64;
+        --amber: #fbbf24;
+        --orange: #fb923c;
+        --red: #ef4444;
+        --grid: #e5eaf1;
+        --shadow: 0 8px 28px rgba(0, 68, 129, 0.06);
+      }
+      * {
+        box-sizing: border-box;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      *::-webkit-scrollbar {
+        display: none;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Benton Sans,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        overflow-x: hidden;
+      }
+      .page {
+        width: 100%;
+        padding: 18px 22px 40px;
+        min-height: 100vh;
+      }
+      .loading {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+        color: var(--navy);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        transition: opacity 0.35s;
+      }
+      .spinner {
+        width: 46px;
+        height: 46px;
+        border-radius: 999px;
+        border: 5px solid #eaf2fb;
+        border-top-color: var(--navy);
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .top-filters {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 18px 22px;
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 22px;
+        align-items: end;
+        margin-bottom: 26px;
+      }
+      .filter-block {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .filter-label {
+        font-size: 10px;
+        color: #91a1b8;
+        text-transform: uppercase;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .select-wrap {
+        height: 48px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 0 14px;
+        position: relative;
+        transition: 0.2s;
+      }
+      .select-wrap:hover {
+        background: #fff;
+        border-color: var(--navy);
+        box-shadow: 0 4px 14px rgba(0, 68, 129, 0.08);
+      }
+      select {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        width: 100%;
+        height: 100%;
+        appearance: none;
+        color: var(--navy);
+        font-weight: 850;
+        font-size: 14px;
+        cursor: pointer;
+        padding-right: 26px;
+      }
+      .select-chevron {
+        position: absolute;
+        right: 15px;
+        pointer-events: none;
+        color: #94a3b8;
+      }
+      .report-btn {
+        height: 48px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--navy);
+        border-radius: 12px;
+        padding: 0 22px;
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+      .section-nav-shell {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(241, 245, 249, 0.96);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 0;
+        margin-bottom: 26px;
+      }
+      .section-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 0 4px;
+      }
+      .nav-pill {
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: var(--navy);
+        border-radius: 999px;
+        padding: 8px 17px;
+        font-size: 10px;
+        font-weight: 950;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: 0.18s;
+      }
+      .nav-pill:hover,
+      .nav-pill.active {
+        background: var(--navy);
+        color: white;
+        border-color: var(--navy);
+        box-shadow: 0 6px 16px rgba(0, 68, 129, 0.16);
+      }
+      .section {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+        overflow: hidden;
+        scroll-margin-top: 72px;
+      }
+      .section-header {
+        background: var(--navy);
+        color: white;
+        min-height: 58px;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 950;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+      .q-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.18);
+        color: white;
+        border-radius: 7px;
+        font-size: 10px;
+        padding: 4px 8px;
+        letter-spacing: 0.04em;
+        font-weight: 900;
+      }
+      .up-btn {
+        border: 0;
+        background: rgba(255, 255, 255, 0.13);
+        color: rgba(255, 255, 255, 0.86);
+        border-radius: 999px;
+        padding: 8px 13px;
+        font-size: 9px;
+        text-transform: uppercase;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .section-body {
+        padding: 24px;
+        background: rgba(248, 250, 252, 0.55);
+      }
+      .inner-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .card-title {
+        color: var(--navy);
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .card-subtitle {
+        color: #71839c;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 18px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+      .chart-box {
+        min-height: 340px;
+        display: flex;
+        flex-direction: column;
+      }
+      .chart-box.large {
+        min-height: 430px;
+      }
+      .canvas-wrap {
+        flex: 1;
+        position: relative;
+        min-height: 260px;
+      }
+      canvas {
+        width: 100% !important;
+        max-width: 100%;
+      }
+      .overview-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        gap: 14px;
+      }
+      .legend-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        display: inline-block;
+      }
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(150px, 1fr));
+        gap: 14px;
+      }
+      .gauge-card {
+        min-height: 198px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: white;
+        padding: 18px 14px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+      }
+      .gauge-card:before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--navy), #3b82f6);
+      }
+      .gauge-title {
+        color: var(--navy);
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 950;
+        letter-spacing: 0.09em;
+        text-align: center;
+        min-height: 30px;
+        margin-bottom: 8px;
+      }
+      .gauge {
+        width: 96px;
+        height: 96px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 3px 0 14px;
+      }
+      .gauge-inner {
+        width: 68px;
+        height: 68px;
+        border-radius: 999px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 950;
+        letter-spacing: -0.04em;
+      }
+      .gauge-target {
+        border-top: 1px solid #e5eaf1;
+        padding-top: 11px;
+        width: 100%;
+        text-align: center;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 900;
+      }
+      .helper-line {
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 12px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 8px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 950;
+      }
+      .pill.green {
+        background: #eaf7ee;
+        color: #16833a;
+      }
+      .pill.amber {
+        background: #fff6db;
+        color: #a16207;
+      }
+      .pill.red {
+        background: #feecec;
+        color: #c81e1e;
+      }
+      .pill.blue {
+        background: #eaf2fb;
+        color: var(--navy);
+      }
+      .roadmap {
+        min-width: 980px;
+        padding: 6px 8px 8px;
+      }
+      .timeline-years {
+        display: grid;
+        grid-template-columns: 90px repeat(4, 1fr);
+        align-items: center;
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .year-cell {
+        text-align: center;
+        border-left: 1px dashed var(--border);
+      }
+      .roadmap-legend {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        align-items: center;
+        margin: 14px 0 10px;
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: #64748b;
+        flex-wrap: wrap;
+      }
+      .roadmap-legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .roadmap-color-legend {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .roadmap-color-legend-inner {
+        background: #f8fafc;
+        border: 1px solid #e5eaf1;
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: #94a3b8;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .road-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        min-height: 74px;
+        align-items: center;
+        border-bottom: 1px dashed #e5eaf1;
+      }
+      .flag-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 26px;
+        justify-content: center;
+      }
+      .track {
+        position: relative;
+        height: 5px;
+        background: #dfe7f1;
+        border-radius: 999px;
+        margin-right: 34px;
+      }
+      .track-progress {
+        position: absolute;
+        inset: 0 auto 0 0;
+        background: var(--navy);
+        border-radius: 999px;
+      }
+      .marker {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 950;
+        white-space: nowrap;
+      }
+      .marker .point {
+        width: 11px;
+        height: 11px;
+        border-radius: 999px;
+        background: var(--navy);
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px rgba(0, 68, 129, 0.15);
+      }
+      .marker.target .point,
+      .marker.final .point {
+        width: 12px;
+        height: 12px;
+        border-radius: 0;
+        transform: rotate(45deg);
+      }
+      .marker.target .point {
+        background: var(--orange);
+      }
+      .marker.final .point {
+        background: #475569;
+      }
+      .marker-label {
+        position: absolute;
+        top: -32px;
+        color: var(--navy);
+        font-size: 15px;
+        font-weight: 950;
+        letter-spacing: -0.01em;
+        text-shadow: 0 1px 0 #fff;
+      }
+      .marker.target .marker-label {
+        color: var(--orange);
+        top: 18px;
+        font-size: 13px;
+        font-weight: 950;
+      }
+      .marker.final .marker-label {
+        color: #475569;
+        top: -31px;
+        font-size: 14px;
+        font-weight: 950;
+      }
+      .rating-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(110px, 1fr));
+        gap: 20px;
+        align-items: stretch;
+        margin-bottom: 32px;
+      }
+      .rating-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: white;
+        min-height: 148px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        gap: 7px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.025);
+      }
+      .rating-flag {
+        font-size: 22px;
+        line-height: 1;
+      }
+      .stars {
+        color: #fbbf24;
+        font-size: 12px;
+        letter-spacing: 1px;
+        line-height: 1;
+      }
+      .rating-value {
+        color: var(--green);
+        font-size: 22px;
+        font-weight: 950;
+      }
+      .rating-target {
+        border: 1px solid #e5eaf1;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 9px;
+        text-align: center;
+        color: #94a3b8;
+        font-weight: 900;
+        text-transform: uppercase;
+        line-height: 1.25;
+      }
+      .migrated-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        min-height: 430px;
+        align-items: center;
+        justify-items: center;
+        gap: 20px;
+      }
+      .migrated-title-pill {
+        min-width: 220px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 12px 28px;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        color: var(--navy);
+        text-align: center;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.025);
+        background: white;
+      }
+      .donut-pair {
+        display: flex;
+        gap: 70px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .donut-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .donut-title {
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .donut-wrap {
+        width: 130px;
+        height: 130px;
+        position: relative;
+      }
+      .donut-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        pointer-events: none;
+      }
+      .donut-value {
+        color: var(--navy);
+        font-size: 24px;
+        font-weight: 950;
+        letter-spacing: -0.06em;
+      }
+      .donut-target {
+        color: var(--orange);
+        font-size: 10px;
+        font-weight: 900;
+      }
+      .country-tabs {
+        width: 100%;
+        border-top: 1px solid var(--border);
+        margin-top: 26px;
+        padding-top: 22px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .country-btn {
+        min-width: 70px;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 8px;
+        padding: 9px 10px;
+        color: #64748b;
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: 0.18s;
+      }
+      .country-btn .flag {
+        font-size: 19px;
+      }
+      .country-btn.active {
+        border-color: var(--navy);
+        color: var(--navy);
+        box-shadow: 0 5px 12px rgba(0, 68, 129, 0.11);
+      }
+      .table-mini {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-top: 12px;
+      }
+      .table-mini th {
+        text-align: left;
+        color: #94a3b8;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 10px;
+        border-bottom: 1px solid #e5eaf1;
+      }
+      .table-mini td {
+        padding: 10px;
+        border-bottom: 1px solid #eef2f7;
+        font-weight: 750;
+        color: var(--text);
+      }
+      @media (max-width: 1250px) {
+        .overview-grid {
+          grid-template-columns: repeat(3, minmax(150px, 1fr));
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .rating-grid {
+          grid-template-columns: repeat(3, minmax(110px, 1fr));
+        }
+      }
+      @media (max-width: 760px) {
+        .page {
+          padding: 14px 12px 30px;
+        }
+        .top-filters {
+          grid-template-columns: 1fr;
+        }
+        .overview-grid {
+          grid-template-columns: 1fr;
+        }
+        .rating-grid {
+          grid-template-columns: repeat(2, minmax(110px, 1fr));
+        }
+        .section-body {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Cargando KPIs...</div>
+    </div>
+    <div class="page" id="top">
+      <section class="top-filters">
+        <div class="filter-block">
+          <span class="filter-label"
+            ><i data-lucide="map-pin" style="width: 14px; height: 14px"></i
+            >Visión geográfica</span
+          >
+          <div class="select-wrap">
+            <span id="geoIcon"
+              ><i
+                data-lucide="globe"
+                style="width: 22px; height: 22px"
+              ></i></span
+            ><select id="fGeo">
+              <option value="ALL">Global (Todas)</option>
+              <option value="ESPAÑA">España</option>
+              <option value="MÉXICO">México</option>
+              <option value="PERÚ">Perú</option>
+              <option value="COLOMBIA">Colombia</option>
+              <option value="ARGENTINA">Argentina</option></select
+            ><i
+              data-lucide="chevron-down"
+              class="select-chevron"
+              style="width: 17px; height: 17px"
+            ></i>
+          </div>
+        </div>
+        <div class="filter-block">
+          <span class="filter-label"
+            ><i
+              data-lucide="calendar-days"
+              style="width: 14px; height: 14px"
+            ></i
+            >Trimestre principal</span
+          >
+          <div class="select-wrap">
+            <select id="fTri">
+              <option value="26Q1" selected>26Q1</option>
+              <option value="26Q2">26Q2</option>
+              <option value="26Q3">26Q3</option>
+              <option value="26Q4">26Q4</option>
+              <option value="27Q1">27Q1</option>
+              <option value="27Q2">27Q2</option>
+              <option value="27Q3">27Q3</option>
+              <option value="27Q4">27Q4</option></select
+            ><i
+              data-lucide="chevron-down"
+              class="select-chevron"
+              style="width: 17px; height: 17px"
+            ></i>
+          </div>
+        </div>
+        <button class="report-btn" onclick="openReportPanel()">
+          <i data-lucide="file-text" style="width: 16px; height: 16px"></i
+          >Informe
+        </button>
+      </section>
+      <div class="section-nav-shell">
+        <nav class="section-nav">
+          <button
+            class="nav-pill active"
+            onclick="scrollToSection('section-overview', this)"
+          >
+            <i
+              data-lucide="layout-dashboard"
+              style="width: 13px; height: 13px"
+            ></i
+            >Visión General</button
+          ><button
+            class="nav-pill"
+            onclick="scrollToSection('section-roadmap', this)"
+          >
+            <i data-lucide="map" style="width: 13px; height: 13px"></i>FT
+            Transformadas</button
+          ><button
+            class="nav-pill"
+            onclick="scrollToSection('section-traffic', this)"
+          >
+            <i data-lucide="trending-up" style="width: 13px; height: 13px"></i
+            >Traffic to Next Gen</button
+          ><button
+            class="nav-pill"
+            onclick="scrollToSection('section-digital', this)"
+          >
+            <i data-lucide="smartphone" style="width: 13px; height: 13px"></i
+            >Digital Penetration</button
+          ><button
+            class="nav-pill"
+            onclick="scrollToSection('section-rating', this)"
+          >
+            <i data-lucide="star" style="width: 13px; height: 13px"></i>Rating
+            App</button
+          ><button
+            class="nav-pill"
+            onclick="scrollToSection('section-migrated', this)"
+          >
+            <i data-lucide="users" style="width: 13px; height: 13px"></i
+            >Clientes Migrados
+          </button>
+        </nav>
+      </div>
+      <section id="section-overview" class="section">
+        <div class="section-body">
+          <div class="overview-head">
+            <div>
+              <div class="card-title">
+                <i data-lucide="activity" style="width: 15px; height: 15px"></i
+                >Cumplimiento global por KPI
+                <span class="pill blue" id="overviewQLabel">26Q1</span>
+              </div>
+            </div>
+            <div class="legend-inline">
+              <span class="legend-item"
+                ><span class="dot" style="background: var(--green)"></span> ≥
+                95% Target</span
+              ><span class="legend-item"
+                ><span class="dot" style="background: var(--amber)"></span
+                >80-94% Target</span
+              ><span class="legend-item"
+                ><span class="dot" style="background: var(--red)"></span>&lt;80%
+                Target</span
+              ><span class="legend-item"
+                ><span class="dot" style="background: var(--navy)"></span>Sin
+                Target</span
+              >
+            </div>
+          </div>
+          <div class="overview-grid" id="overviewCards"></div>
+        </div>
+      </section>
+      <section id="section-roadmap" class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <i data-lucide="map" style="width: 16px; height: 16px"></i>Features
+            Transformadas Web Empresas <span class="q-badge q-label">26Q1</span>
+          </div>
+          <button class="up-btn" onclick="scrollToTopPage()">
+            <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+            >Subir
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="inner-card" style="overflow-x: auto">
+            <div class="roadmap" id="roadmap"></div>
+          </div>
+        </div>
+      </section>
+      <section id="section-traffic" class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <i data-lucide="trending-up" style="width: 16px; height: 16px"></i
+            >Traffic to Next Gen Web Empresas
+            <span class="q-badge q-label">26Q1</span>
+          </div>
+          <button class="up-btn" onclick="scrollToTopPage()">
+            <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+            >Subir
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="inner-card chart-box">
+              <div class="card-title">
+                Distribución NextGen vs Legacy
+                <span class="pill blue q-label">26Q1</span>
+              </div>
+              <div class="card-subtitle">
+                Valor real del último mes disponible del trimestre seleccionado.
+              </div>
+              <div class="canvas-wrap">
+                <canvas id="trafficDistributionChart"></canvas>
+              </div>
+            </div>
+            <div class="inner-card chart-box">
+              <div class="card-title">
+                Evolución histórica <span class="pill blue q-label">26Q1</span>
+              </div>
+              <div class="card-subtitle">
+                Evolución por trimestre usando el último mes disponible de cada
+                Q.
+              </div>
+              <div class="canvas-wrap">
+                <canvas id="trafficEvolutionChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="section-digital" class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <i data-lucide="smartphone" style="width: 16px; height: 16px"></i
+            >Digital Penetration <span class="q-badge q-label">26Q1</span>
+          </div>
+          <button class="up-btn" onclick="scrollToTopPage()">
+            <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+            >Subir
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="inner-card chart-box large" style="margin-bottom: 22px">
+            <div class="card-title">
+              Enterprise Channels Digital Penetration
+              <span class="pill blue q-label">26Q1</span>
+            </div>
+            <div class="card-subtitle">
+              Gráfica 3x2. Real vs target mensual del último mes disponible.
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="digital3x2Chart"></canvas>
+            </div>
+          </div>
+          <div class="inner-card chart-box large">
+            <div class="card-title">
+              Enterprise Channels Digital Penetration 3x3
+              <span class="pill blue q-label">26Q1</span>
+            </div>
+            <div class="card-subtitle">
+              Gráfica 3x3. Real vs target mensual del último mes disponible.
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="digital3x3Chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="grid-2">
+        <section id="section-rating" class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="star" style="width: 16px; height: 16px"></i>Rating
+              App <span class="q-badge q-label">26Q1</span>
+            </div>
+            <button class="up-btn" onclick="scrollToTopPage()">
+              <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+              >Subir
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="card-title">App Store</div>
+            <div class="rating-grid" id="ratingIosContainer"></div>
+            <div class="card-title">Google Play</div>
+            <div class="rating-grid" id="ratingAndroidContainer"></div>
+          </div>
+        </section>
+        <section id="section-migrated" class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="users" style="width: 16px; height: 16px"></i
+              >Clientes Migrados <span class="q-badge q-label">26Q1</span>
+            </div>
+            <button class="up-btn" onclick="scrollToTopPage()">
+              <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+              >Subir
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="migrated-layout">
+              <div class="migrated-title-pill" id="migratedSelectedTitle">
+                Global
+              </div>
+              <div class="donut-pair">
+                <div class="donut-card">
+                  <div class="donut-title">
+                    Senda <span class="pill blue q-label">26Q1</span>
+                  </div>
+                  <div class="donut-wrap">
+                    <canvas id="migratedSendaChart"></canvas>
+                    <div class="donut-center">
+                      <div class="donut-value" id="migratedSendaValue">-</div>
+                      <div class="donut-target" id="migratedSendaTarget">
+                        Target: -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="donut-card">
+                  <div class="donut-title">
+                    Gema <span class="pill blue q-label">26Q1</span>
+                  </div>
+                  <div class="donut-wrap">
+                    <canvas id="migratedGemaChart"></canvas>
+                    <div class="donut-center">
+                      <div class="donut-value" id="migratedGemaValue">-</div>
+                      <div class="donut-target" id="migratedGemaTarget">
+                        Target: -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="country-tabs" id="migratedCountryTabs"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <section id="section-detail" class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <i data-lucide="table" style="width: 16px; height: 16px"></i>Detalle
+            de datos usados <span class="q-badge q-label">26Q1</span>
+          </div>
+          <button class="up-btn" onclick="scrollToTopPage()">
+            <i data-lucide="arrow-up" style="width: 12px; height: 12px"></i
+            >Subir
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="inner-card">
+            <div class="card-title">Último mes disponible por KPI y país</div>
+            <div id="detailTable"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      Chart.register(ChartDataLabels);
+      const KPI_NAMES = {
+        ft: "EDC_TRANSFORMED_FT",
+        traffic: "SENDA - Traffic to NextGen",
+        digital3x2: "Enterprise Channels Digital Penetration",
+        digital3x3: "Enterprise Channels Digital Penetration 3x3",
+        ratingIos: "GEMA - APP Rating store (APPSTORE)",
+        ratingAndroid: "GEMA - APP Rating store (PLAYSTORE)",
+        migratedGema: "GEMA - Migrated Clients",
+        migratedSenda: "SENDA - Migrated Clients",
+      };
+      const COUNTRIES = [
+        { key: "ESPAÑA", label: "España", flag: "🇪🇸" },
+        { key: "MÉXICO", label: "México", flag: "🇲🇽" },
+        { key: "PERÚ", label: "Perú", flag: "🇵🇪" },
+        { key: "COLOMBIA", label: "Colombia", flag: "🇨🇴" },
+        { key: "ARGENTINA", label: "Argentina", flag: "🇦🇷" },
+      ];
+      const COUNTRY_ALL = { key: "TOTAL", label: "Global", flag: "🌐" };
+      const FT_CIERRE_2025 = {
+        ESPAÑA: 63.49,
+        MÉXICO: 16.9,
+        PERÚ: 35.3,
+        COLOMBIA: 36.4,
+        ARGENTINA: 16.87,
+        TOTAL: 35.6,
+      };
+      const FT_TARGET_2026 = {
+        ESPAÑA: 82.58,
+        MÉXICO: 42.47,
+        PERÚ: 59.21,
+        COLOMBIA: 65.15,
+        ARGENTINA: 68.18,
+        TOTAL: 57.06,
+      };
+      const FT_FIN_100_YEAR = {
+        ESPAÑA: 2027,
+        MÉXICO: 2027,
+        PERÚ: 2027,
+        COLOMBIA: 2027,
+        ARGENTINA: 2028,
+        TOTAL: 2027,
+      };
+      const BBVA = {
+        navy: "#004481",
+        blue: "#1464A5",
+        light: "#5BBEFF",
+        green: "#48AE64",
+        amber: "#FBBF24",
+        orange: "#FB923C",
+        red: "#EF4444",
+        purple: "#8B5CF6",
+        grid: "#E5EAF1",
+        muted: "#94A3B8",
+      };
+      let rawData = [],
+        selectedGeo = "ALL",
+        selectedQuarter = "26Q1",
+        migratedCountry = "TOTAL";
+      const charts = {};
+      document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+        document.getElementById("fGeo").addEventListener("change", (e) => {
+          selectedGeo = e.target.value;
+          migratedCountry = selectedGeo === "ALL" ? "TOTAL" : selectedGeo;
+          renderAll();
+        });
+        document.getElementById("fTri").addEventListener("change", (e) => {
+          selectedQuarter = e.target.value;
+          renderAll();
+        });
+        google.script.run
+          .withSuccessHandler((data) => {
+            rawData = normalizeData(data || []);
+            hydrateQuarterFilter();
+            hideLoading();
+            renderAll();
+          })
+          .withFailureHandler((err) => {
+            hideLoading();
+            document.body.insertAdjacentHTML(
+              "afterbegin",
+              `<div style="margin:20px;padding:16px;border:1px solid #ef4444;background:#fee2e2;color:#991b1b;border-radius:12px;font-weight:800">Error cargando KPIs: ${err && err.message ? err.message : err}</div>`,
+            );
+          })
+          .getKpisData();
+      });
+      function normalizeData(data) {
+        return data.map((r) => ({
+          ...r,
+          kpi: String(r.kpi || "").trim(),
+          pais: normalizeCountry(r.pais || r.paisOriginal || ""),
+          unidad: String(r.unidad || "").trim(),
+          anio: Number(r.anio || r.year || 0),
+          year: Number(r.anio || r.year || 0),
+          quarter: String(r.quarter || "")
+            .trim()
+            .toUpperCase(),
+          mes: String(r.mes || "").trim(),
+          mesNum: Number(r.mesNum || 0),
+          valor: normalizeMetricNumber(r.valor, r.unidad),
+          targetMensual: normalizeMetricNumber(r.targetMensual, r.unidad),
+          targetAnual: normalizeMetricNumber(r.targetAnual, r.unidad),
+          tieneValor: Boolean(r.tieneValor),
+        }));
+      }
+      function normalizeMetricNumber(value, unit) {
+        if (value === null || value === undefined || value === "") return null;
+        let n = Number(value);
+        if (isNaN(n)) return null;
+        const u = String(unit || "").trim();
+        if ((u === "%" || u.toLowerCase() === "pct") && Math.abs(n) <= 1)
+          n = n * 100;
+        return n;
+      }
+      function normalizeCountry(value) {
+        const txt = String(value || "")
+          .trim()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase();
+        if (["TOTAL*", "TOTAL", "GLOBAL", "ALL"].includes(txt)) return "TOTAL";
+        if (["ES", "SPA", "ESPANA", "ESPAÑA", "SPAIN"].includes(txt))
+          return "ESPAÑA";
+        if (["MX", "MEX", "MEXICO", "MÉXICO"].includes(txt)) return "MÉXICO";
+        if (["PE", "PER", "PERU", "PERÚ"].includes(txt)) return "PERÚ";
+        if (["CO", "COL", "COLOMBIA"].includes(txt)) return "COLOMBIA";
+        if (["AR", "ARG", "ARGENTINA"].includes(txt)) return "ARGENTINA";
+        return txt;
+      }
+      function hideLoading() {
+        const el = document.getElementById("loading");
+        el.style.opacity = "0";
+        setTimeout(() => (el.style.display = "none"), 350);
+      }
+      function hydrateQuarterFilter() {
+        const quarters = [
+          ...new Set(
+            rawData.map((r) => `${String(r.anio).slice(-2)}${r.quarter}`),
+          ),
+        ]
+          .filter(Boolean)
+          .sort();
+        const allowed = quarters.filter((q) => /^2[67]Q[1-4]$/.test(q));
+        if (!allowed.length) return;
+        const select = document.getElementById("fTri");
+        select.innerHTML = allowed
+          .map((q) => `<option value="${q}">${q}</option>`)
+          .join("");
+        selectedQuarter = allowed.includes("26Q1") ? "26Q1" : allowed[0];
+        select.value = selectedQuarter;
+      }
+      function parseQuarter(qLabel) {
+        const text = String(qLabel || "").toUpperCase();
+        return { year: 2000 + Number(text.slice(0, 2)), q: text.slice(2) };
+      }
+      function quarterMonths(q) {
+        return q === "Q1"
+          ? [1, 2, 3]
+          : q === "Q2"
+            ? [4, 5, 6]
+            : q === "Q3"
+              ? [7, 8, 9]
+              : q === "Q4"
+                ? [10, 11, 12]
+                : [];
+      }
+      function normalizeText(v) {
+        return String(v || "")
+          .trim()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, " ")
+          .toLowerCase();
+      }
+      function getKpiRows(kpiName) {
+        const target = normalizeText(kpiName);
+        let rows = rawData.filter((r) => normalizeText(r.kpi) === target);
+        if (!rows.length)
+          rows = rawData.filter(
+            (r) =>
+              normalizeText(r.kpi).includes(target) ||
+              target.includes(normalizeText(r.kpi)),
+          );
+        return rows;
+      }
+      function rowHasValue(row) {
+        return (
+          row &&
+          row.valor !== null &&
+          row.valor !== undefined &&
+          !isNaN(row.valor)
+        );
+      }
+      function latestForPeriod(kpiName, country, qLabel = selectedQuarter) {
+        const { year, q } = parseQuarter(qLabel),
+          months = quarterMonths(q),
+          c = normalizeCountry(country);
+        let rows = getKpiRows(kpiName).filter(
+          (r) =>
+            r.anio === year && r.quarter === q && months.includes(r.mesNum),
+        );
+        if (c === "TOTAL") {
+          const totalRows = rows.filter(
+            (r) => normalizeCountry(r.pais) === "TOTAL",
+          );
+          if (totalRows.length) rows = totalRows;
+        } else rows = rows.filter((r) => normalizeCountry(r.pais) === c);
+        rows = rows.filter(rowHasValue).sort((a, b) => b.mesNum - a.mesNum);
+        return rows[0] || null;
+      }
+      function latestFtForPeriod(country, qLabel = selectedQuarter) {
+        const { year, q } = parseQuarter(qLabel);
+        const months = quarterMonths(q);
+        const targetCountry = normalizeCountry(country);
+
+        const rows = rawData
+          .filter((r) => {
+            const kpiText = normalizeText(r.kpi);
+
+            const isFtKpi =
+              kpiText.includes("edc") &&
+              kpiText.includes("transformed") &&
+              (kpiText.includes("funcionalit") ||
+                kpiText.includes("functionalit") ||
+                kpiText.includes("funcionalidades") ||
+                kpiText.includes("functionalities"));
+
+            const sameYear = Number(r.anio) === Number(year);
+            const sameQuarter = String(r.quarter).toUpperCase() === q;
+            const sameMonth = months.includes(Number(r.mesNum));
+            const sameCountry = normalizeCountry(r.pais) === targetCountry;
+
+            return isFtKpi && sameYear && sameQuarter && sameMonth && sameCountry;
+          })
+          .filter(rowHasValue)
+          .sort((a, b) => Number(b.mesNum) - Number(a.mesNum));
+
+        return rows[0] || null;
+      }
+
+      function latestByCountries(
+        kpiName,
+        qLabel = selectedQuarter,
+        countries = COUNTRIES.map((c) => c.key),
+      ) {
+        return countries.map((c) => {
+          const row = latestForPeriod(kpiName, c, qLabel);
+          return {
+            country: c,
+            label: countryLabel(c),
+            flag: countryFlag(c),
+            row,
+            value: row ? row.valor : null,
+            target: row ? preferredTarget(row) : null,
+            month: row ? row.mes : "",
+          };
+        });
+      }
+      function preferredTarget(row) {
+        if (!row) return null;
+        if (
+          row.targetMensual !== null &&
+          row.targetMensual !== undefined &&
+          !isNaN(row.targetMensual)
+        )
+          return row.targetMensual;
+        if (
+          row.targetAnual !== null &&
+          row.targetAnual !== undefined &&
+          !isNaN(row.targetAnual)
+        )
+          return row.targetAnual;
+        return null;
+      }
+      function selectedCountryForGeneral() {
+        return selectedGeo === "ALL" ? "TOTAL" : normalizeCountry(selectedGeo);
+      }
+      function countryLabel(country) {
+        const c = normalizeCountry(country);
+        if (c === "TOTAL") return "Global";
+        if (c === "ESPAÑA") return "España";
+        if (c === "MÉXICO") return "México";
+        if (c === "PERÚ") return "Perú";
+        if (c === "COLOMBIA") return "Colombia";
+        if (c === "ARGENTINA") return "Argentina";
+        return c;
+      }
+      function countryFlag(country) {
+        const c = normalizeCountry(country);
+        if (c === "TOTAL") return "🌐";
+        if (c === "ESPAÑA") return "🇪🇸";
+        if (c === "MÉXICO") return "🇲🇽";
+        if (c === "PERÚ") return "🇵🇪";
+        if (c === "COLOMBIA") return "🇨🇴";
+        if (c === "ARGENTINA") return "🇦🇷";
+        return "🌐";
+      }
+      function formatNumber(value, decimals = 1) {
+        if (value === null || value === undefined || isNaN(value)) return "N/D";
+        return Number(value).toLocaleString("es-ES", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        });
+      }
+      function formatPct(value, decimals = 1) {
+        if (value === null || value === undefined || isNaN(value)) return "N/D";
+        return (
+          Number(value).toLocaleString("es-ES", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+          }) + "%"
+        );
+      }
+      function kpiPctValue(value) {
+        if (value === null || value === undefined || isNaN(value)) return null;
+        const n = Number(value);
+        if (n > 0 && n <= 1) return n * 100;
+        return n;
+      }
+      function completion(row) {
+        if (!row || row.valor === null || isNaN(row.valor)) return null;
+        const t = preferredTarget(row);
+        if (t === null || t === undefined || t === 0 || isNaN(t)) return null;
+        return row.valor / t;
+      }
+      function statusColorFromCompletion(c) {
+        if (c === null || c === undefined || isNaN(c)) return BBVA.navy;
+        if (c >= 0.95) return BBVA.green;
+        if (c >= 0.8) return BBVA.amber;
+        return BBVA.red;
+      }
+      function statusClassFromCompletion(c) {
+        if (c === null || c === undefined || isNaN(c)) return "blue";
+        if (c >= 0.95) return "green";
+        if (c >= 0.8) return "amber";
+        return "red";
+      }
+      function destroyChart(id) {
+        if (charts[id]) {
+          charts[id].destroy();
+          delete charts[id];
+        }
+      }
+      function renderAll() {
+        updateLabels();
+        renderOverview();
+        renderRoadmap();
+        renderTraffic();
+        renderDigital();
+        renderRating();
+        renderMigrated();
+        renderDetailTable();
+        lucide.createIcons();
+      }
+      function updateLabels() {
+        document
+          .querySelectorAll(".q-label")
+          .forEach((el) => (el.textContent = selectedQuarter));
+        document.getElementById("overviewQLabel").textContent = selectedQuarter;
+      }
+      function renderOverview() {
+        const container = document.getElementById("overviewCards"),
+          country = selectedCountryForGeneral();
+        const cards = [
+          {
+            title: "FT Transformadas",
+            kpi: KPI_NAMES.ft,
+            decimals: 1,
+            isPct: true,
+          },
+          {
+            title: "Traffic NextGen",
+            kpi: KPI_NAMES.traffic,
+            decimals: 1,
+            isPct: true,
+          },
+          {
+            title: "Digital Pen.",
+            kpi: KPI_NAMES.digital3x2,
+            decimals: 1,
+            isPct: true,
+          },
+          {
+            title: "Rating iOS",
+            kpi: KPI_NAMES.ratingIos,
+            decimals: 1,
+            isPct: false,
+          },
+          {
+            title: "Rating And.",
+            kpi: KPI_NAMES.ratingAndroid,
+            decimals: 1,
+            isPct: false,
+          },
+          {
+            title: "Migración",
+            kpi: KPI_NAMES.migratedGema,
+            decimals: 1,
+            isPct: true,
+          },
+        ];
+        container.innerHTML = cards
+          .map((card) => {
+            const row = card.kpi === KPI_NAMES.ft
+                ? latestFtForPeriod(country)
+                : latestForPeriod(card.kpi, country),
+              comp = completion(row),
+              value = row ? row.valor : null,
+              target = row ? preferredTarget(row) : null,
+              color = statusColorFromCompletion(comp),
+              degrees = Math.round(
+                (comp === null ? 1 : Math.min(Math.max(comp, 0), 1)) * 360,
+              ),
+              shownValue = card.isPct
+                ? formatPct(value, card.decimals)
+                : formatNumber(value, card.decimals),
+              shownTarget =
+                target === null || target === undefined || isNaN(target)
+                  ? "N/D"
+                  : card.isPct
+                    ? formatPct(target, card.decimals)
+                    : formatNumber(target, card.decimals);
+            return `<div class="gauge-card"><div class="gauge-title">${card.title}</div><div class="gauge" style="background:conic-gradient(${color} 0deg,${color} ${degrees}deg,#E5EAF1 ${degrees}deg,#E5EAF1 360deg)"><div class="gauge-inner" style="color:${color}">${shownValue}</div></div><div class="gauge-target">Target: ${shownTarget}</div><div class="helper-line">${row ? row.mes + " " + row.anio : "Sin dato"}</div></div>`;
+          })
+          .join("");
+      }
+      function renderRoadmap() {
+        const container = document.getElementById("roadmap");
+        const countries =
+          selectedGeo === "ALL"
+            ? ["ESPAÑA", "MÉXICO", "PERÚ", "COLOMBIA", "ARGENTINA", "TOTAL"]
+            : [normalizeCountry(selectedGeo)];
+        const rows = countries.map((country) => {
+          const row = latestFtForPeriod(country);
+          const cierre2025 = FT_CIERRE_2025[country] ?? null;
+          const avanceActual = row ? kpiPctValue(row.valor) : null;
+          const targetTrimestre = row
+            ? kpiPctValue(preferredTarget(row))
+            : null;
+          const target2026 = FT_TARGET_2026[country] ?? null;
+          const finYear = FT_FIN_100_YEAR[country] || 2027;
+          return {
+            country,
+            label: countryLabel(country),
+            flag: countryFlag(country),
+            cierre2025,
+            avanceActual,
+            targetTrimestre,
+            target2026,
+            finYear,
+            row,
+          };
+        });
+        container.innerHTML = `
+        <div class="timeline-years"><div></div><div class="year-cell">2025</div><div class="year-cell">2026</div><div class="year-cell">2027</div><div class="year-cell">2028</div></div>
+        <div class="roadmap-legend">
+          <span><span style="width:12px;height:12px;border-radius:50%;background:#5BBEFF;display:inline-block"></span>Cierre 2025</span>
+          <span><span style="width:12px;height:12px;border-radius:50%;background:#004481;display:inline-block"></span>% de avance actual</span>
+          <span><span style="width:12px;height:12px;background:#FB923C;transform:rotate(45deg);display:inline-block"></span>Target 2026</span>
+          <span><span style="width:12px;height:12px;background:#475569;transform:rotate(45deg);display:inline-block"></span>Fin</span>
+        </div>
+        <div class="roadmap-color-legend"><div class="roadmap-color-legend-inner"><span>Color del % avance vs target trimestre:</span><span style="color:#48AE64">■ Mayor al target</span><span style="color:#004481">■ Igual al target</span><span style="color:#EF4444">■ Menor al target</span></div></div>
+        ${rows
+          .map((item) => {
+            const current = item.avanceActual;
+            const targetTrimestre = item.targetTrimestre;
+            const target2026 = item.target2026;
+            const cierre = item.cierre2025;
+            const cierrePos = 25;
+            const currentPos = 31;
+            const targetPos = 50;
+            const finPos = item.finYear === 2028 ? 100 : 75;
+            let currentColor = "#004481";
+            if (current !== null && targetTrimestre !== null) {
+              if (current > targetTrimestre) currentColor = "#48AE64";
+              else if (Math.abs(current - targetTrimestre) < 0.01)
+                currentColor = "#004481";
+              else currentColor = "#EF4444";
+            }
+            return `<div class="road-row"><div class="flag-label"><span title="${item.label}" style="font-size:28px">${item.flag}</span></div><div class="track"><div class="track-progress" style="width:${currentPos}%"></div>
+            ${cierre === null ? "" : `<div class="marker current" style="left:${cierrePos}%"><div class="marker-label" style="color:#5BBEFF;font-size:16px;font-weight:950">${formatPct(cierre, 2)}</div><div class="point" style="background:#5BBEFF;width:14px;height:14px"></div></div>`}
+            ${current === null ? `<div class="marker current" style="left:${currentPos}%"><div class="marker-label" style="color:#94A3B8;font-size:16px;font-weight:950">N/D</div><div class="point" style="background:#94A3B8;width:14px;height:14px"></div></div>` : `<div class="marker current" style="left:${currentPos}%"><div class="marker-label" style="color:${currentColor};font-size:18px;font-weight:950">${formatPct(current, 2)}</div><div class="point" style="background:#004481;width:15px;height:15px"></div></div>`}
+            ${target2026 === null ? "" : `<div class="marker target" style="left:${targetPos}%"><div class="marker-label" style="color:#FB923C;font-size:15px;font-weight:950">${formatPct(target2026, 2)}</div><div class="point" style="background:#FB923C;width:14px;height:14px"></div></div>`}
+            <div class="marker final" style="left:${finPos}%"><div class="marker-label" style="font-size:15px;font-weight:950">100%</div><div class="point"></div></div></div></div>`;
+          })
+          .join("")}`;
+      }
+      function renderTraffic() {
+        renderTrafficDistribution();
+        renderTrafficEvolution();
+      }
+      function renderTrafficDistribution() {
+        const id = "trafficDistributionChart";
+        destroyChart(id);
+        const countries =
+            selectedGeo === "ALL" ? COUNTRIES.map((c) => c.key) : [selectedGeo],
+          items = latestByCountries(
+            KPI_NAMES.traffic,
+            selectedQuarter,
+            countries,
+          ),
+          labels = items.map((i) => `${i.flag} ${i.label}`),
+          nextGen = items.map((i) => i.value || 0),
+          legacy = nextGen.map((v) => Math.max(0, 100 - v));
+        charts[id] = new Chart(document.getElementById(id), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "NextGen",
+                data: nextGen,
+                backgroundColor: BBVA.navy,
+                borderRadius: 5,
+                barThickness: 24,
+                stack: "traffic",
+              },
+              {
+                label: "Legacy",
+                data: legacy,
+                backgroundColor: "#DFE7F1",
+                borderRadius: 5,
+                barThickness: 24,
+                stack: "traffic",
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: (ctx) => (ctx.datasetIndex === 0 ? "#fff" : "#64748B"),
+                font: { weight: "900", size: 11 },
+                formatter: (v) => (v ? formatPct(v, 1) : ""),
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) =>
+                    `${ctx.dataset.label}: ${formatPct(ctx.parsed.x, 1)}`,
+                },
+              },
+            },
+            scales: {
+              x: {
+                stacked: true,
+                min: 0,
+                max: 100,
+                grid: { display: false },
+                ticks: { display: false },
+              },
+              y: {
+                stacked: true,
+                grid: { display: false },
+                ticks: { color: BBVA.navy, font: { weight: "900" } },
+              },
+            },
+          },
+        });
+      }
+      function renderTrafficEvolution() {
+        const id = "trafficEvolutionChart";
+        destroyChart(id);
+        const quarters = getAvailableQuarterLabels(),
+          countries =
+            selectedGeo === "ALL" ? COUNTRIES.map((c) => c.key) : [selectedGeo],
+          colors = [BBVA.purple, BBVA.green, BBVA.red, "#4F7FD9", BBVA.amber],
+          datasets = countries.map((country, idx) => {
+            const color = colors[idx % colors.length];
+            return {
+              label: `${countryFlag(country)} ${countryLabel(country)}`,
+              data: quarters.map((q) => {
+                const row = latestForPeriod(KPI_NAMES.traffic, country, q);
+                return row ? row.valor : null;
+              }),
+              borderColor: color,
+              backgroundColor: color + "33",
+              fill: false,
+              tension: 0.35,
+              borderWidth: 3,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            };
+          });
+        charts[id] = new Chart(document.getElementById(id), {
+          type: "line",
+          data: { labels: quarters, datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  boxWidth: 10,
+                  color: BBVA.navy,
+                  font: { size: 10, weight: "900" },
+                },
+              },
+              datalabels: {
+                align: "top",
+                anchor: "end",
+                color: "#64748B",
+                font: { weight: "800", size: 9 },
+                formatter: (v) => (v === null ? "" : formatPct(v, 1)),
+              },
+            },
+            scales: {
+              y: {
+                min: 0,
+                max: 100,
+                grid: { color: BBVA.grid },
+                ticks: { color: "#64748B", callback: (v) => v + "%" },
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: BBVA.navy, font: { weight: "900" } },
+              },
+            },
+          },
+        });
+      }
+      function renderDigital() {
+        renderDigitalBar("digital3x2Chart", KPI_NAMES.digital3x2);
+        renderDigitalBar("digital3x3Chart", KPI_NAMES.digital3x3);
+      }
+      function renderDigitalBar(canvasId, kpiName) {
+        destroyChart(canvasId);
+        const countries =
+            selectedGeo === "ALL"
+              ? COUNTRIES.map((c) => c.key).concat(["TOTAL"])
+              : [selectedGeo],
+          items = latestByCountries(kpiName, selectedQuarter, countries),
+          labels = items.map((i) => `${i.flag}\n${i.label}`),
+          values = items.map((i) => i.value),
+          targets = items.map((i) => i.target);
+        charts[canvasId] = new Chart(document.getElementById(canvasId), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                type: "bar",
+                label: "Real",
+                data: values,
+                backgroundColor: BBVA.navy,
+                borderRadius: 0,
+                barThickness: 72,
+                order: 2,
+              },
+              {
+                type: "line",
+                label: "Target",
+                data: targets,
+                borderColor: BBVA.amber,
+                backgroundColor: BBVA.amber,
+                pointStyle: "line",
+                pointRadius: 14,
+                pointHoverRadius: 16,
+                borderWidth: 0,
+                showLine: false,
+                order: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+                align: "end",
+                labels: {
+                  color: BBVA.navy,
+                  font: { size: 10, weight: "900" },
+                  boxWidth: 10,
+                },
+              },
+              datalabels: {
+                color: (ctx) =>
+                  ctx.dataset.type === "line" ? BBVA.amber : "#fff",
+                anchor: (ctx) =>
+                  ctx.dataset.type === "line" ? "end" : "center",
+                align: (ctx) =>
+                  ctx.dataset.type === "line" ? "top" : "center",
+                font: { weight: "950", size: 11 },
+                formatter: (v) =>
+                  v === null || v === undefined ? "" : formatPct(v, 1),
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) =>
+                    `${ctx.dataset.label}: ${formatPct(ctx.parsed.y, 1)}`,
+                },
+              },
+            },
+            scales: {
+              y: {
+                min: 0,
+                max: 100,
+                grid: { color: BBVA.grid },
+                ticks: { color: "#64748B", callback: (v) => v + "%" },
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: BBVA.navy, font: { weight: "900", size: 11 } },
+              },
+            },
+          },
+        });
+      }
+      function renderRating() {
+        renderRatingCards("ratingIosContainer", KPI_NAMES.ratingIos);
+        renderRatingCards("ratingAndroidContainer", KPI_NAMES.ratingAndroid);
+      }
+      function renderRatingCards(containerId, kpiName) {
+        const container = document.getElementById(containerId),
+          countries =
+            selectedGeo === "ALL" ? COUNTRIES.map((c) => c.key) : [selectedGeo],
+          items = latestByCountries(kpiName, selectedQuarter, countries);
+        container.innerHTML = items
+          .map((item) => {
+            const value = item.value,
+              target = item.target;
+            return `<div class="rating-card"><div class="rating-flag">${item.flag}</div><div class="stars">${stars(value)}</div><div class="rating-value">${value === null ? "N/D" : formatNumber(value, 1)}</div><div class="rating-target">Target<br><strong>${target === null ? "N/D" : formatNumber(target, 1)}</strong></div></div>`;
+          })
+          .join("");
+      }
+      function stars(value) {
+        if (value === null || value === undefined || isNaN(value))
+          return "☆☆☆☆☆";
+        const rounded = Math.round(Number(value));
+        return "★★★★★".slice(0, rounded) + "☆☆☆☆☆".slice(0, 5 - rounded);
+      }
+      function renderMigrated() {
+        renderMigratedTabs();
+        renderMigratedDonuts();
+      }
+      function renderMigratedTabs() {
+        const container = document.getElementById("migratedCountryTabs"),
+          options = [COUNTRY_ALL].concat(COUNTRIES);
+        container.innerHTML = options
+          .map(
+            (c) =>
+              `<button class="country-btn ${migratedCountry === c.key ? "active" : ""}" onclick="selectMigratedCountry('${c.key}')"><span class="flag">${c.flag}</span><span>${c.label}</span></button>`,
+          )
+          .join("");
+      }
+      function selectMigratedCountry(country) {
+        migratedCountry = country;
+        renderMigrated();
+      }
+      function renderMigratedDonuts() {
+        const country = migratedCountry || "TOTAL";
+        document.getElementById("migratedSelectedTitle").textContent =
+          countryLabel(country);
+        const senda = latestForPeriod(KPI_NAMES.migratedSenda, country),
+          gema = latestForPeriod(KPI_NAMES.migratedGema, country);
+        renderDonut(
+          "migratedSendaChart",
+          senda,
+          "migratedSendaValue",
+          "migratedSendaTarget",
+          BBVA.green,
+        );
+        renderDonut(
+          "migratedGemaChart",
+          gema,
+          "migratedGemaValue",
+          "migratedGemaTarget",
+          BBVA.navy,
+        );
+      }
+      function renderDonut(canvasId, row, valueId, targetId, color) {
+        destroyChart(canvasId);
+        const value = row && row.valor !== null ? row.valor : null,
+          target = row ? preferredTarget(row) : null,
+          pctOfTarget =
+            target && target !== 0 && value !== null
+              ? Math.min(Math.max(value / target, 0), 1)
+              : value !== null
+                ? Math.min(Math.max(value / 100, 0), 1)
+                : 0;
+        document.getElementById(valueId).textContent =
+          value === null ? "N/D" : formatPct(value, 1);
+        document.getElementById(targetId).textContent =
+          "Target: " + (target === null ? "N/D" : formatPct(target, 1));
+        charts[canvasId] = new Chart(document.getElementById(canvasId), {
+          type: "doughnut",
+          data: {
+            labels: ["Real", "Restante"],
+            datasets: [
+              {
+                data: [pctOfTarget, Math.max(0, 1 - pctOfTarget)],
+                backgroundColor: [color, "#E5EAF1"],
+                borderWidth: 0,
+                cutout: "76%",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+              datalabels: { display: false },
+            },
+          },
+        });
+      }
+      function renderDetailTable() {
+        const container = document.getElementById("detailTable"),
+          country = selectedCountryForGeneral(),
+          list = [
+            ["FT Transformadas", KPI_NAMES.ft],
+            ["Traffic NextGen", KPI_NAMES.traffic],
+            ["Digital Pen. 3x2", KPI_NAMES.digital3x2],
+            ["Digital Pen. 3x3", KPI_NAMES.digital3x3],
+            ["Rating iOS", KPI_NAMES.ratingIos],
+            ["Rating Android", KPI_NAMES.ratingAndroid],
+            ["Migración GEMA", KPI_NAMES.migratedGema],
+            ["Migración SENDA", KPI_NAMES.migratedSenda],
+          ],
+          rows = list
+            .map(([label, kpi]) => {
+              const row = latestForPeriod(kpi, country),
+                comp = completion(row),
+                cls = statusClassFromCompletion(comp);
+              return `<tr><td>${label}</td><td>${row ? countryLabel(row.pais) : countryLabel(country)}</td><td>${row ? row.mes + " " + row.anio : "Sin dato"}</td><td>${row ? formatNumber(row.valor, 2) : "N/D"}</td><td>${row && preferredTarget(row) !== null ? formatNumber(preferredTarget(row), 2) : "N/D"}</td><td><span class="pill ${cls}">${comp === null ? "Sin target" : formatPct(comp * 100, 1)}</span></td></tr>`;
+            })
+            .join("");
+        container.innerHTML = `<table class="table-mini"><thead><tr><th>KPI</th><th>País</th><th>Mes usado</th><th>Valor</th><th>Target</th><th>Cumplimiento</th></tr></thead><tbody>${rows}</tbody></table><div class="helper-line">El dato trimestral se calcula usando el último mes con valor disponible dentro del trimestre seleccionado.</div>`;
+      }
+      function getAvailableQuarterLabels() {
+        const labels = [
+          ...new Set(
+            rawData.map((r) => `${String(r.anio).slice(-2)}${r.quarter}`),
+          ),
+        ]
+          .filter((q) => /^2[67]Q[1-4]$/.test(q))
+          .sort();
+        return labels.length
+          ? labels
+          : ["26Q1", "26Q2", "26Q3", "26Q4", "27Q1", "27Q2", "27Q3", "27Q4"];
+      }
+      function scrollToSection(id, btn) {
+        document
+          .querySelectorAll(".nav-pill")
+          .forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function scrollToTopPage() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function openReportPanel() {
+        alert(
+          "Informe pendiente de configurar. Esta vista ya está preparada para conectar el resumen ejecutivo.",
+        );
+      }
+    </script>
+  </body>
+</html>

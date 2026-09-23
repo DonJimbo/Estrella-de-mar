@@ -75,11 +75,18 @@
         #section-rating .rating-target>strong{font-size:16px;line-height:1;font-weight:900;color:#004481}
         #section-rating .rating-platform.is-empty{grid-template-areas:'label label' 'empty empty';min-height:48px}
         #section-rating .rating-empty-value{grid-area:empty;color:#94a3b8;font-size:12px;font-weight:700}
+        #section-rating .dashboard-detail-link,
+        #section-nps .dashboard-detail-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:8px 15px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:linear-gradient(135deg,#b6edff 0%,#5bbeff 100%);color:#003b73;font-size:10px;line-height:1;font-weight:900;letter-spacing:.055em;text-transform:uppercase;box-shadow:0 5px 14px rgba(0,33,91,.25),inset 0 1px 0 rgba(255,255,255,.6);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;text-decoration:none;white-space:nowrap}
+        #section-rating .dashboard-detail-link:hover,
+        #section-nps .dashboard-detail-link:hover{color:#002c58;filter:brightness(1.04);transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,33,91,.32),inset 0 1px 0 rgba(255,255,255,.7)}
+        #section-rating .dashboard-detail-link:focus-visible,
+        #section-nps .dashboard-detail-link:focus-visible{outline:3px solid #fff;outline-offset:2px}
+        #section-nps .nps-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
         @media(max-width:1180px){#section-rating .rating-country-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
         @media(max-width:780px){#section-rating .rating-country-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
         #section-migrated #migSendaReal,#section-migrated #migGemaReal,
         #section-migrated #migSendaTarget,#section-migrated #migGemaTarget{display:none}
-        @media(max-width:600px){#section-rating .rating-country-grid,#section-rating .rating-country-grid.rating-single{grid-template-columns:1fr}#section-rating .rating-country-card{padding:16px}}
+        @media(max-width:600px){#section-rating .rating-country-grid,#section-rating .rating-country-grid.rating-single{grid-template-columns:1fr}#section-rating .rating-country-card{padding:16px}#section-nps .nps-header{align-items:flex-start;flex-direction:column}#section-nps .nps-header-actions{width:100%;justify-content:space-between}}
         .inner-card{background:#fff; border-radius: 1rem; box-shadow:0 2px 10px rgba(0,0,0,.02); border:1px solid #e2e8f0; transition: all .3s; position: relative; overflow:hidden}
         .filter-group-label{color:#64748b; font-size:.6rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; display:block}
         .custom-select-wrapper{position:relative;background:#f8fafc;border:1px solid #cbd5e1;border-radius:.75rem;padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem;transition:all .2s}
@@ -104,7 +111,11 @@
         .feature-progress-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 16px;border-bottom:1px solid #e8eef5}
         .feature-progress-title{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:900;color:#004481;letter-spacing:.01em}
         .feature-progress-flag{width:30px;height:22px;object-fit:cover;border-radius:3px;border:1px solid #dfe7f1;box-shadow:0 1px 3px rgba(0,68,129,.15)}
-        .feature-progress-back{border:1px solid #cbdceb;background:#fff;color:#004481;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:900;cursor:pointer}
+        .feature-progress-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .feature-progress-back,.feature-progress-more{border:1px solid #cbdceb;background:#fff;color:#004481;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:900;cursor:pointer}
+        .feature-progress-more{background:#004481;border-color:#004481;color:#fff}
+        .feature-progress-back:hover{background:#f6faff;border-color:#8fc5eb}
+        .feature-progress-more:hover{background:#043263;border-color:#043263}
         .feature-progress-chart{height:520px;position:relative;padding-top:18px}
         .feature-progress-legend{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:18px 0 0;font-size:14px;font-weight:800;color:#004481}
         .feature-progress-legend span{display:flex;align-items:center;gap:7px}.feature-progress-legend b{width:12px;height:12px;border-radius:50%;display:inline-block}.feature-progress-legend .forecast-key{border-radius:0;width:16px;height:0;border-top:3px dashed #82b8ff}.feature-progress-legend .target-key{border-radius:0;width:16px;height:0;border-top:3px solid #67ae59}
@@ -223,14 +234,14 @@
 
         /* SteerCo embebido: reutiliza los módulos existentes sin salir de la pestaña */
         #page-steerco .steerco-workspace {
-            height: calc(100vh - 245px);
+            height: auto;
             min-height: 560px;
-            overflow: hidden;
+            overflow: visible;
         }
         #page-steerco .steerco-flex {
-            height: 100%;
+            height: auto;
             min-height: 0 !important;
-            overflow: hidden;
+            overflow: visible;
         }
         #page-steerco .steerco-sidebar {
             height: 100%;
@@ -1125,6 +1136,8 @@
         .catalogo-kpis-hero { background:transparent; border:none; border-radius:0; box-shadow:none; padding:0; display:flex; justify-content:space-between; align-items:center; gap:1.1rem; margin-bottom:1rem; }
         .catalogo-kpis-hero-left { min-width:0; }
         .catalogo-kpis-hero-right { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; flex-wrap:nowrap; margin-left:auto; }
+        .catalogo-kpis-senda-btn { height:36px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .95rem; border:1px solid #004481; border-radius:10px; background:#004481; color:#fff; font-size:.78rem; font-weight:900; white-space:nowrap; cursor:pointer; box-shadow:0 8px 18px -14px rgba(0,68,129,.55); transition:transform .16s ease,background .16s ease; }
+        .catalogo-kpis-senda-btn:hover { background:#043263; transform:translateY(-1px); }
         .catalogo-kpis-filter-helper { color:#64748B; font-size:.6rem; font-weight:750; line-height:1.2; }
 
         .catalogo-kpis-badge { display:inline-flex; align-items:center; gap:.55rem; background:#EAF6FF; color:#1464A5; border:1px solid #CBEAFF; border-radius:.55rem; padding:.42rem .7rem; font-size:.76rem; font-weight:950; text-transform:uppercase; letter-spacing:.12em; margin-bottom:.65rem; }
@@ -1151,6 +1164,30 @@
         .catalogo-kpis-card-dot.potential { background:#5BBEFF; opacity:.9; }
         .catalogo-kpis-card-dot.etpb { background:#CBD5E1; }
         .catalogo-kpis-empty { background:#fff; border:1px dashed #CBD5E1; border-radius:1.2rem; min-height:220px; display:flex; align-items:center; justify-content:center; text-align:center; color:#64748B; font-weight:800; padding:2rem; }
+        .catalogo-kpis-loader{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(330px,48vh,500px);border-style:solid;border-color:#D7E8F7;background:linear-gradient(135deg,#F9FCFF 0%,#F1F8FF 48%,#F6FCFB 100%);box-shadow:0 22px 42px -36px rgba(0,68,129,.46)}
+        .catalogo-kpis-loader::before,.catalogo-kpis-loader::after{content:"";position:absolute;z-index:-1;border-radius:999px;filter:blur(2px);opacity:.75;animation:catalogoLoaderFloat 6s ease-in-out infinite}
+        .catalogo-kpis-loader::before{width:260px;height:260px;top:-145px;left:7%;background:radial-gradient(circle,rgba(91,190,255,.34),rgba(91,190,255,0) 68%)}
+        .catalogo-kpis-loader::after{width:300px;height:300px;right:4%;bottom:-190px;background:radial-gradient(circle,rgba(72,198,183,.28),rgba(72,198,183,0) 70%);animation-delay:-3s}
+        .catalogo-kpis-loader-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:540px;margin:auto;padding:2rem;text-align:center}
+        .catalogo-kpis-loader-emblem{position:relative;width:94px;height:94px;margin-bottom:1.15rem;border-radius:30px;background:linear-gradient(145deg,#004481,#1464A5);box-shadow:0 18px 28px -18px rgba(0,68,129,.7);overflow:hidden}
+        .catalogo-kpis-loader-emblem::before{content:"";position:absolute;inset:20px;border:2px solid rgba(255,255,255,.88);border-radius:12px;transform:rotate(45deg);animation:catalogoLoaderSpin 4.5s linear infinite}
+        .catalogo-kpis-loader-emblem::after{content:"";position:absolute;inset:34px;border-radius:999px;background:#5BBEFF;box-shadow:0 0 0 8px rgba(91,190,255,.16),0 0 22px rgba(91,190,255,.88);animation:catalogoLoaderPulse 1.7s ease-in-out infinite}
+        .catalogo-kpis-loader-label{color:#2597B7;font-size:.65rem;font-weight:800;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase}
+        .catalogo-kpis-loader-title{margin-top:.55rem;color:#004481;font-size:clamp(1.35rem,2.8vw,2rem);font-weight:800;letter-spacing:-.035em}
+        .catalogo-kpis-loader-title span{color:#48AFC6}
+        .catalogo-kpis-loader-copy{max-width:390px;margin:.65rem 0 1.35rem;color:#607A95;font-size:.85rem;font-weight:500;line-height:1.5}
+        .catalogo-kpis-loader-bars{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:26px}
+        .catalogo-kpis-loader-bars span{display:block;width:6px;border-radius:999px;background:linear-gradient(180deg,#5BBEFF,#004481);transform-origin:bottom;animation:catalogoLoaderBars 1.05s ease-in-out infinite}
+        .catalogo-kpis-loader-bars span:nth-child(1){height:11px;animation-delay:-.3s}.catalogo-kpis-loader-bars span:nth-child(2){height:20px;animation-delay:-.15s}.catalogo-kpis-loader-bars span:nth-child(3){height:15px;animation-delay:-.45s}.catalogo-kpis-loader-bars span:nth-child(4){height:24px;animation-delay:-.6s}.catalogo-kpis-loader-bars span:nth-child(5){height:12px;animation-delay:-.75s}
+        .catalogo-kpis-loader-status{display:flex;align-items:center;gap:.45rem;margin-top:.75rem;color:#58738F;font-size:.66rem;font-weight:700;letter-spacing:.06em}
+        .catalogo-kpis-loader-status b{width:7px;height:7px;border-radius:999px;background:#48C6B7;box-shadow:0 0 0 5px rgba(72,198,183,.14);animation:catalogoLoaderPulse 1.7s ease-in-out infinite}
+        .site-page-loader{width:min(100% - 2rem,1720px);margin:1rem auto}
+        .site-page-loader.hidden{display:none!important}
+        #page-ftes .site-page-loader{position:absolute;inset:1rem;z-index:10;width:auto;min-height:calc(100% - 2rem);margin:0}
+        @keyframes catalogoLoaderFloat{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(16px,14px,0) scale(1.08)}}
+        @keyframes catalogoLoaderSpin{to{transform:rotate(405deg)}}
+        @keyframes catalogoLoaderPulse{0%,100%{transform:scale(.86);opacity:.58}50%{transform:scale(1);opacity:1}}
+        @keyframes catalogoLoaderBars{0%,100%{transform:scaleY(.48);opacity:.45}50%{transform:scaleY(1);opacity:1}}
         .catalogo-kpis-cards.catalogo-kpis-tree{display:grid;grid-template-columns:1fr;gap:.85rem}
         .catalogo-kpis-total-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#22005D;color:#fff;border-radius:1rem;padding:.78rem 1.15rem;box-shadow:0 16px 34px -30px rgba(34,0,93,.8)}
         .catalogo-kpis-total-label{font-size:.78rem;font-weight:950;text-transform:uppercase;letter-spacing:.13em}
@@ -1184,7 +1221,7 @@
         @media(max-width:640px){.catalogo-kpis-tree-subgrid.two,.catalogo-kpis-tree-subgrid.three{grid-template-columns:1fr}.catalogo-kpis-total-bar{flex-wrap:wrap}.catalogo-kpis-total-value{font-size:1.55rem}}
 
         /* Layout KPIs: tabla detalle con filtros tipo Excel */
-        .catalogo-kpis-detail-card{margin-top:1.25rem;background:#fff;border:1px solid #dbe4ef;border-radius:1.15rem;box-shadow:0 14px 34px -30px rgba(7,33,70,.55);overflow:hidden;width:100%}
+        .catalogo-kpis-detail-card{margin-top:1.25rem;background:#fff;border:1px solid #dbe4ef;border-radius:1.15rem;box-shadow:0 14px 34px -30px rgba(7,33,70,.55);overflow:visible;position:relative;width:100%}
         .catalogo-kpis-detail-head{padding:1.15rem 1.35rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid #e7edf5;background:#fff}
         .catalogo-kpis-detail-title{color:#020E47;font-size:1.12rem;font-weight:950;line-height:1.1;margin:0}
         .catalogo-kpis-detail-subtitle{color:#52617A;font-size:.82rem;font-weight:650;margin-top:.25rem}
@@ -1195,10 +1232,57 @@
         .catalogo-table-status-select{min-width:160px;padding:0 .65rem;cursor:pointer}
         .catalogo-table-clear-btn{height:38px;border:1px solid #d7e2ee;background:#fff;color:#004481;border-radius:.7rem;padding:0 .8rem;font-size:.68rem;font-weight:950;text-transform:uppercase;letter-spacing:.04em;transition:all .18s ease}
         .catalogo-table-clear-btn:hover{background:#EAF6FF;border-color:#BDE7FF}
-        .catalogo-column-filter-panel{display:none;border-bottom:1px solid #e7edf5;background:linear-gradient(180deg,#f8fbff 0%,#fff 100%);padding:.85rem 1.35rem}
-        .catalogo-column-filter-panel.is-open{display:block}
-        .catalogo-column-filter-box{max-width:520px;border:1px solid #dbe4ef;border-radius:1rem;background:#fff;box-shadow:0 18px 38px -32px rgba(7,33,70,.48);padding:.85rem}
-        .catalogo-column-filter-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.65rem}
+      .catalogo-column-filter-panel{
+    display:none;
+    position:absolute;
+    z-index:9999;
+    padding:0;
+    border:0;
+    background:transparent;
+    pointer-events:none;
+}
+
+.catalogo-column-filter-panel.is-open{
+    display:block;
+    pointer-events:auto;
+}
+
+.catalogo-column-filter-panel.is-open{
+    display:block;
+    pointer-events:auto;
+}
+
+.catalogo-column-filter-box{
+    position:relative;
+    width:min(370px, calc(100vw - 24px));
+    max-width:none;
+    padding:1rem;
+    border:1px solid #C9D9E8;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 18px 45px -18px rgba(0,40,90,.35);
+    animation:catalogoFilterDrop .18s ease-out;
+    transform-origin:top left;
+}
+
+.catalogo-column-filter-box::before{
+    content:"";
+    position:absolute;
+    top:-7px;
+    left:24px;
+    width:12px;
+    height:12px;
+    background:#fff;
+    border-left:1px solid #C9D9E8;
+    border-top:1px solid #C9D9E8;
+    transform:rotate(45deg);
+}
+
+@keyframes catalogoFilterDrop{
+    from{opacity:0;transform:translateY(-6px) scale(.98)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+.catalogo-column-filter-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.65rem}
         .catalogo-column-filter-title{color:#004481;font-size:.72rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em}
         .catalogo-column-filter-close{width:28px;height:28px;border-radius:.55rem;background:#F1F5F9;color:#64748B;display:inline-flex;align-items:center;justify-content:center;transition:all .18s ease}
         .catalogo-column-filter-close:hover{background:#EAF6FF;color:#004481}
@@ -1222,11 +1306,66 @@
         .catalogo-date-filter-year input{width:15px;height:15px;accent-color:#004481}
         .catalogo-date-filter-quarter{margin-left:1.2rem}
         .catalogo-table-wrap{width:100%;overflow-x:auto;background:#fff}
-        .catalogo-detail-table{width:100%;min-width:100%;border-collapse:separate;border-spacing:0}
+        .catalogo-detail-table {
+    width: 100%;
+    min-width: 1432px;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.catalogo-detail-table th:nth-child(1),
+.catalogo-detail-table td:nth-child(1) { width: 72px; }
+
+.catalogo-detail-table th:nth-child(2),
+.catalogo-detail-table td:nth-child(2) { width: 190px; }
+
+.catalogo-detail-table th:nth-child(3),
+.catalogo-detail-table td:nth-child(3) { width: 420px; }
+
+.catalogo-detail-table th:nth-child(4),
+.catalogo-detail-table td:nth-child(4) { width: 110px; }
+
+.catalogo-detail-table th:nth-child(5),
+.catalogo-detail-table td:nth-child(5) { width: 110px; }
+
+.catalogo-detail-table th:nth-child(6),
+.catalogo-detail-table td:nth-child(6) { width: 150px; }
+
+.catalogo-detail-table th:nth-child(7),
+.catalogo-detail-table td:nth-child(7) { width: 145px; }
+
+.catalogo-detail-table th:nth-child(8),
+.catalogo-detail-table td:nth-child(8) { width: 90px; }
+
+.catalogo-detail-table th:nth-child(9),
+.catalogo-detail-table td:nth-child(9) { width: 145px; }
+
+
+
         .catalogo-detail-table thead th{position:sticky;top:0;z-index:2;background:#F8FAFC;border-bottom:1px solid #dbe4ef;color:#52617A;font-size:.82rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:.95rem .9rem;white-space:nowrap}
-        .catalogo-th-filter-btn{display:inline-flex;align-items:center;gap:.35rem;color:inherit;font:inherit;text-align:left;border:0;background:transparent;cursor:pointer;transition:color .18s ease}
+        .catalogo-th-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .38rem .5rem;
+    border: 0;
+    border-radius: .5rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
         .catalogo-th-filter-btn.catalogo-title-case{text-transform:none}
-        .catalogo-th-filter-btn:hover,.catalogo-th-filter-btn.is-filtered{color:#004481}
+  .catalogo-th-filter-btn:hover,
+.catalogo-th-filter-btn:focus-visible,
+.catalogo-th-filter-btn.is-filtered {
+    color: #004481;
+    background: #EAF6FF;
+    box-shadow: 0 0 0 3px rgba(91,190,255,.16);
+    transform: translateY(-1px);
+}
         .catalogo-th-filter-btn.is-filtered .catalogo-filter-dot{opacity:1;transform:scale(1)}
         .catalogo-filter-dot{width:7px;height:7px;border-radius:999px;background:#5BBEFF;opacity:0;transform:scale(.65);transition:all .18s ease}
         .catalogo-detail-table tbody td{border-bottom:1px solid #edf2f7;color:#24476F;font-size:.96rem;font-weight:700;padding:.92rem .9rem;vertical-align:middle}
@@ -1238,9 +1377,46 @@
         .catalogo-detail-table thead th:nth-child(n+4) .catalogo-th-filter-btn{justify-content:center;text-align:center}
         .catalogo-status-cell{justify-content:center}
         .catalogo-status-pill{display:inline-flex;align-items:center;justify-content:center;min-height:30px;border-radius:999px;padding:.42rem .82rem;font-size:.86rem;font-weight:950;line-height:1;white-space:nowrap;border:1px solid transparent}
-        .catalogo-status-delivered{background:#E9ECFF;color:#001391;border-color:#C7D2FE}
+        .catalogo-status-pill[data-tooltip]{
+    position:relative;
+    cursor:help;
+}
+
+.catalogo-status-pill[data-tooltip]::after{
+    content:attr(data-tooltip);
+    position:absolute;
+    left:50%;
+    bottom:calc(100% + 8px);
+    transform:translateX(-50%) translateY(4px);
+    width:max-content;
+    max-width:280px;
+    padding:.55rem .7rem;
+    border-radius:8px;
+    background:#101846;
+    color:#fff;
+    font-size:.72rem;
+    font-weight:700;
+    line-height:1.3;
+    white-space:normal;
+    text-align:left;
+    box-shadow:0 8px 20px rgba(7,33,70,.25);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:10000;
+}
+
+.catalogo-status-pill[data-tooltip]:hover::after{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(-50%) translateY(0);
+}
+.catalogo-status-delivered{background:#ECFDF5;color:#047857;border-color:#A7F3D0}
         .catalogo-status-ongoing{background:#EAF6FF;color:#1464A5;border-color:#BDE7FF}
         .catalogo-status-potential{background:#F1F5F9;color:#334155;border-color:#E2E8F0}
+        .catalogo-status-pending{background:#F1F5F9;color:#475569;border-color:#CBD5E1}
+        .catalogo-status-overdue{background:#FFF7ED;color:#C2410C;border-color:#FDBA74}
         .catalogo-status-etpb{background:#FFF7ED;color:#C2410C;border-color:#FED7AA}.catalogo-status-apto{background:#ECFDF5;color:#047857;border-color:#A7F3D0}
         .catalogo-table-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.35rem;background:#F8FAFC;color:#52617A;font-size:.9rem;font-weight:800}
         .catalogo-table-sync{color:#8492A6;font-size:.84rem;font-weight:750}
@@ -1392,11 +1568,119 @@
         @media (max-width:1050px){ .seguimiento-ot-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .seguimiento-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .seguimiento-detail-grid>div:first-child{grid-column:1/-1;} }
         @media (max-width:800px){ .seguimiento-ftes-overview{grid-template-columns:1fr;} .seguimiento-ftes-country-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
         @media (max-width:640px){ .seguimiento-ot-shell{padding:.9rem .75rem 1.4rem;} .seguimiento-ot-hero{align-items:flex-start; flex-direction:column;} .seguimiento-ot-filters{align-items:stretch;} .seguimiento-filter-group,.seguimiento-filter-select{min-width:0;width:100%;} .seguimiento-ot-kpi-strip{grid-template-columns:1fr;} .seguimiento-budget-row{grid-template-columns:92px minmax(0,1fr); gap:.5rem;} .seguimiento-budget-values{grid-column:1/-1;text-align:left;} .seguimiento-budget-value-line{justify-content:flex-start;} .seguimiento-budget-pct-pill{justify-self:start;} .seguimiento-country-name{font-size:.66rem;} .seguimiento-ftes-country-grid{grid-template-columns:1fr;} }
-
+.catalogo-th-filter-btn [data-lucide="filter"],
+.catalogo-th-filter-btn svg.lucide-filter {
+    display: none !important;
+}
         /* Estilos Sidebar Monthly */
+.catalogo-kpis-page,
+.catalogo-kpis-page button,
+.catalogo-kpis-page input,
+.catalogo-kpis-page select,
+.catalogo-kpis-page table {
+    font-family: 'Benton Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.catalogo-kpis-detail-title {
+    font-size: 1.3rem;
+}
+
+.catalogo-kpis-detail-subtitle {
+    font-size: .9rem;
+}
+
+.catalogo-detail-table thead th {
+    font-size: .9rem;
+    padding: 1.05rem 1rem;
+}
+
+.catalogo-detail-table tbody td {
+    font-size: 1rem;
+    padding: 1rem;
+}
+
+.catalogo-detail-solution {
+    font-size: .96rem !important;
+    line-height: 1.35 !important;
+}
+
+.catalogo-column-filter-option {
+    font-size: .85rem;
+}
+
+.catalogo-date-filter-year {
+    font-size: .84rem;
+}
+
+        /* Carga diferida: solo se muestra dentro de la página cuando una petición supera 10 segundos. */
+        #siteLoadingScreen{display:none;position:relative;z-index:1;place-items:center;min-height:235px;margin:1rem auto;width:min(100% - 2rem,1720px);overflow:hidden;border:1px dashed #C8DCEF;border-radius:22px;background:rgba(255,255,255,.94);box-shadow:0 18px 42px -38px rgba(0,68,129,.42)}
+        #siteLoadingScreen.is-visible{display:grid;animation:sitePageEnter .24s ease both}
+        .site-loading-brand{position:relative;display:flex;min-width:300px;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#004481;padding:2rem}
+        .site-loading-wordmark{position:relative;display:flex;align-items:baseline;gap:.38rem;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;line-height:.95;letter-spacing:-.07em}
+        .site-loading-wordmark span:last-child{color:#5BBEFF}
+        .site-loading-line{position:absolute;top:1.65rem;right:calc(50% - 7.15rem);width:2px;height:4rem;background:#43D4D1;border-radius:999px;box-shadow:0 0 12px rgba(67,212,209,.78);animation:siteLoadingLine 1.15s ease-in-out infinite}
+        .site-loading-caption{margin-top:.45rem;color:#2597B7;font-size:.55rem;font-weight:700;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase}
+        .site-loading-status{display:flex;align-items:center;gap:.38rem;margin-top:1.45rem;color:#5F87A2;font-size:.58rem;font-weight:700;letter-spacing:.22em;text-indent:.22em;text-transform:uppercase}
+        .site-loading-status::before{content:"";width:.42rem;height:.42rem;border:1.5px solid #67D8EC;border-top-color:#004481;border-radius:999px;animation:siteLoadingSpin .7s linear infinite}
+        @keyframes siteLoadingLine{0%,100%{transform:scaleY(.35);opacity:.35}50%{transform:scaleY(1);opacity:1}}
+        @keyframes siteLoadingSpin{to{transform:rotate(360deg)}}
+        .page-section.site-page-enter{animation:sitePageEnter .32s cubic-bezier(.2,.75,.25,1) both}
+        @keyframes sitePageEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        /* El indicador se desliza entre las secciones del menú sin tapar la página. */
+        #siteMainNav{position:relative;isolation:isolate}
+        #siteNavActiveIndicator{position:absolute;z-index:0;left:0;top:0;width:0;height:0;pointer-events:none;opacity:0;border:1px solid #B8D9F7;border-radius:.68rem;background:#EAF5FF;box-shadow:0 8px 18px -16px rgba(0,68,129,.7);transition:transform .38s cubic-bezier(.22,.9,.22,1),width .38s cubic-bezier(.22,.9,.22,1),height .38s cubic-bezier(.22,.9,.22,1),opacity .16s ease}
+        #siteNavActiveIndicator.is-visible{opacity:1}
+        .site-nav-btn{position:relative;z-index:1;border-color:transparent!important;background:transparent!important;color:#64748B!important;font-weight:600!important;transition:color .18s ease,transform .18s ease!important}
+        .site-nav-btn:hover{color:#004481!important;transform:translateY(-1px)}
+        .site-nav-btn.is-active{color:#004481!important;font-weight:700!important}
+
+        /* Layout KPIs: jerarquía clara, pesos más suaves y lectura más cómoda */
+        .catalogo-kpis-page{color:#284A70;font-family:'Benton Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+        .catalogo-kpis-page .catalogo-kpis-badge{font-weight:700;letter-spacing:.08em}
+        .catalogo-kpis-page .catalogo-kpis-hero-title{font-weight:800;letter-spacing:-.028em}
+        .catalogo-kpis-page .catalogo-kpis-hero-subtitle{font-weight:500;font-size:.92rem;line-height:1.45}
+        .catalogo-kpis-page .catalogo-kpis-senda-btn{font-weight:700}
+        .catalogo-kpis-page .catalogo-kpis-filter-label,.catalogo-kpis-page .catalogo-kpis-select{font-weight:700}
+        .catalogo-kpis-page .catalogo-kpis-filter-helper{font-weight:500;font-size:.68rem}
+        .catalogo-kpis-page .catalogo-kpis-coverage-title{font-weight:650;font-size:.76rem}
+        .catalogo-kpis-page .catalogo-kpis-coverage-percent{font-weight:800}
+        .catalogo-kpis-page .catalogo-kpis-coverage-foot{font-weight:500;font-size:.7rem}
+        .catalogo-kpis-page .catalogo-kpis-total-label{font-weight:700;letter-spacing:.09em}
+        .catalogo-kpis-page .catalogo-kpis-total-value,.catalogo-kpis-page .catalogo-kpis-tree-number{font-weight:800}
+        .catalogo-kpis-page .catalogo-kpis-total-pct,.catalogo-kpis-page .catalogo-kpis-tree-pct{font-weight:700}
+        .catalogo-kpis-page .catalogo-kpis-tree-title{font-weight:700;letter-spacing:.08em}
+        .catalogo-kpis-page .catalogo-kpis-tree-mini-title{font-weight:650;letter-spacing:.06em}
+        .catalogo-kpis-page .catalogo-kpis-tree-mini-value{font-weight:800}
+        .catalogo-kpis-page .catalogo-kpis-tree-mini-pct{font-weight:650}
+        .catalogo-kpis-page .catalogo-kpis-tree-panel,.catalogo-kpis-page .catalogo-kpis-tree-mini,.catalogo-kpis-page .catalogo-kpis-detail-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+        .catalogo-kpis-page .catalogo-kpis-tree-panel:hover{transform:translateY(-2px);border-color:#C8DCEF;box-shadow:0 16px 30px -28px rgba(0,68,129,.46)}
+        .catalogo-kpis-page .catalogo-kpis-tree-mini:hover{transform:translateY(-1px);border-color:#C8DCEF;box-shadow:0 13px 24px -24px rgba(0,68,129,.4)}
+        .catalogo-kpis-page .catalogo-kpis-detail-title{font-weight:800;letter-spacing:-.02em}
+        .catalogo-kpis-page .catalogo-kpis-detail-subtitle{font-weight:500;color:#65758A}
+        .catalogo-kpis-page .catalogo-table-search,.catalogo-kpis-page .catalogo-table-status-select{font-weight:500}
+        .catalogo-kpis-page .catalogo-table-clear-btn{font-weight:700}
+        .catalogo-kpis-page .catalogo-detail-table thead th{font-weight:700;letter-spacing:.045em;color:#536987}
+        .catalogo-kpis-page .catalogo-th-filter-btn{font-weight:700}
+        .catalogo-kpis-page .catalogo-detail-table tbody td{font-weight:500;color:#345878}
+        .catalogo-kpis-page .catalogo-detail-id,.catalogo-kpis-page .catalogo-detail-block{font-weight:700!important}
+        .catalogo-kpis-page .catalogo-detail-solution{font-weight:600!important}
+        .catalogo-kpis-page .catalogo-status-pill{font-weight:700}
+        .catalogo-kpis-page .catalogo-column-filter-title,.catalogo-kpis-page .catalogo-date-filter-year{font-weight:700}
+        .catalogo-kpis-page .catalogo-column-filter-option{font-weight:500}
+        .catalogo-kpis-page .catalogo-column-filter-mini-btn{font-weight:650}
+        @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b{animation:none!important;transition:none!important}}
     </style>
 </head>
 <body class="bg-[#F1F5F9] text-gray-800">
+    <div id="siteLoadingScreen" role="status" aria-live="polite" aria-hidden="true">
+        <div class="site-loading-brand">
+            <div class="site-loading-wordmark"><span>HUB</span><span>EDC</span></div>
+            <span class="site-loading-line" aria-hidden="true"></span>
+            <div class="site-loading-caption">Global Transformation Hub</div>
+            <div class="site-loading-status">Cargando datos</div>
+        </div>
+    </div>
     
     <div class="sticky top-0 z-[60] flex flex-col">
         <div class="h-1.5 w-full bg-gradient-to-r from-[#004481] via-[#1464A5] to-[#48C6B7]"></div>
@@ -1416,14 +1700,13 @@
                     </div>
                 </div>
 
-                <nav class="flex flex-wrap justify-center items-center gap-2 w-full lg:w-auto order-last lg:order-none mt-2 lg:mt-0">
-                    <button onclick="switchPage('page-inicio', this)" class="site-nav-btn px-3 py-2 text-xs font-bold bg-blue-50 border border-blue-200 text-[#004481] rounded-lg transition-colors">Inicio</button>
-                    <button onclick="switchPage('page-monthly', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">Follow up</button>
-                    <button onclick="switchPage('page-steerco', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">SteerCo</button>
-                    <button onclick="switchPage('page-kpis', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">KPIs</button>
+                <nav id="siteMainNav" class="flex flex-wrap justify-center items-center gap-2 w-full lg:w-auto order-last lg:order-none mt-2 lg:mt-0">
+                    <button onclick="switchPage('page-inicio', this)" class="site-nav-btn is-active px-3 py-2 text-xs rounded-lg">Inicio</button>
+                    <button id="nav-kpis" onclick="switchPage('page-kpis', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">KPIs</button>
                     <button onclick="switchPage('page-endproduct', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">Bloques Funcionales</button>
                     <button onclick="switchPage('page-ftes', this)" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">FTEs y Presupuesto</button>
                     <button id="nav-catalogo-kpis" onclick="switchPage('page-catalogo-kpis', this); setTimeout(() => { if (window.initCatalogoKpis) window.initCatalogoKpis(); }, 120);" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">Layout KPIs</button>
+                    <span id="siteNavActiveIndicator" aria-hidden="true"></span>
                 </nav>
 
                 <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
@@ -1452,7 +1735,7 @@
                     <p class="text-lg md:text-[20px] text-[#004481] font-bold max-w-3xl mx-auto leading-relaxed mt-6">Espacio centralizado para el seguimiento, control y análisis estratégico del programa.</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-8 w-full px-4">
-                        <button onclick="switchPage('page-kpis', document.querySelectorAll('.site-nav-btn')[3])" 
+                        <button onclick="switchPage('page-kpis', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-kpis'))" 
                                 class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#3ba8f5] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
                                 <div class="bg-white/20 p-3.5 rounded-2xl">
@@ -1469,7 +1752,7 @@
                             </div>
                         </button>
 
-                        <button onclick="switchPage('page-endproduct', document.querySelectorAll('.site-nav-btn')[4])" 
+                        <button onclick="switchPage('page-endproduct', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-endproduct'))" 
                                 class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
                                 <div class="bg-white/15 p-3.5 rounded-2xl">
@@ -1484,7 +1767,7 @@
                             </div>
                         </button>
 
-                        <button onclick="switchPage('page-ftes', document.querySelectorAll('.site-nav-btn')[5])" 
+                        <button onclick="switchPage('page-ftes', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-ftes'))"
                                 class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
                                 <div class="bg-white/10 p-3.5 rounded-2xl">
@@ -1521,7 +1804,7 @@
                             </div>
 
                             <div class="support-session-list">
-                                <button type="button" onclick="switchPage('page-monthly', document.querySelectorAll('.site-nav-btn')[1])" class="support-session-item primary">
+                                <button type="button" onclick="switchPage('page-monthly', null)" class="support-session-item primary">
                                     <span class="support-session-item-left">
                                         <span class="support-session-num">01</span>
                                         <span>Follow up</span>
@@ -1529,7 +1812,7 @@
                                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                 </button>
 
-                                <button type="button" onclick="switchPage('page-steerco', document.querySelectorAll('.site-nav-btn')[2])" class="support-session-item secondary">
+                                <button type="button" onclick="switchPage('page-steerco', null)" class="support-session-item secondary">
                                     <span class="support-session-item-left">
                                         <span class="support-session-num">02</span>
                                         <span>SteerCo</span>
@@ -1594,8 +1877,15 @@
 
         <div id="page-catalogo-kpis" class="page-section hidden w-full catalogo-kpis-page">
             <section class="catalogo-kpis-shell">
-                <div id="catalogoKpisLoading" class="catalogo-kpis-empty">
-                    Cargando datos del Layout KPIs...
+                <div id="catalogoKpisLoading" class="catalogo-kpis-empty catalogo-kpis-loader" role="status" aria-live="polite">
+                    <div class="catalogo-kpis-loader-inner">
+                        <div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div>
+                        <div class="catalogo-kpis-loader-label">Global Transformation Hub</div>
+                        <div class="catalogo-kpis-loader-title">Cargando <span>Layout KPIs</span></div>
+                        <p class="catalogo-kpis-loader-copy">Preparando las funcionalidades, entregas y filtros para que puedas empezar a consultar los datos.</p>
+                        <div class="catalogo-kpis-loader-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                        <div class="catalogo-kpis-loader-status"><b></b> Sincronizando la información</div>
+                    </div>
                 </div>
 
                 <div id="catalogoKpisContent" class="hidden">
@@ -1605,22 +1895,42 @@
                                 <span>Estado del despliegue</span>
                                 <span id="catalogoSelectedFlag"></span>
                             </div>
-                            <h3 class="catalogo-kpis-hero-title">Estado de Funcionalidades en <span id="catalogoSelectedCountry">Global</span></h3>
+                            <h3 class="catalogo-kpis-hero-title">Estado de Funcionalidades en <span id="catalogoSelectedCountry">España</span></h3>
                             <p class="catalogo-kpis-hero-subtitle">Sincronizado con el plan de aceleración SDLC agéntico sin incremento funcional</p>
                         </div>
 
                         <div class="catalogo-kpis-hero-right">
+                            <button type="button" class="catalogo-kpis-senda-btn" onclick="window.openCatalogoSenda && window.openCatalogoSenda()">Ver senda <span aria-hidden="true">→</span></button>
                             <div class="catalogo-kpis-filter-card">
                                 <label for="catalogoGeoFilter" class="catalogo-kpis-filter-label">Filtrar por país</label>
                                 <select id="catalogoGeoFilter" class="catalogo-kpis-select" onchange="if(window.clearCatalogoTableFilters){window.clearCatalogoTableFilters();} window.renderCatalogoKpis && window.renderCatalogoKpis()">
-                                    <option value="GLOBAL" selected>Global</option>
-                                    <option value="ESPANA">España</option>
+                                    <option value="ESPANA" selected>España</option>
                                     <option value="MEXICO">México</option>
                                     <option value="PERU">Perú</option>
                                     <option value="COLOMBIA">Colombia</option>
                                     <option value="ARGENTINA">Argentina</option>
                                 </select>
                                 <div class="catalogo-kpis-filter-helper">Selecciona una geografía para actualizar la visión.</div>
+                            </div>
+
+                            <div class="catalogo-kpis-filter-card">
+                                <label for="catalogoQuarterFilter" class="catalogo-kpis-filter-label">Corte de avance</label>
+                                <select id="catalogoQuarterFilter" class="catalogo-kpis-select" onchange="window.handleCatalogoQuarterChange && window.handleCatalogoQuarterChange(this)">
+                                    <option value="24Q4">24Q4</option>
+                                    <option value="25Q1">25Q1</option>
+                                    <option value="25Q2">25Q2</option>
+                                    <option value="25Q3">25Q3</option>
+                                    <option value="25Q4">25Q4</option>
+                                    <option value="26Q1">26Q1</option>
+                                    <option value="26Q2" selected>26Q2</option>
+                                    <option value="26Q3">26Q3</option>
+                                    <option value="26Q4">26Q4</option>
+                                    <option value="27Q1">27Q1</option>
+                                    <option value="27Q2">27Q2</option>
+                                    <option value="27Q3">27Q3</option>
+                                    <option value="27Q4">27Q4</option>
+                                </select>
+                                <div class="catalogo-kpis-filter-helper">Muestra las entregas acumuladas hasta el trimestre elegido.</div>
                             </div>
 
                             <div class="catalogo-kpis-coverage">
@@ -1716,11 +2026,12 @@
                                 <div class="catalogo-kpis-detail-subtitle">Listado interactivo de soluciones funcionales e identificadores</div>
                             </div>
                             <div class="catalogo-kpis-detail-actions">
-                                <input id="catalogoTableSearch" class="catalogo-table-search" type="search" placeholder="Buscar solución o bloque..." oninput="window.renderCatalogoKpisTable && window.renderCatalogoKpisTable()">
-                                <select id="catalogoTableStatusFilter" class="catalogo-table-status-select" onchange="window.renderCatalogoKpisTable && window.renderCatalogoKpisTable()">
+                                <input id="catalogoTableSearch" class="catalogo-table-search" type="search" placeholder="Buscar solución o bloque..." oninput="window.handleCatalogoTableFilterChange && window.handleCatalogoTableFilterChange()">
+                                <select id="catalogoTableStatusFilter" class="catalogo-table-status-select" onchange="window.handleCatalogoTableFilterChange && window.handleCatalogoTableFilterChange()">
                                     <option value="ALL">Todos los estados</option>
                                     <option value="Entregada">Entregada</option>
-                                    <option value="No entregada">No entregada</option>
+<option value="Pendiente">Pendiente</option>
+<option value="Retrasada">Retrasada</option>
                                 </select>
                                 <button type="button" class="catalogo-table-clear-btn" onclick="window.clearCatalogoTableFilters && window.clearCatalogoTableFilters()">Limpiar</button>
                             </div>
@@ -1758,7 +2069,7 @@
             </section>
         </div>
 
-        <div id="page-monthly" class="page-section hidden w-full h-[calc(100vh-76px)] bg-[#F1F5F9]">
+        <div id="page-monthly" class="page-section hidden w-full min-h-[calc(100vh-76px)] bg-[#F1F5F9]">
             <div class="flex h-full w-full">
                 <!-- Sidebar Navigation -->
                 <aside class="w-[280px] bg-white border-r border-slate-200 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-full shrink-0 z-20">
@@ -2079,6 +2390,16 @@
         </div>
 
         <div id="page-kpis" class="page-section hidden w-full">
+            <div id="kpisPageLoading" class="catalogo-kpis-empty catalogo-kpis-loader site-page-loader" role="status" aria-live="polite">
+                <div class="catalogo-kpis-loader-inner">
+                    <div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div>
+                    <div class="catalogo-kpis-loader-label">Global Transformation Hub</div>
+                    <div class="catalogo-kpis-loader-title">Cargando <span>KPIs</span></div>
+                    <p class="catalogo-kpis-loader-copy">Preparando la visión geográfica, los indicadores y las gráficas de seguimiento.</p>
+                    <div class="catalogo-kpis-loader-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="catalogo-kpis-loader-status"><b></b> Sincronizando la información</div>
+                </div>
+            </div>
             <div class="w-full mx-auto px-4 lg:px-8 py-4 md:py-8 space-y-6" id="top-dashboard">
                 
                 <section class="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative">
@@ -2260,7 +2581,7 @@
                         <div class="bg-[#004481] px-6 py-4 flex items-center justify-between border-b border-[#004481] flex-shrink-0">
                             <h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2"><i data-lucide="star" class="w-4 h-4"></i> Rating App <span class="dynamic-q-label px-2 py-0.5 rounded-md bg-white/20 text-white text-[9px] font-bold"></span></h2>
                             <div class="flex items-center gap-2">
-                                <a href="https://datastudio.google.com/s/gz7nznqIGvk" target="_blank" rel="noopener noreferrer" class="bg-[#5BBEFF] hover:bg-[#3ba8f5] text-[#004481] flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-normal transition-colors px-3 py-1.5 rounded-full shadow-sm"><i data-lucide="external-link" class="w-3 h-3"></i> Dashboard en detalle</a>
+                                <a href="https://script.google.com/a/macros/bbva.com/s/AKfycbzcrsLIXgG5vUM2jRilCO7-i5ZK6A_X0Yv-kPXqkBLFX5HOi5Soo6KF037RAgs9WxRk4g/exec" target="_blank" rel="noopener noreferrer" class="dashboard-detail-link" aria-label="Abrir el dashboard en detalle de Rating App"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver dashboard</a>
                                 <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
                             </div>
                         </div>
@@ -2273,6 +2594,16 @@
         </div>
 
         <div id="page-endproduct" class="page-section hidden w-full">
+            <div id="endProductPageLoading" class="catalogo-kpis-empty catalogo-kpis-loader site-page-loader" role="status" aria-live="polite">
+                <div class="catalogo-kpis-loader-inner">
+                    <div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div>
+                    <div class="catalogo-kpis-loader-label">Global Transformation Hub</div>
+                    <div class="catalogo-kpis-loader-title">Cargando <span>Bloques Funcionales</span></div>
+                    <p class="catalogo-kpis-loader-copy">Preparando el avance de cada bloque, sus objetivos y la visión por geografía.</p>
+                    <div class="catalogo-kpis-loader-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="catalogo-kpis-loader-status"><b></b> Sincronizando la información</div>
+                </div>
+            </div>
             <div id="ep-top-dashboard" class="w-full mx-auto px-4 lg:px-8 py-4 md:py-8 space-y-6">
                 
                 <section class="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative">
@@ -2391,11 +2722,17 @@
         </div>
 
 
-        <div id="page-ftes" class="page-section hidden w-full h-[calc(100vh-76px)]">
-            <section class="w-full h-full flex flex-col relative bg-[#F1F5F9]">
-                <div id="ftes-loading" class="absolute inset-0 bg-[#F1F5F9] z-10 flex flex-col items-center justify-center transition-opacity duration-500">
-                    <div class="w-12 h-12 rounded-full border-4 border-blue-100 border-t-[#004481] animate-spin mb-4"></div>
-                    <p class="text-[#004481] font-bold text-sm tracking-wide">Cargando módulo de FTEs...</p>
+        <div id="page-ftes" class="page-section hidden w-full min-h-[calc(100vh-76px)]">
+            <section class="w-full min-h-[calc(100vh-76px)] flex flex-col relative bg-[#F1F5F9]">
+                <div id="ftes-loading" class="catalogo-kpis-empty catalogo-kpis-loader site-page-loader transition-opacity duration-500" role="status" aria-live="polite">
+                    <div class="catalogo-kpis-loader-inner">
+                        <div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div>
+                        <div class="catalogo-kpis-loader-label">Global Transformation Hub</div>
+                        <div class="catalogo-kpis-loader-title">Cargando <span>FTEs y Presupuesto</span></div>
+                        <p class="catalogo-kpis-loader-copy">Preparando la información de inversión, presupuesto y equipos para que puedas consultarla.</p>
+                        <div class="catalogo-kpis-loader-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                        <div class="catalogo-kpis-loader-status"><b></b> Sincronizando la información</div>
+                    </div>
                 </div>
 
                 <iframe 
@@ -2755,6 +3092,23 @@
 
         window.moveFtTooltip = function(e) { moveTT('ft-evolution-tooltip', e, 15, 15); };
         window.hideFtTooltip = function() { toggleTT('ft-evolution-tooltip', false); };
+        window.clearFeatureHoverState = function() {
+            window.hideFtTooltip();
+            const activeElements = chartFeatureProgressInstance?.tooltip?.getActiveElements?.() || [];
+            if (activeElements.length) {
+                chartFeatureProgressInstance.tooltip.setActiveElements([], { x: 0, y: 0 });
+                chartFeatureProgressInstance.update('none');
+            }
+        };
+        window.addEventListener('scroll', () => window.clearFeatureHoverState(), { passive: true });
+        document.addEventListener('scroll', () => window.clearFeatureHoverState(), true);
+        document.addEventListener('pointerdown', () => window.clearFeatureHoverState(), { passive: true });
+        document.addEventListener('pointermove', event => {
+            const tooltip = document.getElementById('ft-evolution-tooltip');
+            const target = event.target;
+            if (!tooltip || tooltip.classList.contains('hidden')) return;
+            if (!(target instanceof Element) || !target.closest('.rm-marker')) window.clearFeatureHoverState();
+        }, { passive: true });
 
         window.showEpTooltip = function(el) {
             const tt = document.getElementById('ep-global-tooltip');
@@ -3249,7 +3603,7 @@
 
         window.getSteercoFtesWrapperHtml = function() {
             return `
-                <div id="steerco-ftes-wrapper" class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full h-[calc(100vh-310px)] min-h-[620px] flex flex-col relative overflow-hidden">
+                <div id="steerco-ftes-wrapper" class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full min-h-[620px] flex flex-col relative overflow-hidden">
                     <div id="steerco-ftes-loading" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center transition-opacity duration-500">
                         <div class="w-12 h-12 rounded-full border-4 border-blue-100 border-t-[#004481] animate-spin mb-4"></div>
                         <p class="text-[#004481] font-bold text-sm tracking-wide">Cargando Presupuesto y FTEs...</p>
@@ -3599,7 +3953,136 @@
             }, 50);
         };
 
+        let siteLoadingTimer = null;
+        let siteLoadingPageId = null;
+
+        window.hideSiteLoadingScreen = function() {
+            if (siteLoadingTimer) {
+                window.clearTimeout(siteLoadingTimer);
+                siteLoadingTimer = null;
+            }
+            const screen = document.getElementById('siteLoadingScreen');
+            if (!screen) return;
+            screen.classList.remove('is-visible');
+            screen.setAttribute('aria-hidden', 'true');
+            siteLoadingPageId = null;
+        };
+
+        window.showSiteLoadingScreen = function(pageId) {
+            const screen = document.getElementById('siteLoadingScreen');
+            const page = document.getElementById(pageId);
+            if (!screen || !page || page.classList.contains('hidden')) return;
+            page.prepend(screen);
+            screen.classList.add('is-visible');
+            screen.setAttribute('aria-hidden', 'false');
+        };
+
+        window.beginDelayedPageLoader = function(pageId) {
+            window.hideSiteLoadingScreen();
+            if (!pageId || pageId === 'page-inicio') return;
+            siteLoadingPageId = pageId;
+            siteLoadingTimer = window.setTimeout(() => {
+                siteLoadingTimer = null;
+                if (siteLoadingPageId === pageId) window.showSiteLoadingScreen(pageId);
+            }, 10000);
+        };
+
+        window.finishDelayedPageLoader = function(pageId) {
+            if (!pageId || !siteLoadingPageId || pageId === siteLoadingPageId) {
+                window.hideSiteLoadingScreen();
+            }
+        };
+
+        window.moveSiteNavIndicator = function(button) {
+            const nav = document.getElementById('siteMainNav');
+            const indicator = document.getElementById('siteNavActiveIndicator');
+            if (!nav || !indicator || !button) {
+                if (indicator) indicator.classList.remove('is-visible');
+                return;
+            }
+            const navRect = nav.getBoundingClientRect();
+            const buttonRect = button.getBoundingClientRect();
+            indicator.style.width = `${buttonRect.width}px`;
+            indicator.style.height = `${buttonRect.height}px`;
+            indicator.style.transform = `translate(${buttonRect.left - navRect.left}px, ${buttonRect.top - navRect.top}px)`;
+            indicator.classList.add('is-visible');
+        };
+
+        window.addEventListener('resize', () => {
+            window.moveSiteNavIndicator(document.querySelector('#siteMainNav .site-nav-btn.is-active'));
+        });
+        window.addEventListener('load', () => {
+            window.requestAnimationFrame(() => {
+                window.moveSiteNavIndicator(document.querySelector('#siteMainNav .site-nav-btn.is-active'));
+            });
+        }, { once: true });
+
+        const primaryDashboardLoadState = { ready: false, loading: false };
+        const primaryDashboardLoaderConfig = {
+            'page-kpis': { loaderId: 'kpisPageLoading', contentId: 'top-dashboard' },
+            'page-endproduct': { loaderId: 'endProductPageLoading', contentId: 'ep-top-dashboard' }
+        };
+
+        function resetPrimaryDashboardLoader(loader) {
+            if (!loader) return;
+            if (!loader.dataset.defaultMarkup) loader.dataset.defaultMarkup = loader.innerHTML;
+            loader.innerHTML = loader.dataset.defaultMarkup;
+        }
+
+        window.showPrimaryDashboardPageLoader = function(pageId) {
+            const config = primaryDashboardLoaderConfig[pageId];
+            if (!config) return;
+            const loader = document.getElementById(config.loaderId);
+            const content = document.getElementById(config.contentId);
+            if (!loader || !content) return;
+            resetPrimaryDashboardLoader(loader);
+            loader.classList.remove('hidden');
+            content.classList.add('hidden');
+        };
+
+        window.hidePrimaryDashboardPageLoader = function(pageId) {
+            const config = primaryDashboardLoaderConfig[pageId];
+            if (!config) return;
+            const loader = document.getElementById(config.loaderId);
+            const content = document.getElementById(config.contentId);
+            if (loader) loader.classList.add('hidden');
+            if (content) content.classList.remove('hidden');
+        };
+
+        window.syncPrimaryDashboardPageLoader = function(pageId) {
+            if (!primaryDashboardLoaderConfig[pageId]) return;
+            if (primaryDashboardLoadState.ready) window.hidePrimaryDashboardPageLoader(pageId);
+            else window.showPrimaryDashboardPageLoader(pageId);
+        };
+
+        window.setPrimaryDashboardsLoading = function() {
+            primaryDashboardLoadState.ready = false;
+            primaryDashboardLoadState.loading = true;
+            Object.keys(primaryDashboardLoaderConfig).forEach(window.showPrimaryDashboardPageLoader);
+        };
+
+        window.setPrimaryDashboardsReady = function() {
+            primaryDashboardLoadState.ready = true;
+            primaryDashboardLoadState.loading = false;
+            Object.keys(primaryDashboardLoaderConfig).forEach(window.hidePrimaryDashboardPageLoader);
+        };
+
+        window.setPrimaryDashboardsLoadError = function() {
+            primaryDashboardLoadState.ready = false;
+            primaryDashboardLoadState.loading = false;
+            Object.values(primaryDashboardLoaderConfig).forEach(config => {
+                const loader = document.getElementById(config.loaderId);
+                const content = document.getElementById(config.contentId);
+                if (content) content.classList.add('hidden');
+                if (!loader) return;
+                loader.classList.remove('hidden');
+                loader.innerHTML = '<div class="catalogo-kpis-loader-inner"><div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div><div class="catalogo-kpis-loader-label">Global Transformation Hub</div><div class="catalogo-kpis-loader-title">No se han podido <span>cargar los datos</span></div><p class="catalogo-kpis-loader-copy">Actualiza la página para volver a intentarlo.</p></div>';
+            });
+        };
+
         window.switchPage = (pageId, btn) => {
+            if (typeof window.finishDelayedPageLoader === 'function') window.finishDelayedPageLoader();
+            if (typeof window.clearFeatureHoverState === 'function') window.clearFeatureHoverState();
             // Si salimos de SteerCo, devolvemos los módulos a su página original y restauramos
             // los filtros que tenía el dashboard general antes de entrar en la vista SteerCo.
             if (pageId !== 'page-steerco') {
@@ -3620,15 +4103,18 @@
                 if (content) document.getElementById('page-endproduct').appendChild(content);
             }
 
+            const nextPage = document.getElementById(pageId);
+            if (!nextPage) return;
+
             document.querySelectorAll('.page-section').forEach(page => page.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
+            nextPage.classList.remove('hidden');
+            nextPage.classList.remove('site-page-enter');
+            window.requestAnimationFrame(() => nextPage.classList.add('site-page-enter'));
+            if (typeof window.syncPrimaryDashboardPageLoader === 'function') window.syncPrimaryDashboardPageLoader(pageId);
             
-            document.querySelectorAll('.site-nav-btn').forEach(navBtn => { 
-                navBtn.className = 'site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors'; 
-            });
-            if(btn) { 
-                btn.className = 'site-nav-btn px-3 py-2 text-xs font-bold bg-blue-50 border border-blue-200 text-[#004481] rounded-lg transition-colors'; 
-            }
+            document.querySelectorAll('.site-nav-btn').forEach(navBtn => navBtn.classList.remove('is-active'));
+            if (btn) btn.classList.add('is-active');
+            window.requestAnimationFrame(() => window.moveSiteNavIndicator(btn));
             
             // Si entramos a page-monthly, forzamos click en el primer tab (Agenda) para que se muestre como portada
             if (pageId === 'page-monthly') {
@@ -3660,7 +4146,7 @@
 
         // --- VARIABLES GLOBALES ---
         let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, featuresEvolution2025=null;
-        let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
+        let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, featureProgressLoading=false, featureProgressLoadError='', trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
         const chartColors = {'España':'#a855f7','México':'#22c55e','Perú':'#ef4444','Colombia':'#1e3a8a','Argentina':'#3b82f6','TOTAL':'#004481'};
         const flagsMap = { 'Holding':'Holding','España':'es','México':'mx','Perú':'pe','Colombia':'co','Argentina':'ar','TOTAL':'global','Global':'global','ALL':'global'};
         const countryOrder = ['España','México','Perú','Colombia','Argentina'];
@@ -3844,7 +4330,7 @@ window.EDCNps = (() => {
     `;
     document.head.appendChild(style);
     const section=document.createElement('section');section.id='section-nps';section.className='executive-card scroll-offset';
-    section.innerHTML='<div class="nps-header"><h2><i data-lucide="gauge" class="w-4 h-4 text-white/80" aria-hidden="true"></i>NPS</h2><button type="button" class="nps-up" onclick="window.scrollToTop()">↑ SUBIR</button></div><div class="nps-body"><div id="nps-detail"></div></div>';
+    section.innerHTML='<div class="nps-header"><h2><i data-lucide="gauge" class="w-4 h-4 text-white/80" aria-hidden="true"></i>NPS</h2><div class="nps-header-actions"><a href="https://script.google.com/a/macros/bbva.com/s/AKfycbyWV7MRAk0oVW1urwG64AMPzUBkA-iltpUZQ-69jtdZzwfQVD6SH1-1o4ftLGu9htBv/exec" target="_blank" rel="noopener noreferrer" class="dashboard-detail-link" aria-label="Abrir el dashboard en detalle de NPS"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver dashboard</a><button type="button" class="nps-up" onclick="window.scrollToTop()">↑ SUBIR</button></div></div><div class="nps-body"><div id="nps-detail"></div></div>';
     placeNps(section);
     const btn=document.createElement('button');btn.type='button';btn.id='nps-nav-button';
     btn.innerHTML='<i data-lucide="gauge" class="w-3 h-3" aria-hidden="true"></i> NPS';
@@ -3890,7 +4376,7 @@ window.EDCNps = (() => {
           },
           scales:{
             y:{min:low,max:high,title:{display:true,text:'NPS · puntos',color:'#526176',font:{size:13,weight:'700'}},ticks:{maxTicksLimit:6,color:'#526176',font:{size:13}},grid:{color:'#e8eef5'}},
-            x:{offset:true,grid:{display:false},ticks:{autoSkip:false,minRotation:0,maxRotation:0,color:'#526176',font:{size:12,weight:'700'},callback:function(v,index){const key=history[index];const width=this.chart.width;const step=width<450?3:width<750?2:1;return index===history.length-1||index===0||((index%step===0)&&(index<history.length-2))?[monthLabel(key).split(' ')[0],key.slice(2,4)]:'';}}}
+            x:{offset:true,grid:{display:false},ticks:{autoSkip:false,minRotation:0,maxRotation:0,color:'#526176',font:{size:12,weight:'700'},callback:function(v,index){const key=history[index];const width=this.chart.width;const step=width<450?3:width<750?2:1;return index===history.length-1||index===history.length-2||index===0||((index%step===0)&&(index<history.length-2))?[monthLabel(key).split(' ')[0],key.slice(2,4)]:'';}}}
           }
         }
       }));
@@ -3934,6 +4420,7 @@ window.EDCNps = (() => {
 
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
+            if (typeof window.setPrimaryDashboardsLoading === 'function') window.setPrimaryDashboardsLoading();
             const reader = new FileReader();
             reader.onload = function(ev) {
                 try {
@@ -3963,8 +4450,8 @@ window.EDCNps = (() => {
                         return cell ? (cell.w ?? cell.v ?? '') : '';
                     };
                     const isBacklogTrue = value => {
-                        if (value === true || value === 1) return true;
-                        return String(value ?? '').trim().toUpperCase() === 'TRUE';
+                        const text = String(value ?? '').trim().toUpperCase();
+                        return value === true || value === 1 || ['TRUE', 'VERDADERO', '1'].includes(text);
                     };
                     const quarterFromBacklog = value => {
                         const text = String(value ?? '').trim().toUpperCase().replace(/\s+/g, '');
@@ -3990,8 +4477,7 @@ window.EDCNps = (() => {
                         if (!backlogFtSheet || !backlogFtSheet['!ref']) return null;
                         const range = XLSX.utils.decode_range(backlogFtSheet['!ref']);
                         const rows = [];
-                        for (let row = range.s.r + 1; row <= range.e.r + 1; row++) {
-                            if (!isBacklogTrue(readBacklogCell(backlogFtSheet, cfg.enabled, row))) continue;
+                        for (let row = 4; row <= range.e.r + 1; row++) {
                             rows.push({
                                 delivered: quarterRankFromBacklog(readBacklogCell(backlogFtSheet, cfg.delivered, row)),
                                 forecast: quarterRankFromBacklog(readBacklogCell(backlogFtSheet, cfg.forecast, row))
@@ -4257,11 +4743,13 @@ window.EDCNps = (() => {
                         }
                     });
 
+                    if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
                     window.showToast("Datos sincronizados correctamente", "success");
                     document.querySelectorAll('.updateInfo').forEach(el=>el.innerText=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
                 } catch(e) {
                     console.error(e); 
+                    if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
                     window.showToast("Error procesando los datos de la base.", "error"); 
                 }
             };
@@ -4328,8 +4816,18 @@ window.EDCNps = (() => {
             // Sincronizar bidireccionalmente sin dejar selects antiguos en blanco.
             syncTriValue('fTri', el.value);
             syncTriValue('fTri_ep', el.value);
+            syncTriValue('catalogoQuarterFilter', el.value);
+
+            if (window.catalogoKpisState) {
+                window.catalogoKpisState.selectedQuarter = document.getElementById('catalogoQuarterFilter')?.value || el.value;
+            }
 
             window.refreshCurrentDashboard();
+
+            const catalogoPage = document.getElementById('page-catalogo-kpis');
+            if (catalogoPage && !catalogoPage.classList.contains('hidden') && typeof window.renderCatalogoKpis === 'function') {
+                window.renderCatalogoKpis();
+            }
         };
 
         window.applyFilters = () => {
@@ -4420,14 +4918,41 @@ window.EDCNps = (() => {
                 }
 
                 const ctx = document.getElementById(cId).getContext('2d');
+                const gaugeCenterTextPlugin = {
+                    id: `overviewGaugeCenterText${i}`,
+                    afterDraw(chart) {
+                        if (!chart.chartArea) return;
+                        const draw = chart.ctx;
+                        const { left, right, top, bottom } = chart.chartArea;
+                        const doughnutArc = chart.getDatasetMeta(0)?.data?.[0];
+                        const innerRadius = doughnutArc?.innerRadius || Math.min(right - left, bottom - top) * 0.34;
+                        const maxTextWidth = Math.max(44, innerRadius * 1.55);
+                        let fontSize = Math.min(20, Math.max(11, Math.round((bottom - top) / 5)));
+                        if (realText.length > 5) fontSize = Math.max(10, fontSize - 1);
+                        draw.save();
+                        draw.font = `900 ${fontSize}px 'Benton Sans', sans-serif`;
+                        while (fontSize > 10 && draw.measureText(realText).width > maxTextWidth) {
+                            fontSize -= 1;
+                            draw.font = `900 ${fontSize}px 'Benton Sans', sans-serif`;
+                        }
+                        draw.textAlign = 'center';
+                        draw.textBaseline = 'middle';
+                        draw.fillStyle = isNull ? '#94a3b8' : color;
+                        draw.fillText(realText, (left + right) / 2, (top + bottom) / 2);
+                        draw.restore();
+                    }
+                };
                 overviewGauges.push(new Chart(ctx, {
-                    type:'doughnut', data:{labels:['Real','Restante'],datasets:[{data:[vVal,100-vVal],backgroundColor:[color,'#e2e8f0'],borderWidth:0}]},
-                    options:{responsive:true,maintainAspectRatio:false,cutout:'75%',plugins:{legend:{display:false},tooltip:{enabled:false},datalabels:{display:false}},animation:{onComplete:function(){const cx=this.ctx;cx.restore();let fS=Math.max(10,Math.round(this.height/4.5));if(realText.length>5)fS=Math.max(9,Math.round(this.height/5.4));cx.font="900 "+fS+"px 'Benton Sans',sans-serif";cx.textBaseline="middle";cx.fillStyle=isNull?'#94a3b8':color;cx.fillText(realText,Math.round((this.width-cx.measureText(realText).width)/2),this.height/2);cx.save();}}}
+                    type:'doughnut',
+                    data:{labels:['Real','Restante'],datasets:[{data:[vVal,100-vVal],backgroundColor:[color,'#e2e8f0'],borderWidth:0}]},
+                    plugins:[gaugeCenterTextPlugin],
+                    options:{responsive:true,maintainAspectRatio:false,cutout:'75%',events:[],animation:false,plugins:{legend:{display:false},tooltip:{enabled:false},datalabels:{display:false}}}
                 }));
             });
             updateIcons();
         }
 
+        const SENDA_PERIODS = ['25Q1','25Q2','25Q3','25Q4','26Q1','26Q2','26Q3','26Q4','27Q1','27Q2','27Q3','27Q4','28Q1','28Q2','28Q3','28Q4'];
         const featureProgressName = {espana:'España',mexico:'México',peru:'Perú',colombia:'Colombia',argentina:'Argentina',global:'Global'};
         const featureProgressIcon = countryKey => {
             const countryName = featureProgressName[countryKey] || 'Global';
@@ -4436,38 +4961,160 @@ window.EDCNps = (() => {
                 : `<img src="https://flagcdn.com/w40/${flagsMap[countryName]}.png" class="feature-progress-flag" alt="Bandera de ${countryName}">`;
         };
         const featureProgressPct = (value, total) => (value == null || !total) ? '—' : `${(value * 100 / total).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})}%`;
-        window.openFeatureProgressDetail = function(countryKey) {
+        const FEATURE_PROGRESS_PERIODS = ['24Q4','25Q1','25Q2','25Q3','25Q4','26Q1','26Q2','26Q3','26Q4'];
+        const hasFeatureProgressValue = value => value !== null && value !== undefined && value !== '' && !Number.isNaN(Number(value));
+
+        function getLastClosedFeatureQuarter(now = new Date()) {
+            const currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+            const lastQuarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
+            const lastYear = currentQuarter === 1 ? now.getFullYear() - 1 : now.getFullYear();
+            return `${String(lastYear).slice(-2)}Q${lastQuarter}`;
+        }
+
+        function getFeatureActualQuarter(selectedQuarter, countryKey) {
+            const selectedIndex = FEATURE_PROGRESS_PERIODS.indexOf(selectedQuarter);
+            const lastClosedIndex = FEATURE_PROGRESS_PERIODS.indexOf(getLastClosedFeatureQuarter());
+            const maximumIndex = Math.min(
+                selectedIndex >= 0 ? selectedIndex : FEATURE_PROGRESS_PERIODS.length - 1,
+                lastClosedIndex >= 0 ? lastClosedIndex : FEATURE_PROGRESS_PERIODS.length - 1
+            );
+            for (let index = maximumIndex; index >= 0; index -= 1) {
+                const quarter = FEATURE_PROGRESS_PERIODS[index];
+                if (hasFeatureProgressValue(featuresData?.realByQuarter?.[quarter]?.[countryKey])) return quarter;
+            }
+            return null;
+        }
+
+        function getDeliveredSendaIndex(periods, selectedQuarter) {
+            const selectedIndex = periods.indexOf(selectedQuarter);
+            const lastClosedIndex = periods.indexOf(getLastClosedFeatureQuarter());
+            const requestedIndex = selectedIndex >= 0 ? selectedIndex : Math.max(0, lastClosedIndex);
+            return Math.max(0, Math.min(requestedIndex, lastClosedIndex >= 0 ? lastClosedIndex : requestedIndex));
+        }
+
+        function buildSendaSeriesFromCatalogo(countryKey) {
+            const state = window.catalogoKpisState;
+            if (!state || !state.loaded || !Array.isArray(state.rows)) return null;
+
+            const countryCodes = { espana:'ESPANA', mexico:'MEXICO', peru:'PERU', colombia:'COLOMBIA', argentina:'ARGENTINA' };
+            const allCountryCodes = new Set(Object.values(countryCodes));
+            const normaliseCountry = value => String(value || '')
+                .trim()
+                .toUpperCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+            const ranks = Object.fromEntries(SENDA_PERIODS.map((period, index) => [period, index]));
+            const finalPeriod = (countryKey === 'argentina' || countryKey === 'global') ? '28Q4' : '27Q4';
+            const finalRank = ranks[finalPeriod];
+            const selectedCountry = countryCodes[countryKey];
+            const rows = state.rows.filter(row => {
+                const country = normaliseCountry(row.pais || row.paisOriginal);
+                return countryKey === 'global'
+                    ? allCountryCodes.has(country)
+                    : country === selectedCountry;
+            });
+            const quarterRank = value => {
+                const text = String(value || '').trim().toUpperCase().replace(/\s+/g, '');
+                if (!text || text === '-' || text === 'N/A') return null;
+                if (text.includes('24Q3OANTES')) return -1;
+                const match = text.match(/(2[4-8])Q([1-4])/);
+                if (!match) return null;
+                if (Number(match[1]) < 25) return -1;
+                return ranks[`${match[1]}Q${match[2]}`] ?? null;
+            };
+            const targetRank = row => {
+                const rank = quarterRank(row.qTarget);
+                return rank === null ? finalRank : rank;
+            };
+            const deliveredRank = row => quarterRank(row.qReal);
+            const countThrough = (rankGetter, cutoff) => rows.filter(row => {
+                const rank = rankGetter(row);
+                return rank !== null && rank <= cutoff;
+            }).length;
+            const deliveredAt = period => countThrough(deliveredRank, Math.min(ranks[period], finalRank));
+            const forecastAt = period => countThrough(targetRank, Math.min(ranks[period], finalRank));
+            const annualTargetAt = period => {
+                const year = Math.min(Number(period.slice(0, 2)), Number(finalPeriod.slice(0, 2)));
+                return countThrough(targetRank, ranks[`${year}Q4`]);
+            };
+
+            return {
+                final: finalPeriod,
+                total: rows.length,
+                delivered: SENDA_PERIODS.map(deliveredAt),
+                forecast: SENDA_PERIODS.map(forecastAt),
+                target: SENDA_PERIODS.map(annualTargetAt)
+            };
+        }
+
+        function renderFeatureProgressActions(countryKey) {
+            const moreButton = countryKey === 'global'
+                ? ''
+                : `<button type="button" class="feature-progress-more" onclick="window.openCatalogoKpisForCountry && window.openCatalogoKpisForCountry('${countryKey}')">Ver más →</button>`;
+            return `<div class="feature-progress-actions">${moreButton}<button type="button" class="feature-progress-back" onclick="window.closeFeatureProgressDetail()">← Volver</button></div>`;
+        }
+
+        window.openFeatureProgressDetail = async function(countryKey) {
             featureDetailKey = countryKey;
-            renderFeaturesRoadmap();
+            featureProgressLoadError = '';
+            featureProgressLoading = true;
+            const needsCatalogoData = !window.catalogoKpisState?.loaded;
+            if (needsCatalogoData && typeof window.beginDelayedPageLoader === 'function') {
+                window.beginDelayedPageLoader('page-kpis');
+            }
+            if (featuresData) renderFeaturesRoadmap(); else renderFeatureProgressDetail(countryKey);
+            try {
+                if (typeof window.getCatalogoKpisRows !== 'function') throw new Error('La fuente del Layout KPIs todavía no está disponible.');
+                await window.getCatalogoKpisRows();
+            } catch (error) {
+                console.error('Error cargando la senda desde Layout KPIs:', error);
+                featureProgressLoadError = 'No se han podido cargar los datos de Layout KPIs.';
+            } finally {
+                if (needsCatalogoData && typeof window.finishDelayedPageLoader === 'function') {
+                    window.finishDelayedPageLoader('page-kpis');
+                }
+                featureProgressLoading = false;
+                if (featuresData) renderFeaturesRoadmap(); else renderFeatureProgressDetail(countryKey);
+            }
         };
         window.closeFeatureProgressDetail = function() {
             featureDetailKey = null;
-            renderFeaturesRoadmap();
+            featureProgressLoading = false;
+            featureProgressLoadError = '';
+            if (featuresData) renderFeaturesRoadmap();
         };
         function renderFeatureProgressDetail(countryKey) {
             const container = document.getElementById('roadmapContent');
+            if (!container) return;
             const timelineHeader = document.querySelector('#roadmapGrid .roadmap-timeline-header');
             if (timelineHeader) timelineHeader.style.display = 'none';
-            const series = featureProgressData?.countries?.[countryKey];
             const countryName = featureProgressName[countryKey] || 'Global';
             const featureProgressTitle = `${featureProgressIcon(countryKey)}<span>Senda de Features Transformadas · ${countryName}</span>`;
             if (chartFeatureProgressInstance) { chartFeatureProgressInstance.destroy(); chartFeatureProgressInstance = null; }
+            if (featureProgressLoading) {
+                container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div>${renderFeatureProgressActions(countryKey)}</div><div class="py-16 text-center text-sm font-bold text-slate-400">Cargando datos de la senda...</div></div>`;
+                return;
+            }
+            if (featureProgressLoadError) {
+                container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div>${renderFeatureProgressActions(countryKey)}</div><div class="py-16 text-center text-sm font-bold text-slate-400">${featureProgressLoadError}</div></div>`;
+                return;
+            }
+            const series = buildSendaSeriesFromCatalogo(countryKey);
             if (!series) {
-                container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div><button type="button" class="feature-progress-back" onclick="window.closeFeatureProgressDetail()">← Volver</button></div><div class="py-16 text-center text-sm font-bold text-slate-400">No hay datos de Backlog FT disponibles para esta geografía.</div></div>`;
+                container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div>${renderFeatureProgressActions(countryKey)}</div><div class="py-16 text-center text-sm font-bold text-slate-400">No hay datos de Layout KPIs disponibles para esta geografía.</div></div>`;
                 return;
             }
             const selectedQuarter = document.getElementById('fTri').value === 'ALL' ? '26Q2' : document.getElementById('fTri').value;
             const show2028 = countryKey === 'argentina' || countryKey === 'global';
-            const periodIndexes = featureProgressData.periods.map((_, index) => index).filter(index => show2028 || index < 12);
-            const periods = periodIndexes.map(index => featureProgressData.periods[index]);
-            const currentIndex = periods.indexOf(selectedQuarter);
-            const deliveryVisibleThrough = currentIndex >= 0 ? currentIndex : periods.indexOf('26Q2');
+            const periodIndexes = SENDA_PERIODS.map((_, index) => index).filter(index => show2028 || index < 12);
+            const periods = periodIndexes.map(index => SENDA_PERIODS[index]);
+            const deliveryVisibleThrough = getDeliveredSendaIndex(periods, selectedQuarter);
             const delivered = periodIndexes.map((sourceIndex, index) => index <= deliveryVisibleThrough ? series.delivered[sourceIndex] : null);
             const forecast = periodIndexes.map(index => series.forecast[index]);
             const target = periodIndexes.map(index => series.target[index]);
             const allValues = [...forecast, ...target, ...delivered.filter(value => value != null)];
             const yMax = Math.max(10, Math.ceil((Math.max(...allValues, 0) * 1.15) / 10) * 10);
-            container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div><button type="button" class="feature-progress-back" onclick="window.closeFeatureProgressDetail()">← Volver</button></div><div class="feature-progress-legend"><span><b style="background:#004481"></b>Entregadas</span><span><b class="forecast-key"></b>Previsión</span><span><b class="target-key"></b>Target anual</span></div><div class="feature-progress-chart"><canvas id="feature-progress-chart" role="img" aria-label="Senda de Features Transformadas de ${countryName}"></canvas></div></div>`;
+            container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div>${renderFeatureProgressActions(countryKey)}</div><div class="feature-progress-legend"><span><b style="background:#004481"></b>Entregadas</span><span><b class="forecast-key"></b>Previsión</span><span><b class="target-key"></b>Target anual</span></div><div class="feature-progress-chart"><canvas id="feature-progress-chart" role="img" aria-label="Senda de Features Transformadas de ${countryName}"></canvas></div></div>`;
             const canvas = document.getElementById('feature-progress-chart');
             if (!canvas || typeof Chart === 'undefined') return;
             const targetDatasets = (show2028 ? ['25','26','27','28'] : ['25','26','27']).map(year => ({
@@ -4543,19 +5190,21 @@ window.EDCNps = (() => {
                 '26Q3': 46,
                 '26Q4': 49.5
             };
-            const currentProgressPos = quarterMarkerPositions[currentQ] ?? 43;
-            window.toggleEmptyState('canvas-container-features', !['24Q4','25Q1','25Q2','25Q3','25Q4','26Q1','26Q2','26Q3','26Q4'].includes(currentQ), `Sin datos para ${currentQ}`);
-            container.innerHTML = `<div class="flex flex-col items-center justify-center mb-5 gap-2"><div class="flex flex-wrap items-center justify-center gap-4 text-[10px] font-bold text-gray-500 uppercase"><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#5BBEFF] rounded-full"></div> Cierre 2025</span><span class="flex items-center gap-1.5"><div class="w-3.5 h-3.5 bg-[#004481] rounded-full border border-gray-200"></div> % de Avance Actual</span><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#FB923C] rotate-45 rounded-[1px]"></div> Target 2026</span><span class="flex items-center gap-1.5"><div class="w-3 h-3 bg-[#4b5563] rotate-45 rounded-[2px]"></div> FIN</span></div><div class="flex flex-wrap items-center justify-center gap-3 text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100"><span class="mr-1">Color del % Avance vs Target Trimestre:</span><span class="flex items-center gap-1"><span class="text-[#48AE64] text-xs leading-none">■</span> Igual o mayor al target</span><span class="flex items-center gap-1"><span class="text-[#EF4444] text-xs leading-none">■</span> Menor al target</span></div></div>`;
+            window.toggleEmptyState('canvas-container-features', false);
+            const lastClosedFeatureQuarter = getLastClosedFeatureQuarter();
+            container.innerHTML = `<div class="flex flex-col items-center justify-center mb-5 gap-2"><div class="flex flex-wrap items-center justify-center gap-4 text-[10px] font-bold text-gray-500 uppercase"><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#5BBEFF] rounded-full"></div> Cierre 2025</span><span class="flex items-center gap-1.5"><div class="w-3.5 h-3.5 bg-[#004481] rounded-full border border-gray-200"></div> % de Avance Actual · hasta ${lastClosedFeatureQuarter}</span><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#FB923C] rotate-45 rounded-[1px]"></div> Target 2026</span><span class="flex items-center gap-1.5"><div class="w-3 h-3 bg-[#4b5563] rotate-45 rounded-[2px]"></div> FIN</span></div><div class="flex flex-wrap items-center justify-center gap-3 text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100"><span class="mr-1">Color del % Avance vs Target Trimestre:</span><span class="flex items-center gap-1"><span class="text-[#48AE64] text-xs leading-none">■</span> Igual o mayor al target</span><span class="flex items-center gap-1"><span class="text-[#EF4444] text-xs leading-none">■</span> Menor al target</span></div></div>`;
 
             const config = [{n:'España',k:'espana',f:'es',ep:'España'},{n:'México',k:'mexico',f:'mx',ep:'México'},{n:'Perú',k:'peru',f:'pe',ep:'Perú'},{n:'Colombia',k:'colombia',f:'co',ep:'Colombia'},{n:'Argentina',k:'argentina',f:'ar',ep:'Argentina'},{n:'Global',k:'global',f:'global',ep:'TOTAL'}];
             config.filter(c => geo==='ALL'||c.n===geo).forEach(c => {
                 // Datos de Features Transformadas desde PPT Status.
                 const c25 = featuresData.cierre2025?.[c.k] ?? null;
                 const tar = featuresData.target2026?.[c.k] ?? null;
-                const rp = featuresData.realByQuarter?.[currentQ]?.[c.k] ?? null;
-                const ct = featuresData.targetByQuarter?.[currentQ]?.[c.k] ?? null;
+                const actualQ = getFeatureActualQuarter(currentQ, c.k);
+                const currentProgressPos = quarterMarkerPositions[actualQ] ?? 25;
+                const rp = actualQ ? featuresData.realByQuarter?.[actualQ]?.[c.k] ?? null : null;
+                const ct = actualQ ? featuresData.targetByQuarter?.[actualQ]?.[c.k] ?? null : null;
                 
-                const hasD = ['24Q4','25Q1','25Q2','25Q3','25Q4','26Q1','26Q2','26Q3','26Q4'].includes(currentQ) && rp!==null && rp!==undefined;
+                const hasD = !!actualQ && hasFeatureProgressValue(rp);
                 let tc="text-[#004481]", st="Estado: sin target";
                 if(hasD&&ct!==null&&ct!==undefined) { const rpv=Math.round(rp*100)/100, ctv=Math.round(ct*100)/100; if(rpv>=ctv){tc="text-[#48AE64]";st="Estado: igual o por encima del target";}else{tc="text-[#EF4444]";st="Estado: por debajo del target";} }
                 
@@ -4793,17 +5442,20 @@ window.EDCNps = (() => {
         function renderEndProduct() {
             if(!endProductDataGlobal||!endProductDataGlobal['TOTAL']) return;
             const geo=document.getElementById('fGeo_ep').value, cQ=document.getElementById('fTri_ep').value==='ALL'?'26Q2':document.getElementById('fTri_ep').value;
-            const aC=geo==='ALL'?countryOrder:[geo]; cR=endProductDataGlobal[geo==='ALL'?'TOTAL':geo].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));
+            const progressData = typeof window.getEndProductDataForQuarter === 'function'
+                ? window.getEndProductDataForQuarter(endProductDataGlobal, cQ)
+                : endProductDataGlobal;
+            const aC=geo==='ALL'?countryOrder:[geo]; cR=progressData[geo==='ALL'?'TOTAL':geo].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));
             
             const hSD = cR?.progreso !== null && cR?.progreso !== undefined;
             window.toggleEmptyState('ep-roadmap-canvas', !hSD, `Pendiente de progreso`);
             
             document.getElementById('epGeoTitlePlot').innerHTML=geo==='ALL'?`${window.getGlobalIconHtml('w-6 h-6 inline-block align-text-bottom mr-1')} Visión global de la transformación`:`<img src="https://flagcdn.com/w40/${flagsMap[geo]}.png" class="w-6 inline rounded-[2px] shadow-sm mr-2 border border-gray-200"> ${geo} (Progreso individual)`;
 
-            const aB=endProductDataGlobal['TOTAL'], rB=aB.filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')), cRTot=aB.find(d=>String(d.bloque).toUpperCase().includes('CONSOLIDADO')||String(d.bloque).toUpperCase().includes('TOTAL'));
+            const aB=progressData['TOTAL'], rB=aB.filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')), cRTot=aB.find(d=>String(d.bloque).toUpperCase().includes('CONSOLIDADO')||String(d.bloque).toUpperCase().includes('TOTAL'));
             const bMH=(bN)=>{
-                let dPs=[]; aC.forEach(c=>{const d=endProductDataGlobal[c].find(x=>x.bloque===bN);if(d&&d.progreso!==null)dPs.push({c:c,b:d.bloque,v:d.progreso,f:d.fin,t26:d.target26,t1:d.target26Q1,t2:d.target26Q2,t3:d.target26Q3,t4:d.target26Q4,iT:false});});
-                if(geo==='ALL'){const dTot=endProductDataGlobal['TOTAL'].find(x=>x.bloque===bN);if(dTot&&dTot.progreso!==null)dPs.push({c:'Global',b:dTot.bloque,v:dTot.progreso,f:dTot.fin,t26:dTot.target26,t1:dTot.target26Q1,t2:dTot.target26Q2,t3:dTot.target26Q3,t4:dTot.target26Q4,iT:true});}
+                let dPs=[]; aC.forEach(c=>{const d=progressData[c].find(x=>x.bloque===bN);if(d&&d.progreso!==null)dPs.push({c:c,b:d.bloque,v:d.progreso,f:d.fin,t26:d.target26,t1:d.target26Q1,t2:d.target26Q2,t3:d.target26Q3,t4:d.target26Q4,iT:false});});
+                if(geo==='ALL'){const dTot=progressData['TOTAL'].find(x=>x.bloque===bN);if(dTot&&dTot.progreso!==null)dPs.push({c:'Global',b:dTot.bloque,v:dTot.progreso,f:dTot.fin,t26:dTot.target26,t1:dTot.target26Q1,t2:dTot.target26Q2,t3:dTot.target26Q3,t4:dTot.target26Q4,iT:true});}
                 let g={}; dPs.forEach(p=>{let k=Math.round(p.v); if(!g[k])g[k]=[]; g[k].push(p);});
                 let h=''; for(let k in g){g[k].forEach((p,i)=>{let o=(i-(g[k].length-1)/2)*14; let dA=`data-country="${p.c}" data-bloque="${p.b}" data-fin="${p.f??'N/D'}" data-progreso="${p.v??'N/D'}" data-target26="${p.t26??'N/D'}" data-target26q1="${p.t1??'N/D'}" data-target26q2="${p.t2??'N/D'}" data-target26q3="${p.t3??'N/D'}" data-target26q4="${p.t4??'N/D'}"`; let tE=`onmouseenter="showEpTooltip(this)" onmousemove="moveEpTooltip(event)" onmouseleave="hideEpTooltip()"`; h+=p.iT?`<div ${tE} ${dA} class="absolute top-1/2 w-3.5 h-3.5 rounded-full bg-[#004481] border-2 border-white shadow-md z-20 group cursor-default" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"></div>`:`<div ${tE} ${dA} class="absolute top-1/2 w-[24px] h-[24px] rounded-full border-2 border-white shadow-sm bg-white hover:shadow-lg hover:z-[60] transition-all hover:scale-125 group cursor-default flex items-center justify-center z-10" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"><img src="https://flagcdn.com/w40/${flagsMap[p.c]}.png" class="w-full h-full object-cover rounded-full pointer-events-none"></div>`;});} return h;
             };
@@ -4814,11 +5466,11 @@ window.EDCNps = (() => {
 
             let h_p=hSD&&cR?.progreso!=null?cR.progreso:'--', h_t=cR?.target26Q4!=null?cR.target26Q4:'--', h_f=cR?.fin||'--';
             if(geo==='ALL'){
-                let cT=countryOrder.map(c=>{let t=endProductDataGlobal[c].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));return {c:c,p:t?.progreso!=null?t.progreso:null}}).filter(x=>x.p!==null).sort((a,b)=>b.p-a.p);
-                let bT=endProductDataGlobal['TOTAL'].filter(d=>!String(d.bloque).toUpperCase().includes('TOTAL')&&!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&d.progreso!==null).sort((a,b)=>b.progreso-a.progreso);
+                let cT=countryOrder.map(c=>{let t=progressData[c].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));return {c:c,p:t?.progreso!=null?t.progreso:null}}).filter(x=>x.p!==null).sort((a,b)=>b.p-a.p);
+                let bT=progressData['TOTAL'].filter(d=>!String(d.bloque).toUpperCase().includes('TOTAL')&&!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&d.progreso!==null).sort((a,b)=>b.progreso-a.progreso);
                 document.getElementById('ep-highlights-top').innerHTML=`<div class="bg-gradient-to-br from-[#004481] to-[#043263] p-4 rounded-xl shadow-sm text-white flex flex-col justify-between relative overflow-hidden"><div class="absolute inset-0 bbva-pattern opacity-20 pointer-events-none"></div><div class="relative z-10 flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-blue-200">Consolidado Total</span>${window.getGlobalIconHtml('w-4 h-4 opacity-80')}</div><div class="relative z-10 flex items-end justify-between"><div><span class="text-3xl font-black">${h_p!=='--'?fmtPct(h_p):'--'}</span></div><div class="text-right"><span class="block text-[9px] text-blue-200 uppercase font-bold">Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</span><span class="block text-[9px] text-blue-200 uppercase font-bold">Fin: ${h_f}</span></div></div></div><div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between cursor-pointer hover:border-[#004481] transition-colors" onclick="document.getElementById('fGeo_ep').value='${cT[0]?cT[0].c:'ALL'}';window.handleGeoChange(document.getElementById('fGeo_ep'));"><div class="flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Mayor Avance País</span><div class="bg-green-50 p-1 rounded-full"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-green-500"></i></div></div><div class="flex items-end justify-between"><div class="flex items-center gap-2">${cT[0]?`<img src="https://flagcdn.com/w40/${flagsMap[cT[0].c]}.png" class="w-5 shadow-sm rounded-[2px] border border-gray-100">`:''}<span class="font-black text-[13px] text-[#004481] uppercase">${cT[0]?cT[0].c:'--'}</span></div><span class="text-2xl font-black text-[#48AE64]">${hSD&&cT[0]?fmtPct(cT[0].p):'--'}</span></div></div><div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between cursor-pointer hover:border-[#004481] transition-colors" onclick="document.getElementById('fGeo_ep').value='${cT.length?cT[cT.length-1].c:'ALL'}';window.handleGeoChange(document.getElementById('fGeo_ep'));"><div class="flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Menor Avance País</span><div class="bg-red-50 p-1 rounded-full"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-500"></i></div></div><div class="flex items-end justify-between"><div class="flex items-center gap-2">${cT.length?`<img src="https://flagcdn.com/w40/${flagsMap[cT[cT.length-1].c]}.png" class="w-5 shadow-sm rounded-[2px] border border-gray-100">`:''}<span class="font-black text-[13px] text-[#004481] uppercase">${cT.length?cT[cT.length-1].c:'--'}</span></div><span class="text-2xl font-black text-[#EF4444]">${hSD&&cT.length?fmtPct(cT[cT.length-1].p):'--'}</span></div></div><div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Funcionalidad Líder</span><div class="bg-blue-50 p-1 rounded-full"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#004481]"></i></div></div><div class="flex items-end justify-between gap-2"><span class="font-black text-[12px] text-[#004481] uppercase truncate block max-w-[120px] leading-tight" title="${bT[0]?bT[0].bloque:''}">${bT[0]?bT[0].bloque:'--'}</span><span class="text-2xl font-black text-[#004481]">${hSD&&bT[0]?fmtPct(bT[0].progreso):'--'}</span></div></div>`;
             }else{
-                let cD=endProductDataGlobal[geo].filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')&&d.progreso!=null).sort((a,b)=>b.progreso-a.progreso);
+                let cD=progressData[geo].filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')&&d.progreso!=null).sort((a,b)=>b.progreso-a.progreso);
                 document.getElementById('ep-highlights-top').innerHTML=`<div class="bg-gradient-to-br from-[#004481] to-[#043263] p-4 rounded-xl shadow-sm text-white flex flex-col justify-between relative overflow-hidden md:col-span-2"><div class="absolute inset-0 bbva-pattern opacity-20 pointer-events-none"></div><div class="relative z-10 flex items-center justify-between mb-2"><div class="flex items-center gap-2"><img src="https://flagcdn.com/w40/${flagsMap[geo]}.png" class="w-5 rounded-sm shadow-sm border border-white/20"><span class="text-[10px] font-black uppercase tracking-widest text-blue-200">Consolidado País</span></div><i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-300"></i></div><div class="relative z-10 flex items-end justify-between"><div><span class="text-3xl font-black">${h_p!=='--'?fmtPct(h_p):'--'}</span></div><div class="text-right"><span class="block text-[9px] text-blue-200 uppercase font-bold">Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</span><span class="block text-[9px] text-blue-200 uppercase font-bold">Fin: ${h_f}</span></div></div></div><div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Mayor Avance</span><div class="bg-green-50 p-1 rounded-full"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-green-500"></i></div></div><div class="flex items-end justify-between gap-2"><span class="font-black text-[12px] text-[#004481] uppercase truncate block max-w-[120px] leading-tight" title="${cD[0]?cD[0].bloque:''}">${cD[0]?cD[0].bloque:'--'}</span><span class="text-2xl font-black text-[#48AE64]">${hSD&&cD[0]?fmtPct(cD[0].progreso):'--'}</span></div></div><div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between mb-2"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Menor Avance</span><div class="bg-red-50 p-1 rounded-full"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-red-500"></i></div></div><div class="flex items-end justify-between gap-2"><span class="font-black text-[12px] text-[#004481] uppercase truncate block max-w-[120px] leading-tight" title="${cD.length?cD[cD.length-1].bloque:''}">${cD.length?cD[cD.length-1].bloque:'--'}</span><span class="text-2xl font-black text-[#EF4444]">${hSD&&cD.length?fmtPct(cD[cD.length-1].progreso):'--'}</span></div></div>`;
             }
 
@@ -4833,6 +5485,7 @@ window.EDCNps = (() => {
         window.syncDataAPI = function(btn) {
             const originalText = btn ? btn.innerHTML : '';
             const originalClass = btn ? btn.className : '';
+            if (typeof window.setPrimaryDashboardsLoading === 'function') window.setPrimaryDashboardsLoading();
             if (btn) {
                 btn.className = 'bg-[#FBBF24] text-[#004481] px-3 py-1 rounded-md flex items-center gap-1.5 shadow-md animate-pulse transition-all whitespace-nowrap';
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span class="text-[10px] font-black uppercase tracking-wider">Actualizando...</span>';
@@ -4850,6 +5503,7 @@ window.EDCNps = (() => {
 
                 if (!response || response.status === "error") {
                     console.error("Error en la API:", response ? response.message : response);
+                    if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
                     window.showToast("Error al leer la base: " + (response && response.message ? response.message : "sin respuesta"), "error");
                     if (btn) btn.innerHTML = originalText;
                     if (window.lucide) window.lucide.createIcons();
@@ -4875,6 +5529,7 @@ window.EDCNps = (() => {
                         fileInput.dispatchEvent(new Event('change', { bubbles: true }));
                     } catch (err) {
                         console.error("Error procesando arquivo sincronizado:", err);
+                        if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
                         window.showToast("Error al procesar el archivo sincronizado.", "error");
                     } finally {
                         if (btn) {
@@ -4892,6 +5547,7 @@ window.EDCNps = (() => {
             script.src = apiUrl + separator + 'callback=' + callbackName;
 
             script.onerror = function() {
+                if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
                 window.showToast("Fallo en la conexion con la base de datos.", "error");
                 if (btn) {
                     btn.className = originalClass;
@@ -10842,7 +11498,7 @@ window.EDCNps = (() => {
       views.ftes.innerHTML = typeof window.getSteercoFtesWrapperHtml === 'function'
         ? window.getSteercoFtesWrapperHtml()
         : `
-          <div id="steerco-ftes-wrapper" class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full h-[calc(100vh-310px)] min-h-[620px] flex flex-col relative overflow-hidden">
+          <div id="steerco-ftes-wrapper" class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full min-h-[620px] flex flex-col relative overflow-hidden">
             <div id="steerco-ftes-loading" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center transition-opacity duration-500">
               <div class="w-12 h-12 rounded-full border-4 border-blue-100 border-t-[#004481] animate-spin mb-4"></div>
               <p class="text-[#004481] font-bold text-sm tracking-wide">Cargando Presupuesto y FTEs...</p>
@@ -10954,10 +11610,12 @@ window.EDCNps = (() => {
     btn.setAttribute('aria-expanded', 'false');
   };
 
-  window.goToWorkSession = function (pageId, navIndex) {
+  window.goToWorkSession = function (pageId) {
     window.closeWorkSessionsMenu();
 
-    const navBtn = document.querySelectorAll('.site-nav-btn')[navIndex] || null;
+    const navBtn = typeof window.getSiteNavButtonForPage === 'function'
+      ? window.getSiteNavButtonForPage(pageId)
+      : null;
     if (typeof window.switchPage === 'function') {
       window.switchPage(pageId, navBtn);
     }
@@ -11221,10 +11879,12 @@ window.EDCNps = (() => {
         ARGENTINA: { label: 'Argentina', flag: 'ar', short: 'AR' }
     };
 
-    const catalogoState = {
+    const catalogoState = window.catalogoKpisState = {
         loaded: false,
         loading: false,
-        rows: []
+        rows: [],
+        loadPromise: null,
+        selectedQuarter: '26Q2'
     };
 
     function catalogoApi(action) {
@@ -11277,6 +11937,41 @@ window.EDCNps = (() => {
         });
     }
 
+    function loadCatalogoKpisRows() {
+        if (catalogoState.loaded) return Promise.resolve(catalogoState.rows);
+        if (catalogoState.loadPromise) return catalogoState.loadPromise;
+
+        catalogoState.loading = true;
+        catalogoState.loadPromise = catalogoApi('getCatalogoKpisData')
+            .then(data => {
+                catalogoState.rows = Array.isArray(data) ? data : [];
+                catalogoState.loaded = true;
+                if (typeof window.renderEndProduct === 'function') window.renderEndProduct();
+                return catalogoState.rows;
+            })
+            .finally(() => {
+                catalogoState.loading = false;
+                catalogoState.loadPromise = null;
+            });
+
+        return catalogoState.loadPromise;
+    }
+
+    window.getCatalogoKpisRows = loadCatalogoKpisRows;
+
+    // Precarga discreta: acelera la primera entrada a Layout KPIs sin bloquear Inicio.
+    window.addEventListener('load', () => {
+        window.setTimeout(() => {
+            const preload = () => {
+                if (!catalogoState.loaded && !catalogoState.loading) {
+                    loadCatalogoKpisRows().catch(() => {});
+                }
+            };
+            if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
+            else preload();
+        }, 1200);
+    }, { once: true });
+
     function normText(value) {
         return String(value || '')
             .trim()
@@ -11296,6 +11991,54 @@ window.EDCNps = (() => {
         return n;
     }
 
+    const CATALOGO_TO_SENDA_COUNTRY = {
+        ESPANA: { key: 'espana', label: 'España' },
+        MEXICO: { key: 'mexico', label: 'México' },
+        PERU: { key: 'peru', label: 'Perú' },
+        COLOMBIA: { key: 'colombia', label: 'Colombia' },
+        ARGENTINA: { key: 'argentina', label: 'Argentina' }
+    };
+
+    window.openCatalogoSenda = async function () {
+        const selectedCode = normCountry(document.getElementById('catalogoGeoFilter')?.value || 'ESPANA');
+        const selected = CATALOGO_TO_SENDA_COUNTRY[selectedCode] || CATALOGO_TO_SENDA_COUNTRY.ESPANA;
+        const geoSelect = document.getElementById('fGeo');
+        if (geoSelect) {
+            geoSelect.value = selected.label;
+            if (typeof window.handleGeoChange === 'function') window.handleGeoChange(geoSelect);
+        }
+
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('page-kpis', document.getElementById('nav-kpis'));
+        }
+
+        setTimeout(async () => {
+            if (typeof window.openFeatureProgressDetail === 'function') {
+                await window.openFeatureProgressDetail(selected.key);
+            }
+            window.scrollToSection('section-roadmap');
+        }, 120);
+    };
+
+    window.openCatalogoKpisForCountry = function (countryKey) {
+        const selected = Object.values(CATALOGO_TO_SENDA_COUNTRY).find(country => country.key === countryKey);
+        if (!selected) return;
+        const selectedCode = Object.keys(CATALOGO_TO_SENDA_COUNTRY).find(code => CATALOGO_TO_SENDA_COUNTRY[code] === selected);
+        const catalogoSelect = document.getElementById('catalogoGeoFilter');
+        if (catalogoSelect) catalogoSelect.value = selectedCode;
+
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('page-catalogo-kpis', document.getElementById('nav-catalogo-kpis'));
+        }
+
+        setTimeout(() => {
+            const select = document.getElementById('catalogoGeoFilter');
+            if (select) select.value = selectedCode;
+            if (typeof window.clearCatalogoTableFilters === 'function') window.clearCatalogoTableFilters();
+            if (typeof window.initCatalogoKpis === 'function') window.initCatalogoKpis();
+        }, 100);
+    };
+
     function boolVal(value) {
         if (value === true) return true;
         if (value === false || value === null || value === undefined || value === '') return false;
@@ -11314,6 +12057,87 @@ window.EDCNps = (() => {
         const value = row && row.qRealRaw !== undefined ? row.qRealRaw : (row ? row.qReal : '');
         return value !== null && value !== undefined && String(value).trim() !== '';
     }
+
+    function getCatalogoQuarterRank(value) {
+        const text = normText(value).replace(/\s+/g, '');
+        const match = text.match(/(?:^|[^0-9])(\d{2,4})Q([1-4])(?:$|[^0-9])/);
+        if (!match) return null;
+
+        const year = match[1].length === 2 ? 2000 + Number(match[1]) : Number(match[1]);
+        const quarter = Number(match[2]);
+        return Number.isFinite(year) && Number.isFinite(quarter) ? year * 4 + quarter : null;
+    }
+
+    function getCatalogoSelectedQuarter() {
+        const select = document.getElementById('catalogoQuarterFilter');
+        const value = select?.value || catalogoState.selectedQuarter || '26Q2';
+        catalogoState.selectedQuarter = value;
+        return value;
+    }
+
+    function isCatalogoDeliveredByQuarter(row, selectedQuarter = getCatalogoSelectedQuarter()) {
+        if (!hasQReal(row)) return false;
+
+        const deliveryQuarter = getCatalogoQuarterRank(row.qRealRaw !== undefined ? row.qRealRaw : row.qReal);
+        const cutoffQuarter = getCatalogoQuarterRank(selectedQuarter);
+
+        // Un trimestre sin formato reconocible no se anticipa a un corte concreto.
+        return deliveryQuarter !== null && (cutoffQuarter === null || deliveryQuarter <= cutoffQuarter);
+    }
+
+    function formatCatalogoQuarter(value) {
+        const text = String(value || '').trim().toUpperCase();
+        const match = text.match(/^(\d{2})Q([1-4])$/);
+        return match ? `${match[1]}Q${match[2]}` : text || 'el corte seleccionado';
+    }
+
+    function isCatalogoTotalBlock(block) {
+        const text = normText(block);
+        return text.includes('TOTAL') || text.includes('CONSOLIDADO');
+    }
+
+    function catalogoBlockKey(block) {
+        return normText(block).replace(/[^A-Z0-9]/g, '');
+    }
+
+    function catalogoRowsMatchBlock(rows, block) {
+        const key = catalogoBlockKey(block);
+        if (!key) return [];
+        return rows.filter(row => {
+            const rowKey = catalogoBlockKey(row.bloqueFuncional || row.bloque || '');
+            return rowKey === key || rowKey.includes(key) || key.includes(rowKey);
+        });
+    }
+
+    window.getEndProductDataForQuarter = function (sourceData, selectedQuarter) {
+        if (!catalogoState.loaded || !Array.isArray(catalogoState.rows) || !catalogoState.rows.length) {
+            return sourceData;
+        }
+
+        const getRowsForCountry = country => country === 'TOTAL'
+            ? catalogoState.rows
+            : catalogoState.rows.filter(row => normCountry(row.pais || row.paisOriginal) === normCountry(country));
+
+        return Object.fromEntries(Object.entries(sourceData || {}).map(([country, items]) => {
+            const countryRows = getRowsForCountry(country);
+            const refreshedItems = (items || []).map(item => {
+                const matchingRows = isCatalogoTotalBlock(item.bloque)
+                    ? countryRows
+                    : catalogoRowsMatchBlock(countryRows, item.bloque);
+
+                // Si un bloque del Roadmap no tiene correspondencia exacta en el catálogo,
+                // se conserva su valor actual para no convertirlo artificialmente en cero.
+                if (!matchingRows.length) return { ...item };
+
+                const delivered = matchingRows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter)).length;
+                return {
+                    ...item,
+                    progreso: (delivered / matchingRows.length) * 100
+                };
+            });
+            return [country, refreshedItems];
+        }));
+    };
 
     function pct(part, total) {
         if (!total) return '0%';
@@ -11364,7 +12188,7 @@ window.EDCNps = (() => {
     }
 
     function rowEtpbNoApto(row) {
-        return hasQReal(row) && falseVal(row && row.etpbRaw !== undefined ? row.etpbRaw : row.etpb);
+        return isCatalogoDeliveredByQuarter(row) && falseVal(row && row.etpbRaw !== undefined ? row.etpbRaw : row.etpb);
     }
 
     function rowEtpbFlag(row) {
@@ -11378,7 +12202,7 @@ window.EDCNps = (() => {
     function rowOngoingAkira(row) {
         // Ongoing Akira:
         // Columna F / Q Real vacía + columna H / Ongoing Akira = TRUE.
-        return !hasQReal(row) && boolVal(row && row.ongoingAkiraRaw !== undefined ? row.ongoingAkiraRaw : row.ongoingAkira);
+        return !isCatalogoDeliveredByQuarter(row) && boolVal(row && row.ongoingAkiraRaw !== undefined ? row.ongoingAkiraRaw : row.ongoingAkira);
     }
 
     function rowUsesRobot5(row) {
@@ -11423,13 +12247,29 @@ window.EDCNps = (() => {
     }
 
     function getRowStatus(row) {
-        // Estado único en la tabla:
-        // Si Q Real tiene valor => Entregada
-        // Si Q Real no tiene valor => No entregada
-        return hasQReal(row) ? 'Entregada' : 'No entregada';
-    }
+    if (isCatalogoDeliveredByQuarter(row)) return 'Entregada';
+    if (isCatalogoOverdue(row)) return 'Retrasada';
+    return 'Pendiente';
+}
 
-    function getRowStatusTags(row) {
+    function isCatalogoOverdue(row) {
+    if (isCatalogoDeliveredByQuarter(row)) return false;
+
+    const target = String(getCellValue(row, 'qTarget') || '').trim();
+    const match = target.match(/(?:^|\D)(20\d{2}|\d{2})\s*Q\s*([1-4])\b/i);
+
+    if (!match) return false;
+
+    const year = match[1].length === 2 ? 2000 + Number(match[1]) : Number(match[1]);
+    const quarter = Number(match[2]);
+
+    // El día 0 del mes siguiente devuelve el último día del trimestre.
+    const targetDeadline = new Date(year, quarter * 3, 0, 23, 59, 59, 999);
+
+    return new Date() > targetDeadline;
+}
+
+function getRowStatusTags(row) {
         // La tabla pinta un único badge de Estado Robot 5.
         return [getRowStatus(row)];
     }
@@ -11448,20 +12288,37 @@ window.EDCNps = (() => {
         return '';
     }
 
-    function getStatusClass(status) {
-        if (status === 'Entregada') return 'catalogo-status-delivered';
-        return 'catalogo-status-potential';
+    function getStatusClass(status, row) {
+    if (status === 'Entregada') return 'catalogo-status-delivered';
+
+    if (
+        status === 'Retrasada' ||
+        (status === 'No entregada' && isCatalogoOverdue(row))
+    ) {
+        return 'catalogo-status-overdue';
     }
 
-    function renderStatusPills(row) {
-        return getRowStatusTags(row)
-            .map(status => `<span class="catalogo-status-pill ${getStatusClass(status)}">${escapeHtml(status)}</span>`)
-            .join('');
-    }
+    return 'catalogo-status-pending';
+}
+   function renderStatusPills(row) {
+    return getRowStatusTags(row)
+        .map(status => {
+            const highlight = status !== 'Entregada'
+                ? String(row.highlights || '').trim()
+                : '';
+
+            const tooltip = highlight
+    ? ` data-tooltip="${escapeHtml(highlight)}"`
+    : '';
+
+            return `<span class="catalogo-status-pill ${getStatusClass(status, row)}"${tooltip}>${escapeHtml(status)}</span>`;
+        })
+        .join('');
+}
 
     function getSelectedCatalogoRows() {
         const select = document.getElementById('catalogoGeoFilter');
-        const selectedCountry = normCountry(select ? select.value : 'GLOBAL');
+        const selectedCountry = normCountry(select ? select.value : 'ESPANA');
         if (selectedCountry === 'GLOBAL') return catalogoState.rows || [];
         return (catalogoState.rows || []).filter(row => normCountry(row.pais || row.paisOriginal) === selectedCountry);
     }
@@ -11527,20 +12384,30 @@ window.EDCNps = (() => {
         });
     }
 
-    window.closeCatalogoColumnFilter = function () {
-        const panel = document.getElementById('catalogoColumnFilterPanel');
-        if (panel) {
-            panel.classList.remove('is-open');
-            panel.innerHTML = '';
-        }
-        catalogoState.activeColumnFilter = null;
-    };
+   window.closeCatalogoColumnFilter = function () {
+    const panel = document.getElementById('catalogoColumnFilterPanel');
+    const wasOpen = panel && panel.classList.contains('is-open');
+
+    if (panel) {
+        panel.classList.remove('is-open');
+        panel.innerHTML = '';
+    }
+
+    catalogoState.activeColumnFilter = null;
+
+    if (wasOpen) {
+        window.renderCatalogoKpisTable();
+    }
+};
 
     function setupCatalogoColumnFilterScrollbar(panel) {
         const options = panel.querySelector('.catalogo-column-filter-options');
         const track = panel.querySelector('.catalogo-column-filter-scrollbar');
         const thumb = panel.querySelector('.catalogo-column-filter-scrollbar-thumb');
         if (!options || !track || !thumb) return;
+        options.addEventListener('wheel', function (event) {
+    event.stopPropagation();
+}, { passive: true });
 
         const updateThumb = function () {
             const trackHeight = track.clientHeight;
@@ -11605,12 +12472,12 @@ window.EDCNps = (() => {
                 return `
                     <div class="catalogo-date-filter-group">
                         <label class="catalogo-date-filter-year">
-                            <input type="checkbox" ${allChecked ? 'checked' : ''} onchange="window.setCatalogoDateGroupFilter('${columnKey}', '${group.yearKey}', this.checked)">
+                            <input type="checkbox" data-filter-year="${escapeHtml(group.yearKey)}" ${allChecked ? 'checked' : ''} onchange="window.setCatalogoDateGroupFilter('${columnKey}', '${group.yearKey}', this.checked)">
                             <span>${escapeHtml(group.yearLabel)}</span>
                         </label>
                         ${group.values.map(item => `
                             <label class="catalogo-column-filter-option catalogo-date-filter-quarter">
-                                <input type="checkbox" value="${escapeHtml(item.value)}" ${isCatalogoFilterValueSelected(selected, item.value) ? 'checked' : ''} onchange="window.setCatalogoColumnFilterValue('${columnKey}', this.value, this.checked)">
+                                <input type="checkbox" data-filter-value="${escapeHtml(item.value)}" value="${escapeHtml(item.value)}" ${isCatalogoFilterValueSelected(selected, item.value) ? 'checked' : ''} onchange="window.setCatalogoColumnFilterValue('${columnKey}', this.value, this.checked)">
                                 <span>${escapeHtml(item.label)}</span>
                             </label>
                         `).join('')}
@@ -11618,7 +12485,7 @@ window.EDCNps = (() => {
             }).join('')
             : values.map(value => `
                 <label class="catalogo-column-filter-option">
-                    <input type="checkbox" value="${escapeHtml(value)}" ${isCatalogoFilterValueSelected(selected, value) ? 'checked' : ''} onchange="window.setCatalogoColumnFilterValue('${columnKey}', this.value, this.checked)">
+                    <input type="checkbox" data-filter-value="${escapeHtml(value)}" value="${escapeHtml(value)}" ${isCatalogoFilterValueSelected(selected, value) ? 'checked' : ''} onchange="window.setCatalogoColumnFilterValue('${columnKey}', this.value, this.checked)">
                     <span>${escapeHtml(value)}</span>
                 </label>
             `).join('');
@@ -11651,7 +12518,63 @@ window.EDCNps = (() => {
         if (window.lucide) window.lucide.createIcons();
     }
 
+    function syncCatalogoColumnFilterPanel(columnKey) {
+        const panel = document.getElementById('catalogoColumnFilterPanel');
+        if (!panel || !panel.classList.contains('is-open') || catalogoState.activeColumnFilter !== columnKey) return;
+
+        const baseRows = getSelectedCatalogoRows();
+        const selected = catalogoState.columnFilters[columnKey] || [];
+
+        panel.querySelectorAll('input[data-filter-value]').forEach(input => {
+            input.checked = isCatalogoFilterValueSelected(selected, input.dataset.filterValue || '');
+        });
+
+        panel.querySelectorAll('input[data-filter-year]').forEach(input => {
+            const group = getCatalogoDateFilterGroups(baseRows, columnKey)
+                .find(item => item.yearKey === input.dataset.filterYear);
+            const values = group ? group.values.map(item => item.value) : [];
+            input.checked = values.length > 0 && values.every(value => isCatalogoFilterValueSelected(selected, value));
+        });
+
+        updateCatalogoHeaderFilterStates();
+    }
+
+   function positionCatalogoColumnFilterPanel(columnKey) {
+    const panel = document.getElementById('catalogoColumnFilterPanel');
+
+    const triggerIds = {
+        bloque: 'catalogo-th-bloque',
+        solucion: 'catalogo-th-solucion',
+        qTarget: 'catalogo-th-qtarget',
+        qReal: 'catalogo-th-qreal',
+        estado: 'catalogo-th-estado',
+        usoRobot5: 'catalogo-th-usoRobot5',
+        etpb: 'catalogo-th-etpb',
+        ongoingAkira: 'catalogo-th-ongoingAkira'
+    };
+
+    const trigger = document.getElementById(triggerIds[columnKey]);
+
+    if (!panel || !trigger || !panel.classList.contains('is-open')) return;
+
+    const container = panel.closest('.catalogo-kpis-detail-card');
+    if (!container) return;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    let left = triggerRect.left - containerRect.left + container.scrollLeft;
+    const top = triggerRect.bottom - containerRect.top + container.scrollTop + 8;
+
+    const maxLeft = container.clientWidth - panel.offsetWidth - 12;
+    left = Math.max(12, Math.min(left, maxLeft));
+
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+}
+
     window.toggleCatalogoColumnFilter = function (columnKey) {
+      
         const panel = document.getElementById('catalogoColumnFilterPanel');
         if (!panel || !CATALOGO_TABLE_COLUMNS[columnKey]) return;
 
@@ -11660,10 +12583,31 @@ window.EDCNps = (() => {
             return;
         }
 
-        catalogoState.activeColumnFilter = columnKey;
-        renderCatalogoColumnFilterPanel(columnKey);
+       catalogoState.activeColumnFilter = columnKey;
+renderCatalogoColumnFilterPanel(columnKey);
+requestAnimationFrame(() => positionCatalogoColumnFilterPanel(columnKey));
     };
 
+if (!window.__catalogoFilterTooltipEvents) {
+    window.__catalogoFilterTooltipEvents = true;
+
+    document.addEventListener('click', function (event) {
+        const panel = document.getElementById('catalogoColumnFilterPanel');
+
+        if (!panel || !panel.classList.contains('is-open')) return;
+     const clickPath = event.composedPath ? event.composedPath() : [];
+if (panel.contains(event.target) || clickPath.includes(panel)) return;
+        if (event.target.closest('.catalogo-th-filter-btn')) return;
+
+        window.closeCatalogoColumnFilter();
+    });
+
+    window.addEventListener('resize', function () {
+        if (catalogoState.activeColumnFilter) {
+            positionCatalogoColumnFilterPanel(catalogoState.activeColumnFilter);
+        }
+    });
+}
     window.setCatalogoColumnFilterValue = function (columnKey, value, checked) {
         const baseRows = getSelectedCatalogoRows();
         const allValues = getColumnFilterValues(baseRows, columnKey);
@@ -11679,9 +12623,7 @@ window.EDCNps = (() => {
 
         catalogoState.columnFilters[columnKey] = selected.length === allValues.length ? [] : selected;
 
-        const scrollTop = document.querySelector('#catalogoColumnFilterPanel .catalogo-column-filter-options')?.scrollTop || 0;
-        window.renderCatalogoKpisTable();
-        renderCatalogoColumnFilterPanel(columnKey, scrollTop);
+        syncCatalogoColumnFilterPanel(columnKey);
     };
 
     window.setCatalogoDateGroupFilter = function (columnKey, yearKey, checked) {
@@ -11697,16 +12639,12 @@ window.EDCNps = (() => {
             : selected.filter(value => !groupValues.includes(value));
 
         catalogoState.columnFilters[columnKey] = selected.length === allValues.length ? [] : selected;
-        const scrollTop = document.querySelector('#catalogoColumnFilterPanel .catalogo-column-filter-options')?.scrollTop || 0;
-        window.renderCatalogoKpisTable();
-        renderCatalogoColumnFilterPanel(columnKey, scrollTop);
+        syncCatalogoColumnFilterPanel(columnKey);
     };
 
     window.selectAllCatalogoColumnValues = function (columnKey, selectAll) {
         catalogoState.columnFilters[columnKey] = selectAll ? [] : ['__NO_RESULTS__'];
-        const scrollTop = document.querySelector('#catalogoColumnFilterPanel .catalogo-column-filter-options')?.scrollTop || 0;
-        window.renderCatalogoKpisTable();
-        renderCatalogoColumnFilterPanel(columnKey, scrollTop);
+        syncCatalogoColumnFilterPanel(columnKey);
     };
 
     window.clearCatalogoTableFilters = function () {
@@ -11722,16 +12660,12 @@ window.EDCNps = (() => {
         window.renderCatalogoKpisTable();
     };
 
-    window.renderCatalogoKpisTable = function () {
-        const tbody = document.getElementById('catalogoTableBody');
-        const count = document.getElementById('catalogoTableCount');
-        if (!tbody) return;
-
+    function getFilteredCatalogoRows() {
         const selectedRows = getSelectedCatalogoRows();
         const search = normText(document.getElementById('catalogoTableSearch')?.value || '');
         const statusFilter = document.getElementById('catalogoTableStatusFilter')?.value || 'ALL';
 
-        let rows = selectedRows.filter(row => {
+        const rows = selectedRows.filter(row => {
             const statusTags = getRowStatusTags(row);
 
             if (statusFilter !== 'ALL' && !statusTags.includes(statusFilter)) return false;
@@ -11754,6 +12688,58 @@ window.EDCNps = (() => {
             return passesCatalogoColumnFilters(row);
         });
 
+        return { selectedRows, rows };
+    }
+
+    function renderCatalogoKpisSummary(rows) {
+        const total = rows.length;
+        const selectedQuarter = getCatalogoSelectedQuarter();
+        const deliveredRows = rows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter));
+        const pendingRows = rows.filter(row => !isCatalogoDeliveredByQuarter(row, selectedQuarter));
+        const delivered = deliveredRows.length;
+        const pending = pendingRows.length;
+        const deliveredRobot5 = deliveredRows.filter(row => rowUsesRobot5(row)).length;
+        const deliveredNoRobot5 = Math.max(delivered - deliveredRobot5, 0);
+        const pendingEtpb = pendingRows.filter(row => rowEtpbFlag(row)).length;
+        const pendingOngoing = pendingRows.filter(row => rowOngoingAkiraFlag(row)).length;
+        const pendingPotential = Math.max(pending - pendingEtpb - pendingOngoing, 0);
+        const coverageValue = total ? delivered / total : 0;
+        const coveragePct = (coverageValue * 100).toFixed(1).replace('.', ',') + '%';
+
+        setText('catalogoCoveragePct', coveragePct);
+
+        const fill = document.getElementById('catalogoCoverageFill');
+        if (fill) fill.style.width = Math.max(0, Math.min(100, coverageValue * 100)) + '%';
+
+        setText('catalogoCoverageFoot', `${delivered} de ${total} funcionalidades entregadas hasta ${formatCatalogoQuarter(selectedQuarter)}`);
+        setText('catalogoTotal', total);
+        setText('catalogoDelivered', delivered);
+        setText('catalogoDeliveredPct', pct(delivered, total));
+        setText('catalogoPending', pending);
+        setText('catalogoPendingPct', pct(pending, total));
+        setText('catalogoDeliveredRobot5', deliveredRobot5);
+        setText('catalogoDeliveredRobot5Pct', pct(deliveredRobot5, delivered));
+        setText('catalogoDeliveredNoRobot5', deliveredNoRobot5);
+        setText('catalogoDeliveredNoRobot5Pct', pct(deliveredNoRobot5, delivered));
+        setText('catalogoPendingEtpb', pendingEtpb);
+        setText('catalogoPendingEtpbPct', pct(pendingEtpb, pending));
+        setText('catalogoPendingOngoing', pendingOngoing);
+        setText('catalogoPendingOngoingPct', pct(pendingOngoing, pending));
+        setText('catalogoPendingPotential', pendingPotential);
+        setText('catalogoPendingPotentialPct', pct(pendingPotential, pending));
+    }
+
+    window.handleCatalogoTableFilterChange = function () {
+        window.renderCatalogoKpisTable();
+    };
+
+    window.renderCatalogoKpisTable = function () {
+        const tbody = document.getElementById('catalogoTableBody');
+        const count = document.getElementById('catalogoTableCount');
+        if (!tbody) return;
+
+        const { selectedRows, rows } = getFilteredCatalogoRows();
+
         if (!rows.length) {
             tbody.innerHTML = `<tr><td colspan="9" class="catalogo-table-empty">No hay funcionalidades que coincidan con los filtros aplicados.</td></tr>`;
         } else {
@@ -11774,33 +12760,50 @@ window.EDCNps = (() => {
 
         if (count) count.textContent = `Mostrando ${rows.length} de ${selectedRows.length} funcionalidades`;
 
+        renderCatalogoKpisSummary(rows);
         updateCatalogoHeaderFilterStates();
         if (window.lucide) window.lucide.createIcons();
     };
 
 
+    function showCatalogoKpisLoader(loading) {
+        if (!loading) return;
+        loading.className = 'catalogo-kpis-empty catalogo-kpis-loader';
+        loading.innerHTML = `
+            <div class="catalogo-kpis-loader-inner">
+                <div class="catalogo-kpis-loader-emblem" aria-hidden="true"></div>
+                <div class="catalogo-kpis-loader-label">Global Transformation Hub</div>
+                <div class="catalogo-kpis-loader-title">Cargando <span>Layout KPIs</span></div>
+                <p class="catalogo-kpis-loader-copy">Preparando las funcionalidades, entregas y filtros para que puedas empezar a consultar los datos.</p>
+                <div class="catalogo-kpis-loader-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="catalogo-kpis-loader-status"><b></b> Sincronizando la información</div>
+            </div>
+        `;
+    }
+
     window.renderCatalogoKpis = function () {
         const select = document.getElementById('catalogoGeoFilter');
+        const quarterSelect = document.getElementById('catalogoQuarterFilter');
         const loading = document.getElementById('catalogoKpisLoading');
         const content = document.getElementById('catalogoKpisContent');
 
         if (!select || !loading || !content) return;
 
-        const selectedCountry = normCountry(select.value || 'GLOBAL');
+        if (quarterSelect) catalogoState.selectedQuarter = quarterSelect.value || '26Q2';
+        const selectedCountry = normCountry(select.value || 'ESPANA');
         const meta = CATALOGO_COUNTRY_META[selectedCountry] || CATALOGO_COUNTRY_META.GLOBAL;
         const rows = selectedCountry === 'GLOBAL'
             ? (catalogoState.rows || [])
             : (catalogoState.rows || []).filter(row => normCountry(row.pais || row.paisOriginal) === selectedCountry);
 
         if (!catalogoState.loaded) {
-            loading.classList.remove('hidden');
+            showCatalogoKpisLoader(loading);
             content.classList.add('hidden');
-            loading.innerHTML = 'Cargando datos del Layout KPIs...';
             return;
         }
 
         if (!rows.length) {
-            loading.classList.remove('hidden');
+            loading.className = 'catalogo-kpis-empty';
             content.classList.add('hidden');
             loading.innerHTML = `Sin datos de catálogo para ${meta.label}.`;
             return;
@@ -11809,52 +12812,31 @@ window.EDCNps = (() => {
         loading.classList.add('hidden');
         content.classList.remove('hidden');
 
-        const total = rows.length;
-        const deliveredRows = rows.filter(row => hasQReal(row));
-        const pendingRows = rows.filter(row => !hasQReal(row));
-        const delivered = deliveredRows.length;
-        const pending = pendingRows.length;
-        const deliveredRobot5 = deliveredRows.filter(row => rowUsesRobot5(row)).length;
-        const deliveredNoRobot5 = Math.max(delivered - deliveredRobot5, 0);
-        const pendingEtpb = pendingRows.filter(row => rowEtpbFlag(row)).length;
-        const pendingOngoing = pendingRows.filter(row => rowOngoingAkiraFlag(row)).length;
-        const pendingPotential = Math.max(pending - pendingEtpb - pendingOngoing, 0);
-        const coverageValue = total ? delivered / total : 0;
-        const coveragePct = (coverageValue * 100).toFixed(1).replace('.', ',') + '%';
-
         setText('catalogoSelectedCountry', meta.label);
 
         const flag = document.getElementById('catalogoSelectedFlag');
         if (flag) flag.innerHTML = flagHtml(selectedCountry);
-
-        setText('catalogoCoveragePct', coveragePct);
-
-        const fill = document.getElementById('catalogoCoverageFill');
-        if (fill) fill.style.width = Math.max(0, Math.min(100, coverageValue * 100)) + '%';
-
-        setText('catalogoCoverageFoot', `${delivered} de ${total} funcionalidades entregadas`);
-
-        setText('catalogoTotal', total);
-        setText('catalogoDelivered', delivered);
-        setText('catalogoDeliveredPct', pct(delivered, total));
-        setText('catalogoPending', pending);
-        setText('catalogoPendingPct', pct(pending, total));
-        setText('catalogoDeliveredRobot5', deliveredRobot5);
-        setText('catalogoDeliveredRobot5Pct', pct(deliveredRobot5, delivered));
-        setText('catalogoDeliveredNoRobot5', deliveredNoRobot5);
-        setText('catalogoDeliveredNoRobot5Pct', pct(deliveredNoRobot5, delivered));
-        setText('catalogoPendingEtpb', pendingEtpb);
-        setText('catalogoPendingEtpbPct', pct(pendingEtpb, pending));
-        setText('catalogoPendingOngoing', pendingOngoing);
-        setText('catalogoPendingOngoingPct', pct(pendingOngoing, pending));
-        setText('catalogoPendingPotential', pendingPotential);
-        setText('catalogoPendingPotentialPct', pct(pendingPotential, pending));
 
         if (typeof window.renderCatalogoKpisTable === 'function') {
             window.renderCatalogoKpisTable();
         }
 
         if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.handleCatalogoQuarterChange = function (element) {
+        const selectedQuarter = element?.value || '26Q2';
+        catalogoState.selectedQuarter = selectedQuarter;
+
+        ['fTri', 'fTri_ep'].forEach(id => {
+            const select = document.getElementById(id);
+            if (select && Array.from(select.options).some(option => option.value === selectedQuarter)) {
+                select.value = selectedQuarter;
+            }
+        });
+
+        if (typeof window.renderCatalogoKpis === 'function') window.renderCatalogoKpis();
+        if (typeof window.renderEndProduct === 'function') window.renderEndProduct();
     };
 
     window.initCatalogoKpis = async function () {
@@ -11865,29 +12847,22 @@ window.EDCNps = (() => {
         if (!page) return;
 
         if (catalogoState.loaded) {
+            if (typeof window.finishDelayedPageLoader === 'function') window.finishDelayedPageLoader('page-catalogo-kpis');
             window.renderCatalogoKpis();
             return;
         }
 
-        if (catalogoState.loading) return;
-        catalogoState.loading = true;
-
-        if (loading) {
-            loading.classList.remove('hidden');
-            loading.innerHTML = 'Cargando datos del Layout KPIs...';
-        }
+        if (loading) showCatalogoKpisLoader(loading);
         if (content) content.classList.add('hidden');
 
         try {
-            const data = await catalogoApi('getCatalogoKpisData');
-            catalogoState.rows = Array.isArray(data) ? data : [];
-            catalogoState.loaded = true;
+            await loadCatalogoKpisRows();
             window.renderCatalogoKpis();
         } catch (error) {
             console.error('Error cargando Layout KPIs:', error);
             if (content) content.classList.add('hidden');
             if (loading) {
-                loading.classList.remove('hidden');
+                loading.className = 'catalogo-kpis-empty';
                 loading.innerHTML = `
                     <div class="max-w-xl mx-auto text-center">
                         <div class="text-[#004481] font-black text-lg mb-2">No se han podido cargar los datos del catálogo.</div>
@@ -11898,7 +12873,7 @@ window.EDCNps = (() => {
                 `;
             }
         } finally {
-            catalogoState.loading = false;
+            if (typeof window.finishDelayedPageLoader === 'function') window.finishDelayedPageLoader('page-catalogo-kpis');
         }
     };
 

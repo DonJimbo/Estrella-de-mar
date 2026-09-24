@@ -12704,7 +12704,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         const pendingOngoing = pendingRows.filter(row => rowOngoingAkiraFlag(row)).length;
         const pendingPotential = Math.max(pending - pendingEtpb - pendingOngoing, 0);
         const coverageValue = total ? delivered / total : 0;
-        const coveragePct = (coverageValue * 100).toFixed(1).replace('.', ',') + '%';
+        const coveragePct = (coverageValue * 100).toFixed(2).replace('.', ',') + '%';
 
         setText('catalogoCoveragePct', coveragePct);
 

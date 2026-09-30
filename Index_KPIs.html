@@ -846,6 +846,7 @@
             >Visión General</button
           ><button
             class="nav-pill"
+            id="nav-ft-transformadas"
             onclick="scrollToSection('section-roadmap', this)"
           >
             <i data-lucide="map" style="width: 13px; height: 13px"></i>FT
@@ -1150,10 +1151,12 @@
       let rawData = [],
         selectedGeo = "ALL",
         selectedQuarter = "26Q1",
-        migratedCountry = "TOTAL";
+        migratedCountry = "TOTAL",
+        initialSection = "";
       const charts = {};
       document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
+        readInitialSectionFromUrl();
         document.getElementById("fGeo").addEventListener("change", (e) => {
           selectedGeo = e.target.value;
           migratedCountry = selectedGeo === "ALL" ? "TOTAL" : selectedGeo;
@@ -1211,7 +1214,7 @@
         const txt = String(value || "")
           .trim()
           .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[̀-ͯ]/g, "")
           .toUpperCase();
         if (["TOTAL*", "TOTAL", "GLOBAL", "ALL"].includes(txt)) return "TOTAL";
         if (["ES", "SPA", "ESPANA", "ESPAÑA", "SPAIN"].includes(txt))
@@ -1263,7 +1266,7 @@
         return String(v || "")
           .trim()
           .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[̀-ͯ]/g, "")
           .replace(/\s+/g, " ")
           .toLowerCase();
       }
@@ -1446,6 +1449,7 @@
         renderMigrated();
         renderDetailTable();
         lucide.createIcons();
+        openInitialSection();
       }
       function updateLabels() {
         document
@@ -1941,13 +1945,51 @@
           ? labels
           : ["26Q1", "26Q2", "26Q3", "26Q4", "27Q1", "27Q2", "27Q3", "27Q4"];
       }
-      function scrollToSection(id, btn) {
+      // Permite enlazar directamente a una sección concreta del dashboard.
+      // Ejemplo: .../exec?page=kpis&section=ft-transformadas
+      function readInitialSectionFromUrl() {
+        const applyLocation = (location) => {
+          const params =
+            (location && location.parameter) ||
+            Object.fromEntries(new URLSearchParams(window.location.search));
+          const section = String(params.section || params.view || "")
+            .trim()
+            .toLowerCase();
+
+          if (
+            ["ft", "ft-transformadas", "features-transformadas", "roadmap"].includes(section)
+          ) {
+            initialSection = "section-roadmap";
+            openInitialSection();
+          }
+        };
+
+        if (
+          typeof google !== "undefined" &&
+          google.script &&
+          google.script.url &&
+          google.script.url.getLocation
+        ) {
+          google.script.url.getLocation(applyLocation);
+        } else {
+          applyLocation(null);
+        }
+      }
+      function openInitialSection() {
+        if (initialSection !== "section-roadmap" || !rawData.length) return;
+        const button = document.getElementById("nav-ft-transformadas");
+        requestAnimationFrame(() => {
+          scrollToSection(initialSection, button, "auto");
+          initialSection = "";
+        });
+      }
+      function scrollToSection(id, btn, behavior = "smooth") {
         document
           .querySelectorAll(".nav-pill")
           .forEach((b) => b.classList.remove("active"));
         if (btn) btn.classList.add("active");
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (el) el.scrollIntoView({ behavior, block: "start" });
       }
       function scrollToTopPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });

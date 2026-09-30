@@ -1799,6 +1799,323 @@
 
         @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b,#ep-roadmap .ep-roadmap-highlight,#ep-nextgen .nextgen-block-highlight{animation:none!important;transition:none!important}}
     </style>
+
+<!-- BBVA 2025 brand tokens (guia de implantacion) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,700&display=swap" rel="stylesheet">
+<style id="bbva-tokens">
+:root{
+  /* Primarios */
+  --bbva-electric:#001391;
+  --bbva-serene:#85C8FF;
+  --bbva-midnight:#070E46;      /* solo texto, nunca relleno grande */
+
+  /* Acentos: únicamente para destacar elementos pequeños */
+  --bbva-lime:#88E783;
+  --bbva-mandarin:#FFB56B;
+  --bbva-canary:#FFE761;
+  --bbva-ice:#8BE1E9;
+  --bbva-purple:#9694FF;
+
+  /* Grises: rellenos de gráficos y bordes de tabla */
+  --bbva-sand:#F7F8F8;
+  --bbva-grey-1:#E2E6EA;
+  --bbva-grey-2:#CAD1D8;
+  --bbva-grey-3:#ADB8C2;
+  --bbva-grey-4:#46536D;
+  --bbva-grey-5:#000519;
+
+  /* Estados */
+  --bbva-ok:var(--bbva-lime);
+  --bbva-warn:var(--bbva-mandarin);
+  --bbva-wait:var(--bbva-grey-1);
+  --bbva-info:var(--bbva-ice);
+
+  /* Tipografía: titulares 30, subtítulos ≥14, textos ≤12 */
+  --bbva-serif:'Source Serif 4','Source Serif Pro',Georgia,serif;
+  --bbva-sans:'Lato','Benton Sans',system-ui,-apple-system,sans-serif;
+  --bbva-size-display:30px;
+  --bbva-size-title:22px;
+  --bbva-size-subtitle:14px;
+  --bbva-size-body:12px;
+  --bbva-size-caption:10px;
+
+  /* Cajas bento */
+  --bbva-radius-lg:20px;
+  --bbva-radius-md:14px;
+  --bbva-radius-sm:9px;
+  --bbva-border:1px solid var(--bbva-grey-1);
+  --bbva-shadow:0 1px 2px rgba(7,14,70,.05),0 8px 24px -14px rgba(0,19,145,.28);
+}
+
+body,body .font-sans{font-family:var(--bbva-sans)}
+
+h1,h2,h3,
+.bbva-display,
+.catalogo-kpis-hero-title,
+.catalogo-kpis-detail-title,
+.catalogo-kpis-coverage-percent{
+  font-family:var(--bbva-serif);
+  font-weight:700;
+  letter-spacing:-.01em;
+  line-height:1.08;
+}
+h1{font-size:var(--bbva-size-display)}
+h2{font-size:var(--bbva-size-title)}
+h3{font-size:18px}
+
+.bbva-subtitle{font-family:var(--bbva-sans);font-size:var(--bbva-size-subtitle);font-weight:700}
+.bbva-body{font-family:var(--bbva-sans);font-size:var(--bbva-size-body);line-height:1.5}
+.bbva-caption{font-family:var(--bbva-sans);font-size:var(--bbva-size-caption);color:var(--bbva-grey-4)}
+
+/* Cifras alineadas: evita el baile de anchos al refrescar datos */
+.bbva-num,[class*="-pct"],[class*="-percent"],[class*="-value"]{font-variant-numeric:tabular-nums}
+
+/* Reescritura de la paleta anterior. Las clases con corchetes son las que
+   genera Tailwind Play CDN a partir del marcado actual. */
+.text-\[\#004481\]{color:var(--bbva-electric) !important}
+.bg-\[\#004481\]{background-color:var(--bbva-electric) !important}
+.border-\[\#004481\]{border-color:var(--bbva-electric) !important}
+.fill-\[\#004481\]{fill:var(--bbva-electric) !important}
+.stroke-\[\#004481\]{stroke:var(--bbva-electric) !important}
+.text-\[\#5BBEFF\]{color:var(--bbva-serene) !important}
+.bg-\[\#5BBEFF\]{background-color:var(--bbva-serene) !important}
+.border-\[\#5BBEFF\]{border-color:var(--bbva-serene) !important}
+.text-bbva-NAVY,.text-bbva-BLUE,.text-bbva-EXECUTIVE{color:var(--bbva-electric) !important}
+.bg-bbva-NAVY,.bg-bbva-BLUE,.bg-bbva-EXECUTIVE{background-color:var(--bbva-electric) !important}
+.text-bbva-LIGHT{color:var(--bbva-serene) !important}
+.bg-bbva-LIGHT{background-color:var(--bbva-serene) !important}
+body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !important}
+
+.executive-card{
+  border-radius:var(--bbva-radius-lg);
+  border:var(--bbva-border);
+  box-shadow:var(--bbva-shadow);
+}
+
+/* Iconografía: trazo y remates de Brand Experience sobre los iconos Lucide */
+.bbva-icon,[data-lucide]{stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;color:inherit}
+.bbva-icon-badge{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--bbva-serene);color:var(--bbva-electric)}
+
+/* Paleta de gráficos, en este orden:
+   #001391  #85C8FF  #88E783  #FFB56B  #8BE1E9  #9694FF  #FFE761  #46536D
+   Rejilla y ejes: #E2E6EA para las líneas, #46536D para las etiquetas. */
+.bbva-chart-grid{stroke:var(--bbva-grey-1)}
+.bbva-chart-label{fill:var(--bbva-grey-4);font-family:var(--bbva-sans);font-size:11px}
+
+:focus-visible{outline:2px solid var(--bbva-electric);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+<style>
+/* ---------- Variables locales del módulo ---------- */
+#gth-tf{
+  --electric:var(--bbva-electric,#001391);
+  --serene:var(--bbva-serene,#85C8FF);
+  --midnight:var(--bbva-midnight,#070E46);
+  --sand:var(--bbva-sand,#F7F8F8);
+  --grey1:var(--bbva-grey-1,#E2E6EA);
+  --grey2:var(--bbva-grey-2,#CAD1D8);
+  --grey3:var(--bbva-grey-3,#ADB8C2);
+  --grey4:var(--bbva-grey-4,#46536D);
+  --grey5:var(--bbva-grey-5,#000519);
+  --lime:var(--bbva-lime,#88E783);
+  --mandarin:var(--bbva-mandarin,#FFB56B);
+  --canary:var(--bbva-canary,#FFE761);
+  --ice:var(--bbva-ice,#8BE1E9);
+  --purple:var(--bbva-purple,#9694FF);
+
+  --serif:var(--bbva-serif,'Source Serif 4',Georgia,serif);
+  --sans:var(--bbva-sans,'Lato','Benton Sans',system-ui,sans-serif);
+
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:9px;
+  --line:1px solid var(--grey1);
+  --lift:0 1px 2px rgba(7,14,70,.05),0 8px 24px -14px rgba(0,19,145,.28);
+
+  font-family:var(--sans);
+  color:var(--midnight);
+  background:var(--sand);
+  padding:26px 22px 40px;
+  display:block;
+  container-type:inline-size;
+}
+#gth-tf *{box-sizing:border-box}
+#gth-tf button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+#gth-tf :focus-visible{outline:2px solid var(--electric);outline-offset:2px;border-radius:4px}
+
+/* ---------- Cabecera ---------- */
+#gth-tf .tf-top{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+#gth-tf .tf-kicker{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--electric);margin:0 0 6px}
+#gth-tf h2.tf-title{font-family:var(--serif);font-weight:700;font-size:clamp(26px,3.1vw,38px);line-height:1.05;letter-spacing:-.01em;color:var(--electric);margin:0}
+#gth-tf .tf-sub{font-size:13px;color:var(--grey4);margin:7px 0 0;max-width:62ch;line-height:1.5}
+
+#gth-tf .tf-freshness{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#gth-tf .tf-stamp{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--grey4);background:#fff;border:var(--line);border-radius:999px;padding:7px 14px}
+#gth-tf .tf-stamp b{color:var(--midnight);font-weight:700}
+#gth-tf .tf-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);flex:none}
+#gth-tf .tf-dot.is-stale{background:var(--mandarin)}
+#gth-tf .tf-dot.is-off{background:var(--grey3)}
+#gth-tf .tf-actions{display:flex;gap:8px;align-items:center}
+
+#gth-tf .tf-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border-radius:999px;font-size:12px;font-weight:700;background:#fff;border:var(--line);color:var(--electric);transition:background .16s,border-color .16s}
+#gth-tf .tf-btn:hover{background:#fff;border-color:var(--serene)}
+#gth-tf .tf-btn[disabled]{opacity:.55;cursor:progress}
+#gth-tf .tf-btn.is-primary{background:var(--electric);border-color:var(--electric);color:#fff}
+#gth-tf .tf-btn.is-primary:hover{background:#00179f}
+#gth-tf .tf-btn svg{width:15px;height:15px;flex:none}
+#gth-tf .tf-btn.is-busy svg{animation:tf-spin 1s linear infinite}
+@keyframes tf-spin{to{transform:rotate(360deg)}}
+
+#gth-tf .tf-update-note{display:none;align-items:center;gap:12px;background:#fff;border:1px solid var(--mandarin);border-left-width:4px;border-radius:var(--r-md);padding:12px 16px;font-size:13px;margin-bottom:16px}
+#gth-tf .tf-update-note.is-on{display:flex}
+#gth-tf .tf-update-note span{color:var(--grey4)}
+
+/* ---------- Hero: el dato que manda ---------- */
+#gth-tf .tf-hero{background:linear-gradient(112deg,var(--electric) 0%,#0a1fb4 58%,#1230d6 100%);border-radius:var(--r-lg);padding:28px 30px;color:#fff;display:grid;grid-template-columns:minmax(210px,auto) 1fr;gap:34px;align-items:center;margin-bottom:16px}
+#gth-tf .tf-hero-figure{display:flex;flex-direction:column;gap:2px}
+#gth-tf .tf-hero-pct{font-family:var(--serif);font-weight:700;font-size:clamp(56px,8vw,88px);line-height:.88;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+#gth-tf .tf-hero-pct sup{font-size:.36em;font-weight:600;margin-left:4px;vertical-align:super}
+#gth-tf .tf-hero-caption{font-size:12px;color:var(--serene);font-weight:700;letter-spacing:.02em;margin-top:9px}
+#gth-tf .tf-hero-caption b{color:#fff}
+
+#gth-tf .tf-hero-countries{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+#gth-tf .tf-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--r-md);padding:11px 12px;text-align:left;transition:background .16s,transform .16s}
+#gth-tf .tf-chip:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+#gth-tf .tf-chip-head{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+#gth-tf .tf-chip-head img{width:19px;height:13px;object-fit:cover;border-radius:2px;flex:none}
+#gth-tf .tf-chip-head span{font-size:11px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#fff}
+#gth-tf .tf-chip-pct{font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+#gth-tf .tf-chip-bar{height:4px;border-radius:999px;background:rgba(255,255,255,.22);margin-top:9px;overflow:hidden}
+#gth-tf .tf-chip-bar i{display:block;height:100%;border-radius:999px;background:var(--serene)}
+
+/* ---------- Barra de control ---------- */
+#gth-tf .tf-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:#fff;border:var(--line);border-radius:var(--r-md);padding:12px 14px;margin-bottom:16px}
+#gth-tf .tf-views{display:inline-flex;background:var(--sand);border:var(--line);border-radius:999px;padding:3px;gap:2px}
+#gth-tf .tf-view-btn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 15px;border-radius:999px;font-size:12px;font-weight:700;color:var(--grey4);transition:background .16s,color .16s}
+#gth-tf .tf-view-btn[aria-selected="true"]{background:var(--electric);color:#fff}
+#gth-tf .tf-view-btn svg{width:14px;height:14px}
+
+#gth-tf .tf-control-group{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#gth-tf .tf-label{font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--grey3)}
+#gth-tf .tf-select,#gth-tf .tf-search{height:34px;border:var(--line);border-radius:var(--r-sm);padding:0 11px;font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--midnight);background:#fff}
+#gth-tf .tf-search{width:210px;font-weight:400}
+#gth-tf .tf-search::placeholder{color:var(--grey3)}
+#gth-tf .tf-granularity{display:inline-flex;border:var(--line);border-radius:var(--r-sm);overflow:hidden}
+#gth-tf .tf-granularity button{height:34px;padding:0 13px;font-size:12px;font-weight:700;color:var(--grey4);background:#fff}
+#gth-tf .tf-granularity button[aria-pressed="true"]{background:var(--serene);color:var(--electric)}
+
+/* ---------- Escala de trimestres ---------- */
+#gth-tf .tf-scale{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#gth-tf .tf-q{min-width:46px;height:30px;padding:0 9px;border-radius:var(--r-sm);border:var(--line);background:#fff;font-size:11.5px;font-weight:900;color:var(--grey4);font-variant-numeric:tabular-nums;transition:background .14s,color .14s,border-color .14s}
+#gth-tf .tf-q:hover{border-color:var(--serene)}
+#gth-tf .tf-q[aria-pressed="true"]{background:var(--electric);border-color:var(--electric);color:#fff}
+#gth-tf .tf-q.is-past[aria-pressed="false"]{background:#EEF4FF;color:var(--electric)}
+
+/* ---------- Listas ---------- */
+#gth-tf .tf-panel{background:#fff;border:var(--line);border-radius:var(--r-lg);overflow:hidden}
+#gth-tf .tf-panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:18px 22px 14px;border-bottom:var(--line)}
+#gth-tf .tf-panel-title{font-family:var(--serif);font-weight:700;font-size:19px;color:var(--electric);margin:0}
+#gth-tf .tf-panel-meta{font-size:12px;color:var(--grey3);font-weight:700}
+
+#gth-tf .tf-row{border-bottom:var(--line)}
+#gth-tf .tf-row:last-child{border-bottom:0}
+#gth-tf .tf-row-btn{display:grid;grid-template-columns:24px minmax(0,1fr) 190px 106px;gap:16px;align-items:center;width:100%;padding:15px 22px;text-align:left;transition:background .14s}
+#gth-tf .tf-row-btn:hover{background:#FAFBFE}
+#gth-tf .tf-row[data-open="true"] .tf-row-btn{background:#F5F8FF}
+#gth-tf .tf-caret{width:22px;height:22px;display:grid;place-items:center;border-radius:6px;background:var(--sand);color:var(--electric);transition:transform .18s}
+#gth-tf .tf-row[data-open="true"] .tf-caret{transform:rotate(90deg);background:var(--serene)}
+#gth-tf .tf-caret svg{width:13px;height:13px}
+
+#gth-tf .tf-row-name{display:flex;align-items:center;gap:11px;min-width:0}
+#gth-tf .tf-row-name img{width:26px;height:18px;object-fit:cover;border-radius:3px;border:1px solid var(--grey1);flex:none}
+#gth-tf .tf-row-label{font-size:14.5px;font-weight:700;color:var(--midnight);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gth-tf .tf-row-note{font-size:11.5px;color:var(--grey3);font-weight:700;margin-top:2px}
+
+#gth-tf .tf-bar{display:block;height:9px;border-radius:999px;background:var(--grey1);overflow:hidden;position:relative}
+#gth-tf .tf-bar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--electric);transition:width .5s cubic-bezier(.22,.7,.3,1)}
+#gth-tf .tf-bar.is-sub i{background:var(--serene)}
+#gth-tf .tf-row-pct{text-align:right;font-family:var(--serif);font-weight:700;font-size:23px;line-height:1;color:var(--electric);font-variant-numeric:tabular-nums}
+#gth-tf .tf-row-pct small{display:block;font-family:var(--sans);font-size:11px;font-weight:700;color:var(--grey3);margin-top:4px}
+
+#gth-tf .tf-drawer{display:none;padding:4px 22px 20px 62px;background:#FCFDFF}
+#gth-tf .tf-row[data-open="true"] .tf-drawer{display:block}
+
+#gth-tf .tf-subrow{display:grid;grid-template-columns:minmax(0,1fr) 170px 86px 30px;gap:14px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--grey1)}
+#gth-tf .tf-subrow:last-child{border-bottom:0}
+#gth-tf .tf-subname{font-size:13px;font-weight:700;color:var(--grey4);display:flex;align-items:center;gap:9px;min-width:0}
+#gth-tf .tf-subname img{width:22px;height:15px;object-fit:cover;border-radius:2px;border:1px solid var(--grey1);flex:none}
+#gth-tf .tf-subname span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gth-tf .tf-subpct{text-align:right;font-size:15px;font-weight:900;color:var(--midnight);font-variant-numeric:tabular-nums}
+#gth-tf .tf-subpct small{font-size:11px;color:var(--grey3);font-weight:700;margin-left:5px}
+
+/* ---------- Estados ---------- */
+#gth-tf .tf-pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.02em;white-space:nowrap}
+#gth-tf .tf-pill.ok{background:var(--lime);color:#0b3d17}
+#gth-tf .tf-pill.late{background:var(--mandarin);color:#5a2c00}
+#gth-tf .tf-pill.wait{background:var(--grey1);color:var(--grey4)}
+#gth-tf .tf-pill.akira{background:var(--canary);color:#5a4500}
+#gth-tf .tf-pill.etpb{background:var(--ice);color:#04454b}
+#gth-tf .tf-pill.r5{background:var(--purple);color:#141060}
+
+/* ---------- Matriz ---------- */
+#gth-tf .tf-matrix-wrap{overflow:auto;padding:4px 0}
+#gth-tf table.tf-matrix{border-collapse:separate;border-spacing:0;width:100%;min-width:640px}
+#gth-tf table.tf-matrix th,#gth-tf table.tf-matrix td{padding:9px 10px;font-size:12px;text-align:center;border-bottom:var(--line)}
+#gth-tf table.tf-matrix thead th{position:sticky;top:0;background:#fff;z-index:2;font-size:11px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--grey4)}
+#gth-tf table.tf-matrix thead th img{width:22px;height:15px;object-fit:cover;border-radius:2px;display:block;margin:0 auto 5px}
+#gth-tf table.tf-matrix th.tf-matrix-row-head{position:sticky;left:0;background:#fff;z-index:3;text-align:left;font-weight:700;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--midnight);min-width:230px;max-width:330px}
+#gth-tf table.tf-matrix tbody tr:hover th.tf-matrix-row-head,#gth-tf table.tf-matrix tbody tr:hover td{background:#F5F8FF}
+#gth-tf .tf-cell{display:block;border-radius:var(--r-sm);padding:7px 0;font-weight:900;font-variant-numeric:tabular-nums;color:var(--midnight)}
+#gth-tf .tf-legend{display:flex;align-items:center;gap:9px;padding:14px 22px;font-size:11.5px;color:var(--grey4);font-weight:700;border-top:var(--line)}
+#gth-tf .tf-legend i{display:block;width:26px;height:10px;border-radius:3px}
+
+/* ---------- Réplica ---------- */
+#gth-tf .tf-replica{margin-top:16px;background:#fff;border:var(--line);border-left:4px solid var(--serene);border-radius:var(--r-md);padding:18px 22px}
+#gth-tf .tf-replica h3{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--electric);margin:0 0 4px}
+#gth-tf .tf-replica p{font-size:12.5px;color:var(--grey4);margin:0 0 14px;max-width:70ch;line-height:1.5}
+#gth-tf .tf-replica-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+#gth-tf .tf-replica-item{border:var(--line);border-radius:var(--r-sm);padding:11px 13px;background:var(--sand)}
+#gth-tf .tf-replica-item b{display:block;font-size:13px;color:var(--midnight);margin-bottom:6px;line-height:1.3}
+#gth-tf .tf-replica-flags,#gth-tf .tf-flagset{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+#gth-tf .tf-flagset img{width:20px;height:14px;object-fit:cover;border-radius:2px;border:1px solid var(--grey1)}
+#gth-tf .tf-flagset img.is-missing{filter:grayscale(1);opacity:.3}
+#gth-tf .tf-replica-flags img{width:20px;height:14px;object-fit:cover;border-radius:2px}
+#gth-tf .tf-replica-flags img.is-missing{filter:grayscale(1);opacity:.32}
+#gth-tf .tf-replica-item span{font-size:11px;color:var(--grey3);font-weight:700;margin-left:4px}
+
+/* ---------- Estados de carga y vacío ---------- */
+#gth-tf .tf-empty{padding:48px 22px;text-align:center;color:var(--grey3);font-size:13.5px;font-weight:700}
+#gth-tf .tf-skeleton{padding:22px}
+#gth-tf .tf-skeleton i{display:block;height:46px;border-radius:var(--r-md);margin-bottom:10px;background:linear-gradient(90deg,var(--grey1) 8%,#F2F5F9 30%,var(--grey1) 52%);background-size:900px 100%;animation:tf-shimmer 1.5s linear infinite}
+@keyframes tf-shimmer{to{background-position:900px 0}}
+#gth-tf .tf-error{margin:16px 0 0;padding:16px 18px;border-radius:var(--r-md);background:#fff;border:1px solid var(--mandarin);font-size:13px;color:var(--grey4)}
+#gth-tf .tf-error b{display:block;color:var(--midnight);margin-bottom:4px}
+
+@media (max-width:980px){
+  #gth-tf .tf-hero{grid-template-columns:1fr;gap:22px}
+  #gth-tf .tf-row-btn{grid-template-columns:24px minmax(0,1fr) 86px;gap:12px;padding:14px 16px}
+  #gth-tf .tf-row-btn .tf-bar{display:none}
+  #gth-tf .tf-drawer{padding-left:24px;padding-right:16px}
+  #gth-tf .tf-subrow{grid-template-columns:minmax(0,1fr) 78px 26px}
+  #gth-tf .tf-subrow .tf-bar{display:none}
+}
+@container (max-width:860px){
+  #gth-tf .tf-hero{grid-template-columns:1fr;gap:22px}
+  #gth-tf .tf-row-btn{grid-template-columns:24px minmax(0,1fr) 86px;gap:12px;padding:14px 16px}
+  #gth-tf .tf-row-btn .tf-bar{display:none}
+  #gth-tf .tf-drawer{padding-left:24px;padding-right:16px}
+  #gth-tf .tf-subrow{grid-template-columns:minmax(0,1fr) 78px 26px}
+  #gth-tf .tf-subrow .tf-bar{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  #gth-tf *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+
 </head>
 <body class="bg-[#F1F5F9] text-gray-800 site-route-lock site-route-page-inicio">
     <div id="siteLoadingScreen" role="status" aria-live="polite" aria-hidden="true">
@@ -2838,23 +3155,790 @@
                 </section>
 
                 <section id="ep-nextgen" class="executive-card overflow-hidden scroll-offset mb-8">
-                    <div class="nextgen-section-head px-6 py-4 flex items-center justify-between border-b">
-                        <div class="flex items-center gap-2"><i data-lucide="network" class="w-4 h-4 text-white/80"></i><h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">Uso de NextGen por bloque funcional</h2></div>
-                        <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
-                    </div>
-                    <div class="p-4 md:p-6 bg-[#F7F8F8]">
-                        <div class="nextgen-view-toolbar">
-                            <div class="nextgen-view-switch" role="group" aria-label="Cambiar visión de NextGen"><button type="button" class="is-active" data-nextgen-mode="country">Por país</button><button type="button" data-nextgen-mode="functional">Por bloque funcional</button></div>
-                            <div class="flex flex-wrap items-center gap-3"><label id="nextGenCountryControl" class="font-bold uppercase tracking-wider text-[#52647C]">País <select id="nextGenCountrySelect" class="ml-1 rounded-md border border-[#B6CDE1] bg-white text-[#004481] outline-none" onchange="window.changeNextGenSelection('country', this.value)"></select></label><label id="nextGenBlockControl" class="hidden font-bold uppercase tracking-wider text-[#52647C]">Bloque funcional <select id="nextGenBlockSelect" class="ml-1 max-w-[300px] rounded-md border border-[#B6CDE1] bg-white text-[#004481] outline-none" onchange="window.changeNextGenSelection('block', this.value)"></select></label></div>
-                        </div>
-                        <div id="nextGenContext" class="nextgen-context mb-3"></div>
-                        <div id="nextGenTotals" class="nextgen-total-strip"></div>
-                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-4 text-[10px] font-bold uppercase tracking-wider text-[#46536D]"><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-[#85C8FF]"></span> Avance total</span><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-[#004481]"></span> Uso total de NextGen</span></div>
-                        <div id="epNextGenByBlock" class="nextgen-grid">
-                            <div class="py-16 flex flex-col items-center justify-center text-slate-400 gap-3"><i data-lucide="network" class="w-8 h-8 text-[#001391] opacity-40"></i><span class="text-sm font-medium">Sincroniza para visualizar el uso de NextGen por bloque funcional.</span></div>
-                        </div>
-                    </div>
-                </section>
+<section id="gth-tf" aria-labelledby="gth-tf-title">
+
+  <header class="tf-top">
+    <div>
+      <p class="tf-kicker">Programa EDC · Web Empresas</p>
+      <h2 class="tf-title" id="gth-tf-title">Adopción de funcionalidades transformadas</h2>
+      <p class="tf-sub">Porcentaje de funcionalidades entregadas sobre el catálogo comprometido, acumulado hasta el trimestre que elijas.</p>
+    </div>
+    <div class="tf-freshness">
+      <div class="tf-stamp"><span class="tf-dot" id="tfDot"></span><span id="tfStamp">Cargando datos…</span></div>
+      <div class="tf-actions">
+        <button type="button" class="tf-btn" id="tfExport" title="Descargar la tabla en CSV">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Descargar CSV
+        </button>
+        <button type="button" class="tf-btn is-primary" id="tfRefresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+          Actualizar datos
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tf-update-note" id="tfUpdateNote" role="status">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFB56B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+    <span>Hay cálculos más recientes en el origen. Estás viendo la última copia guardada.</span>
+    <button type="button" class="tf-btn is-primary" id="tfUpdateNow">Traer los nuevos</button>
+  </div>
+
+  <div class="tf-hero">
+    <div class="tf-hero-figure">
+      <div class="tf-hero-pct" id="tfHeroPct">—<sup>%</sup></div>
+      <div class="tf-hero-caption" id="tfHeroCaption">Preparando el catálogo</div>
+    </div>
+    <div class="tf-hero-countries" id="tfHeroCountries"></div>
+  </div>
+
+  <div class="tf-controls">
+    <div class="tf-views" role="tablist" aria-label="Forma de mirar los datos">
+      <button type="button" class="tf-view-btn" role="tab" data-view="pais" aria-selected="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>
+        Visión país
+      </button>
+      <button type="button" class="tf-view-btn" role="tab" data-view="funcionalidad" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Visión funcionalidad
+      </button>
+      <button type="button" class="tf-view-btn" role="tab" data-view="matriz" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
+        Matriz
+      </button>
+    </div>
+
+    <div class="tf-control-group">
+      <span class="tf-label">Detalle</span>
+      <div class="tf-granularity" id="tfGranularity">
+        <button type="button" data-level="bloque" aria-pressed="true">Bloque funcional</button>
+        <button type="button" data-level="solucion" aria-pressed="false">Solución</button>
+      </div>
+      <input type="search" class="tf-search" id="tfSearch" placeholder="Buscar funcionalidad…" aria-label="Buscar funcionalidad">
+    </div>
+  </div>
+
+  <div class="tf-controls" style="justify-content:flex-start;gap:14px">
+    <span class="tf-label">Entregas acumuladas hasta</span>
+    <div class="tf-scale" id="tfScale" role="group" aria-label="Trimestre de corte"></div>
+  </div>
+
+  <div id="tfBody">
+    <div class="tf-panel tf-skeleton"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <div id="tfReplica"></div>
+</section>
+</section>
+
+<!-- Modulo de Transformadas BBVA: adopcion de funcionalidades -->
+<script>
+(function () {
+  'use strict';
+
+  /* ======================================================================
+     1 · CONEXIÓN
+     ====================================================================== */
+
+  // Sustituye por la URL /exec del Apps Script donde hayas publicado el .gs.
+  const GTH_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwlciajOHldg2zgQenD6bDE9TtePO1gAjX6a9ZkQ9xNaa6ZQ2RXbET-vVUUVVgA0Xxqbg/exec';
+
+  const DB = { name: 'gth-cache', store: 'datasets', key: 'adopcion' };
+
+  const state = {
+    snapshot: null,
+    meta: null,
+    view: 'pais',
+    level: 'bloque',
+    cutoff: 0,
+    search: '',
+    open: new Set(),
+    indexCache: new Map(),
+    busy: false
+  };
+
+  const $ = function (id) { return document.getElementById(id); };
+
+  // Modo demostración: una página puede definir window.GTH_DEMO_SNAPSHOT para
+  // ver el módulo funcionando antes de publicar el Apps Script.
+  const DEMO = !!window.GTH_DEMO_SNAPSHOT;
+
+  function jsonp(action, force) {
+    if (DEMO) {
+      const demo = window.GTH_DEMO_SNAPSHOT;
+      const meta = demo.meta || { version: 'demo', generatedAt: 'datos de ejemplo' };
+      return new Promise(function (resolve) {
+        window.setTimeout(function () {
+          resolve(action === 'getCacheMeta'
+            ? { status: 'ok', data: { adopcion: meta }, meta: {} }
+            : { status: 'ok', data: demo.payload, meta: meta });
+        }, 260);
+      });
+    }
+    return new Promise(function (resolve, reject) {
+      const cb = 'gth_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+      let timer = 0;
+      const clean = function () {
+        delete window[cb];
+        const tag = document.getElementById(cb);
+        if (tag) tag.remove();
+        window.clearTimeout(timer);
+      };
+      window[cb] = function (response) {
+        clean();
+        if (!response || response.status !== 'ok') {
+          reject(new Error(response && response.message ? response.message : 'Respuesta incorrecta de Apps Script.'));
+          return;
+        }
+        resolve(response);
+      };
+      const tag = document.createElement('script');
+      tag.id = cb;
+      tag.src = GTH_API_URL + '?api=1&action=' + encodeURIComponent(action) +
+        (force ? '&force=1' : '') + '&callback=' + encodeURIComponent(cb) + '&t=' + Date.now();
+      tag.onerror = function () { clean(); reject(new Error('No se pudo conectar con Apps Script.')); };
+      document.body.appendChild(tag);
+      timer = window.setTimeout(function () { clean(); reject(new Error('Apps Script no respondió a tiempo.')); }, 45000);
+    });
+  }
+
+  /* ======================================================================
+     2 · CACHÉ LOCAL
+     ====================================================================== */
+
+  function openDb() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error('Sin IndexedDB')); return; }
+      const request = indexedDB.open(DB.name, 1);
+      request.onupgradeneeded = function () {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(DB.store)) db.createObjectStore(DB.store);
+      };
+      request.onsuccess = function () { resolve(request.result); };
+      request.onerror = function () { reject(request.error); };
+    });
+  }
+
+  async function readLocal() {
+    if (DEMO) return null;
+    try {
+      const db = await openDb();
+      return await new Promise(function (resolve, reject) {
+        const request = db.transaction(DB.store, 'readonly').objectStore(DB.store).get(DB.key);
+        request.onsuccess = function () { resolve(request.result || null); };
+        request.onerror = function () { reject(request.error); };
+      });
+    } catch (error) {
+      try { return JSON.parse(localStorage.getItem('gth-adopcion') || 'null'); } catch (e) { return null; }
+    }
+  }
+
+  async function writeLocal(record) {
+    if (DEMO) return;
+    try {
+      const db = await openDb();
+      await new Promise(function (resolve, reject) {
+        const request = db.transaction(DB.store, 'readwrite').objectStore(DB.store).put(record, DB.key);
+        request.onsuccess = function () { resolve(); };
+        request.onerror = function () { reject(request.error); };
+      });
+    } catch (error) {
+      try { localStorage.setItem('gth-adopcion', JSON.stringify(record)); } catch (e) {}
+    }
+  }
+
+  /* ======================================================================
+     3 · CÁLCULO
+     ====================================================================== */
+
+  const C = { COUNTRY: 0, FEATURE: 1, TARGET: 2, REAL: 3, FLAGS: 4, ID: 5, QT: 6, QR: 7, NOTE: 8, MENU: 9 };
+
+  function quarterRank(label) {
+    const match = String(label || '').toUpperCase().replace(/\s+/g, '').match(/(\d{4}|\d{2})Q([1-4])/);
+    if (!match) return 0;
+    const year = match[1].length === 2 ? 2000 + Number(match[1]) : Number(match[1]);
+    return year * 4 + Number(match[2]);
+  }
+
+  function isDelivered(cell, cutoff) {
+    return cell[C.REAL] > 0 && (!cutoff || cell[C.REAL] <= cutoff);
+  }
+
+  function cellStatus(cell, cutoff) {
+    if (isDelivered(cell, cutoff)) return 'ok';
+    if (cell[C.FLAGS] & 2) return 'akira';
+    if (cell[C.FLAGS] & 1) return 'etpb';
+    if (cell[C.TARGET] > 0 && cutoff && cell[C.TARGET] <= cutoff) return 'late';
+    return 'wait';
+  }
+
+  const STATUS_TEXT = { ok: 'Entregada', late: 'Retrasada', wait: 'Pendiente', akira: 'En curso Akira', etpb: 'ETPB' };
+
+  /** Agrega la matriz para un corte concreto. Se memoriza por trimestre. */
+  function buildIndex(cutoff) {
+    const cached = state.indexCache.get(cutoff);
+    if (cached) return cached;
+
+    const snap = state.snapshot;
+    const index = {
+      byCountry: snap.countries.map(function () { return { total: 0, delivered: 0, groups: new Map() }; }),
+      byGroup: new Map(),
+      total: 0,
+      delivered: 0
+    };
+
+    snap.cells.forEach(function (cell) {
+      const ci = cell[C.COUNTRY];
+      const fi = cell[C.FEATURE];
+      const feature = snap.features[fi];
+      if (!feature) return;
+      const groupKey = state.level === 'bloque' ? 'b' + feature[1] : 'f' + fi;
+      const groupLabel = state.level === 'bloque' ? snap.blocks[feature[1]] : feature[0];
+      const done = isDelivered(cell, cutoff) ? 1 : 0;
+
+      index.total += 1;
+      index.delivered += done;
+
+      const country = index.byCountry[ci];
+      if (!country) return;
+      country.total += 1;
+      country.delivered += done;
+      if (!country.groups.has(groupKey)) {
+        country.groups.set(groupKey, { key: groupKey, label: groupLabel, total: 0, delivered: 0, cells: [] });
+      }
+      const countryGroup = country.groups.get(groupKey);
+      countryGroup.total += 1;
+      countryGroup.delivered += done;
+      countryGroup.cells.push(cell);
+
+      if (!index.byGroup.has(groupKey)) {
+        index.byGroup.set(groupKey, {
+          key: groupKey,
+          label: groupLabel,
+          blockLabel: snap.blocks[feature[1]] || '',
+          total: 0,
+          delivered: 0,
+          countries: new Map()
+        });
+      }
+      const group = index.byGroup.get(groupKey);
+      group.total += 1;
+      group.delivered += done;
+      if (!group.countries.has(ci)) group.countries.set(ci, { total: 0, delivered: 0, cells: [] });
+      const groupCountry = group.countries.get(ci);
+      groupCountry.total += 1;
+      groupCountry.delivered += done;
+      groupCountry.cells.push(cell);
+    });
+
+    state.indexCache.set(cutoff, index);
+    return index;
+  }
+
+  /**
+   * Funcionalidades ya resueltas en varios países y todavía abiertas en otros.
+   * Se calcula siempre a nivel de solución: la réplica se decide sobre la
+   * funcionalidad concreta, no sobre el bloque que la contiene.
+   */
+  function replicationGaps(cutoff) {
+    const snap = state.snapshot;
+    const byFeature = new Map();
+
+    snap.cells.forEach(function (cell) {
+      const fi = cell[C.FEATURE];
+      if (!byFeature.has(fi)) byFeature.set(fi, { withIt: [], without: [] });
+      const entry = byFeature.get(fi);
+      (isDelivered(cell, cutoff) ? entry.withIt : entry.without).push(cell[C.COUNTRY]);
+    });
+
+    const items = [];
+    byFeature.forEach(function (entry, fi) {
+      if (entry.withIt.length < 2 || !entry.without.length) return;
+      const feature = snap.features[fi];
+      if (!feature) return;
+      items.push({
+        label: feature[0],
+        block: snap.blocks[feature[1]] || '',
+        withIt: entry.withIt,
+        without: entry.without
+      });
+    });
+
+    return items.sort(function (a, b) {
+      return b.withIt.length - a.withIt.length || a.label.localeCompare(b.label, 'es');
+    }).slice(0, 8);
+  }
+
+  /* ======================================================================
+     4 · UTILIDADES DE PINTADO
+     ====================================================================== */
+
+  function pct(part, total) { return total ? (part / total) * 100 : 0; }
+  function fmtPct(value, decimals) {
+    return value.toFixed(decimals === undefined ? 1 : decimals).replace('.', ',');
+  }
+  function esc(value) {
+    return String(value === null || value === undefined ? '' : value)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+  function flag(country) {
+    return '<img src="https://flagcdn.com/w40/' + country.flag + '.png" alt="' + esc(country.label) + '" loading="lazy">';
+  }
+  function heat(value) {
+    // Escala continua entre Grey-1 y Electric Blue: el color codifica el avance.
+    const t = Math.max(0, Math.min(1, value / 100));
+    const from = [226, 230, 234];
+    const to = [0, 19, 145];
+    const mix = from.map(function (channel, i) { return Math.round(channel + (to[i] - channel) * t); });
+    return { bg: 'rgb(' + mix.join(',') + ')', fg: t > 0.55 ? '#fff' : '#070E46' };
+  }
+  const caret = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+
+  function bar(value, sub) {
+    return '<span class="tf-bar' + (sub ? ' is-sub' : '') + '"><i style="width:' + Math.max(0, Math.min(100, value)) + '%"></i></span>';
+  }
+  function pill(status) {
+    return '<span class="tf-pill ' + status + '">' + STATUS_TEXT[status] + '</span>';
+  }
+
+  function matchesSearch(label, extra) {
+    if (!state.search) return true;
+    return (String(label) + ' ' + String(extra || '')).toLowerCase().indexOf(state.search) >= 0;
+  }
+
+  /* ======================================================================
+     5 · VISTAS
+     ====================================================================== */
+
+  function renderHero(index) {
+    const snap = state.snapshot;
+    const value = pct(index.delivered, index.total);
+    $('tfHeroPct').innerHTML = fmtPct(value) + '<sup>%</sup>';
+    $('tfHeroCaption').innerHTML = '<b>' + index.delivered + '</b> de <b>' + index.total +
+      '</b> funcionalidades entregadas hasta ' + esc(currentQuarterLabel());
+
+    $('tfHeroCountries').innerHTML = snap.countries.map(function (country, ci) {
+      const row = index.byCountry[ci];
+      const countryPct = pct(row.delivered, row.total);
+      return '<button type="button" class="tf-chip" data-country="' + ci + '">' +
+        '<div class="tf-chip-head">' + flag(country) + '<span>' + esc(country.short) + '</span></div>' +
+        '<div class="tf-chip-pct">' + fmtPct(countryPct, 0) + '%</div>' +
+        '<div class="tf-chip-bar"><i style="width:' + countryPct + '%"></i></div>' +
+        '</button>';
+    }).join('');
+  }
+
+  function renderPais(index) {
+    const snap = state.snapshot;
+    const rows = snap.countries.map(function (country, ci) {
+      const data = index.byCountry[ci];
+      const countryPct = pct(data.delivered, data.total);
+      const open = state.open.has('pais:' + ci);
+
+      const groups = Array.from(data.groups.values())
+        .filter(function (group) { return matchesSearch(group.label); })
+        .sort(function (a, b) { return pct(b.delivered, b.total) - pct(a.delivered, a.total); });
+
+      const drawer = groups.length
+        ? groups.map(function (group) {
+            const groupPct = pct(group.delivered, group.total);
+            const status = group.total === 1 ? cellStatus(group.cells[0], state.cutoff) : null;
+            return '<div class="tf-subrow">' +
+              '<div class="tf-subname"><span title="' + esc(group.label) + '">' + esc(group.label) + '</span></div>' +
+              bar(groupPct, true) +
+              '<div class="tf-subpct">' + fmtPct(groupPct, 0) + '%<small>' + group.delivered + '/' + group.total + '</small></div>' +
+              '<div>' + (status ? pill(status) : '') + '</div>' +
+              '</div>';
+          }).join('')
+        : '<div class="tf-empty" style="padding:22px">Ninguna funcionalidad coincide con la búsqueda.</div>';
+
+      return '<div class="tf-row" data-open="' + open + '">' +
+        '<button type="button" class="tf-row-btn" data-toggle="pais:' + ci + '" aria-expanded="' + open + '">' +
+          '<span class="tf-caret">' + caret + '</span>' +
+          '<span class="tf-row-name">' + flag(country) +
+            '<span><span class="tf-row-label">' + esc(country.label) + '</span>' +
+            '<span class="tf-row-note">' + data.groups.size + ' ' + (state.level === 'bloque' ? 'bloques funcionales' : 'soluciones') + '</span></span>' +
+          '</span>' +
+          bar(countryPct) +
+          '<span class="tf-row-pct">' + fmtPct(countryPct) + '%<small>' + data.delivered + ' de ' + data.total + '</small></span>' +
+        '</button>' +
+        '<div class="tf-drawer">' + drawer + '</div>' +
+      '</div>';
+    }).join('');
+
+    return panel('Adopción por país', 'Abre un país para ver su reparto por ' + (state.level === 'bloque' ? 'bloque funcional' : 'solución'), rows);
+  }
+
+  function renderFuncionalidad(index) {
+    const snap = state.snapshot;
+    const groups = Array.from(index.byGroup.values())
+      .filter(function (group) { return matchesSearch(group.label, group.blockLabel); })
+      .sort(function (a, b) { return pct(b.delivered, b.total) - pct(a.delivered, a.total) || a.label.localeCompare(b.label, 'es'); });
+
+    if (!groups.length) {
+      return panel('Adopción por funcionalidad', '', '<div class="tf-empty">Ninguna funcionalidad coincide con la búsqueda.</div>');
+    }
+
+    const rows = groups.map(function (group) {
+      const groupPct = pct(group.delivered, group.total);
+      const open = state.open.has('fn:' + group.key);
+
+      const detail = snap.countries.map(function (country, ci) {
+        const data = group.countries.get(ci);
+        if (!data) {
+          return '<div class="tf-subrow">' +
+            '<div class="tf-subname">' + flag(country) + '<span>' + esc(country.label) + '</span></div>' +
+            bar(0, true) +
+            '<div class="tf-subpct" style="color:var(--grey3)">—</div>' +
+            '<div><span class="tf-pill wait">No aplica</span></div>' +
+            '</div>';
+        }
+        const countryPct = pct(data.delivered, data.total);
+        const status = data.cells.length === 1
+          ? cellStatus(data.cells[0], state.cutoff)
+          : (data.delivered === data.total ? 'ok' : (data.delivered ? 'wait' : cellStatus(data.cells[0], state.cutoff)));
+        const quarter = data.cells.length === 1 && data.cells[0][C.QR] ? data.cells[0][C.QR] : '';
+        return '<div class="tf-subrow">' +
+          '<div class="tf-subname">' + flag(country) + '<span>' + esc(country.label) +
+            (quarter ? ' <small style="color:var(--grey3);font-weight:700">· ' + esc(quarter) + '</small>' : '') + '</span></div>' +
+          bar(countryPct, true) +
+          '<div class="tf-subpct">' + fmtPct(countryPct, 0) + '%<small>' + data.delivered + '/' + data.total + '</small></div>' +
+          '<div>' + pill(status) + '</div>' +
+          '</div>';
+      }).join('');
+
+      const present = snap.countries.map(function (country, ci) {
+        const data = group.countries.get(ci);
+        const done = data && data.delivered === data.total;
+        return '<img src="https://flagcdn.com/w40/' + country.flag + '.png" alt="' + esc(country.label) +
+          '" title="' + esc(country.label) + '" class="' + (done ? '' : 'is-missing') + '" loading="lazy">';
+      }).join('');
+
+      return '<div class="tf-row" data-open="' + open + '">' +
+        '<button type="button" class="tf-row-btn" data-toggle="fn:' + esc(group.key) + '" aria-expanded="' + open + '">' +
+          '<span class="tf-caret">' + caret + '</span>' +
+          '<span class="tf-row-name"><span style="min-width:0">' +
+            '<span class="tf-row-label">' + esc(group.label) + '</span>' +
+            '<span class="tf-row-note">' + (state.level === 'solucion' && group.blockLabel ? esc(group.blockLabel) + ' · ' : '') +
+            'presente en ' + group.countries.size + ' países</span></span>' +
+            '<span class="tf-flagset" style="margin-left:6px">' + present + '</span>' +
+          '</span>' +
+          bar(groupPct) +
+          '<span class="tf-row-pct">' + fmtPct(groupPct) + '%<small>' + group.delivered + ' de ' + group.total + '</small></span>' +
+        '</button>' +
+        '<div class="tf-drawer">' + detail + '</div>' +
+      '</div>';
+    }).join('');
+
+    return panel('Adopción por funcionalidad', 'Abre una fila para ver el detalle país a país', rows);
+  }
+
+  function renderMatriz(index) {
+    const snap = state.snapshot;
+    const groups = Array.from(index.byGroup.values())
+      .filter(function (group) { return matchesSearch(group.label, group.blockLabel); })
+      .sort(function (a, b) { return a.label.localeCompare(b.label, 'es'); });
+
+    if (!groups.length) {
+      return panel('Matriz de adopción', '', '<div class="tf-empty">Ninguna funcionalidad coincide con la búsqueda.</div>');
+    }
+
+    const head = '<tr><th class="tf-matrix-row-head">' +
+      (state.level === 'bloque' ? 'Bloque funcional' : 'Solución funcional') + '</th>' +
+      snap.countries.map(function (country) {
+        return '<th>' + flag(country) + esc(country.short) + '</th>';
+      }).join('') + '<th>Total</th></tr>';
+
+    const body = groups.map(function (group) {
+      const cells = snap.countries.map(function (country, ci) {
+        const data = group.countries.get(ci);
+        if (!data) return '<td><span class="tf-cell" style="background:#FAFBFC;color:#ADB8C2">·</span></td>';
+        const value = pct(data.delivered, data.total);
+        const tone = heat(value);
+        return '<td><span class="tf-cell" style="background:' + tone.bg + ';color:' + tone.fg + '" title="' +
+          esc(country.label + ' · ' + group.label + ': ' + data.delivered + ' de ' + data.total) + '">' +
+          fmtPct(value, 0) + '%</span></td>';
+      }).join('');
+      const totalPct = pct(group.delivered, group.total);
+      return '<tr><th class="tf-matrix-row-head" title="' + esc(group.label) + '">' + esc(group.label) + '</th>' +
+        cells + '<td><b style="font-variant-numeric:tabular-nums">' + fmtPct(totalPct, 0) + '%</b></td></tr>';
+    }).join('');
+
+    const footer = '<div class="tf-legend">Menos adopción' +
+      '<i style="background:linear-gradient(90deg,#E2E6EA,#8090D0,#001391)"></i>Más adopción' +
+      '<span style="margin-left:auto;color:var(--grey3)">El punto gris indica que la funcionalidad no está en el catálogo de ese país.</span></div>';
+
+    return '<div class="tf-panel">' +
+      '<div class="tf-panel-head"><h3 class="tf-panel-title">Matriz de adopción</h3>' +
+      '<span class="tf-panel-meta">' + groups.length + ' filas · corte ' + esc(currentQuarterLabel()) + '</span></div>' +
+      '<div class="tf-matrix-wrap"><table class="tf-matrix"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>' +
+      footer + '</div>';
+  }
+
+  function panel(title, meta, inner) {
+    return '<div class="tf-panel">' +
+      '<div class="tf-panel-head"><h3 class="tf-panel-title">' + esc(title) + '</h3>' +
+      '<span class="tf-panel-meta">' + esc(meta) + '</span></div>' + inner + '</div>';
+  }
+
+  function renderReplica() {
+    const target = $('tfReplica');
+    if (state.view === 'matriz') { target.innerHTML = ''; return; }
+    const gaps = replicationGaps(state.cutoff);
+    if (!gaps.length) { target.innerHTML = ''; return; }
+    const snap = state.snapshot;
+
+    target.innerHTML = '<div class="tf-replica">' +
+      '<h3>Listas para replicar</h3>' +
+      '<p>Funcionalidades ya resueltas en varios países y todavía abiertas en otros. Son las candidatas con menos esfuerzo de análisis por delante.</p>' +
+      '<div class="tf-replica-list">' + gaps.map(function (item) {
+        const flags = snap.countries.map(function (country, ci) {
+          const has = item.withIt.indexOf(ci) >= 0;
+          const missing = item.without.indexOf(ci) >= 0;
+          if (!has && !missing) return '';
+          return '<img src="https://flagcdn.com/w40/' + country.flag + '.png" alt="' + esc(country.label) +
+            '" title="' + esc(country.label + (has ? ': entregada' : ': pendiente')) + '" class="' + (has ? '' : 'is-missing') + '" loading="lazy">';
+        }).join('');
+        return '<div class="tf-replica-item"><b>' + esc(item.label) +
+          (item.block ? '<span style="display:block;font-weight:700;font-size:11px;color:var(--grey3);margin-top:3px">' + esc(item.block) + '</span>' : '') +
+          '</b>' +
+          '<div class="tf-replica-flags">' + flags +
+          '<span>' + item.withIt.length + ' entregada' + (item.withIt.length === 1 ? '' : 's') + ' · ' + item.without.length + ' pendiente' + (item.without.length === 1 ? '' : 's') + '</span></div></div>';
+      }).join('') + '</div></div>';
+  }
+
+  /* ======================================================================
+     6 · ORQUESTACIÓN
+     ====================================================================== */
+
+  function currentQuarterLabel() {
+    const snap = state.snapshot;
+    if (!snap || !state.cutoff) return 'hoy';
+    const found = snap.quarters.find(function (label) { return quarterRank(label) === state.cutoff; });
+    return found || 'hoy';
+  }
+
+  function render() {
+    if (!state.snapshot) return;
+    const index = buildIndex(state.cutoff);
+    renderHero(index);
+
+    const body = $('tfBody');
+    if (state.view === 'pais') body.innerHTML = renderPais(index);
+    else if (state.view === 'funcionalidad') body.innerHTML = renderFuncionalidad(index);
+    else body.innerHTML = renderMatriz(index);
+
+    renderReplica();
+  }
+
+  function renderScale() {
+    const snap = state.snapshot;
+    const now = new Date();
+    const nowRank = now.getFullYear() * 4 + (Math.floor(now.getMonth() / 3) + 1);
+    $('tfScale').innerHTML = snap.quarters.map(function (label) {
+      const rank = quarterRank(label);
+      return '<button type="button" class="tf-q' + (rank <= nowRank ? ' is-past' : '') +
+        '" data-q="' + rank + '" aria-pressed="' + (rank === state.cutoff) + '">' + esc(label) + '</button>';
+    }).join('');
+  }
+
+  function setStamp(meta, status) {
+    const dot = $('tfDot');
+    const stamp = $('tfStamp');
+    dot.className = 'tf-dot' + (status === 'stale' ? ' is-stale' : (status === 'offline' ? ' is-off' : ''));
+    if (!meta || !meta.generatedAt) { stamp.textContent = 'Sin fecha de cálculo'; return; }
+    const label = status === 'offline'
+      ? 'Copia guardada en este navegador · '
+      : 'Datos calculados el ';
+    stamp.innerHTML = label + '<b>' + esc(meta.generatedAt) + '</b>';
+  }
+
+  function setBusy(isBusy) {
+    state.busy = isBusy;
+    const button = $('tfRefresh');
+    button.disabled = isBusy;
+    button.classList.toggle('is-busy', isBusy);
+    button.lastChild.textContent = isBusy ? ' Actualizando…' : ' Actualizar datos';
+  }
+
+  function adopt(payload, meta, status) {
+    state.snapshot = payload;
+    state.meta = meta;
+    state.indexCache.clear();
+    if (!state.cutoff && payload.quarters.length) {
+      const now = new Date();
+      const nowRank = now.getFullYear() * 4 + (Math.floor(now.getMonth() / 3) + 1);
+      const past = payload.quarters.map(quarterRank).filter(function (rank) { return rank <= nowRank; });
+      state.cutoff = past.length ? Math.max.apply(null, past) : quarterRank(payload.quarters[payload.quarters.length - 1]);
+    }
+    setStamp(meta, status);
+    renderScale();
+    render();
+  }
+
+  function showError(message) {
+    $('tfBody').innerHTML = '<div class="tf-error"><b>No se han podido cargar los datos.</b>' + esc(message) +
+      ' Comprueba que el Código.gs está publicado en una versión nueva y que la URL del script es la correcta.</div>';
+  }
+
+  async function boot() {
+    const local = await readLocal();
+    if (local && local.payload) adopt(local.payload, local.meta, 'offline');
+
+    try {
+      const response = await jsonp('getCacheMeta');
+      const remote = (response.data && response.data.adopcion) || null;
+      const localVersion = String((local && local.meta && local.meta.version) || '');
+      if (local && local.payload && remote && remote.version && String(remote.version) === localVersion) {
+        setStamp(remote, 'fresh');
+        return;                                  // la copia local ya es la buena
+      }
+      if (local && local.payload && remote) {
+        setStamp(local.meta, 'stale');
+        $('tfUpdateNote').classList.add('is-on');
+        return;                                  // se avisa, no se interrumpe
+      }
+      await fetchSnapshot(false);
+    } catch (error) {
+      if (!state.snapshot) showError(error.message);
+      else setStamp(state.meta, 'offline');
+    }
+  }
+
+  async function fetchSnapshot(force) {
+    setBusy(true);
+    try {
+      const response = await jsonp(force ? 'refreshAdopcion' : 'getAdopcionSnapshot', force);
+      const payload = response.data;
+      const meta = response.meta || {};
+      await writeLocal({ payload: payload, meta: meta, savedAt: Date.now() });
+      state.cutoff = state.cutoff || 0;
+      adopt(payload, meta, 'fresh');
+      $('tfUpdateNote').classList.remove('is-on');
+    } catch (error) {
+      if (!state.snapshot) showError(error.message);
+      else setStamp(state.meta, 'offline');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /* ======================================================================
+     7 · EXPORTACIÓN
+     ====================================================================== */
+
+  function exportCsv() {
+    if (!state.snapshot) return;
+    const snap = state.snapshot;
+    const lines = [['Pais', 'Bloque funcional', 'Solucion funcional', 'ID', 'Target', 'Entrega', 'Estado', 'Robot 5'].join(';')];
+    snap.cells.forEach(function (cell) {
+      const feature = snap.features[cell[C.FEATURE]];
+      lines.push([
+        snap.countries[cell[C.COUNTRY]].label,
+        snap.blocks[feature[1]] || '',
+        feature[0],
+        cell[C.ID],
+        cell[C.QT],
+        cell[C.QR],
+        STATUS_TEXT[cellStatus(cell, state.cutoff)],
+        (cell[C.FLAGS] & 4) ? 'Si' : 'No'
+      ].map(function (value) { return '"' + String(value).replace(/"/g, '""') + '"'; }).join(';'));
+    });
+    const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'adopcion-funcionalidades-' + currentQuarterLabel() + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
+  }
+
+  /* ======================================================================
+     8 · INTERACCIÓN
+     ====================================================================== */
+
+  document.getElementById('gth-tf').addEventListener('click', function (event) {
+    const toggle = event.target.closest('[data-toggle]');
+    if (toggle) {
+      const key = toggle.getAttribute('data-toggle');
+      if (state.open.has(key)) state.open.delete(key); else state.open.add(key);
+      const row = toggle.closest('.tf-row');
+      row.setAttribute('data-open', state.open.has(key));
+      toggle.setAttribute('aria-expanded', state.open.has(key));
+      return;
+    }
+
+    const viewBtn = event.target.closest('[data-view]');
+    if (viewBtn) {
+      state.view = viewBtn.getAttribute('data-view');
+      Array.prototype.forEach.call(document.querySelectorAll('#gth-tf [data-view]'), function (button) {
+        button.setAttribute('aria-selected', button === viewBtn);
+      });
+      render();
+      return;
+    }
+
+    const levelBtn = event.target.closest('#tfGranularity [data-level]');
+    if (levelBtn) {
+      state.level = levelBtn.getAttribute('data-level');
+      Array.prototype.forEach.call(document.querySelectorAll('#tfGranularity [data-level]'), function (button) {
+        button.setAttribute('aria-pressed', button === levelBtn);
+      });
+      state.indexCache.clear();
+      state.open.clear();
+      render();
+      return;
+    }
+
+    const quarter = event.target.closest('[data-q]');
+    if (quarter) {
+      state.cutoff = Number(quarter.getAttribute('data-q'));
+      Array.prototype.forEach.call(document.querySelectorAll('#tfScale [data-q]'), function (button) {
+        button.setAttribute('aria-pressed', button === quarter);
+      });
+      render();
+      return;
+    }
+
+    const chip = event.target.closest('[data-country]');
+    if (chip) {
+      // Un clic en el país del hero abre su fila en la visión país.
+      state.view = 'pais';
+      Array.prototype.forEach.call(document.querySelectorAll('#gth-tf [data-view]'), function (button) {
+        button.setAttribute('aria-selected', button.getAttribute('data-view') === 'pais');
+      });
+      state.open.add('pais:' + chip.getAttribute('data-country'));
+      render();
+      const row = document.querySelector('#gth-tf [data-toggle="pais:' + chip.getAttribute('data-country') + '"]');
+      if (row) row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  });
+
+  let searchTimer = 0;
+  $('tfSearch').addEventListener('input', function (event) {
+    window.clearTimeout(searchTimer);
+    const value = event.target.value.trim().toLowerCase();
+    searchTimer = window.setTimeout(function () {
+      state.search = value;
+      render();
+    }, 160);
+  });
+
+  $('tfRefresh').addEventListener('click', function () { if (!state.busy) fetchSnapshot(true); });
+  $('tfUpdateNow').addEventListener('click', function () { if (!state.busy) fetchSnapshot(true); });
+  $('tfExport').addEventListener('click', exportCsv);
+
+  window.GTHTransformadas = {
+    refresh: function () { return fetchSnapshot(true); },
+    state: state
+  };
+
+  boot();
+})();
+</script>
+
 
             </div>
         </div>

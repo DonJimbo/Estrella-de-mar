@@ -924,11 +924,11 @@ function getCatalogoKpisData() {
       const solucion = String(getCatalogoValue_(obj, row, ['solucion_funcional', 'solucionfuncional', 'solucion', 'nombre', 'kpi', 'indicador'], 3) || '').trim();
       const descripcion = String(getCatalogoValue_(obj, row, ['descripcion', 'descripcion_solucion', 'detalle', 'description'], 4) || '').trim();
       const qTarget = getCatalogoValue_(obj, row, ['q_target', 'qtarget', 'target', 'target_referencia', 'target_q', 'trimestre_target'], -1);
-      const qRealRaw = getCatalogoValue_(obj, row, ['q_real', 'qreal', 'entrega', 'fecha_entrega', 'trimestre_entrega'], 6);
-      const etpbRaw = getCatalogoValue_(obj, row, ['etpb'], 7);
-      const ongoingAkiraRaw = getCatalogoValue_(obj, row, ['ongoing_akira', 'on_going_akira', 'akira'], 8);
-      const r5Raw = getCatalogoValue_(obj, row, ['r5', 'robot_5', 'robot5', 'robot_5_bei', 'automatizado', 'automatizada'], 9);
-      const comentario = String(getCatalogoValue_(obj, row, ['comentario', 'comentarios', 'observaciones', 'estado_comentario', 'nota_estado'], 12) || '').trim();
+      const qRealRaw = getCatalogoValue_(obj, row, ['q_real', 'qreal', 'entrega', 'fecha_entrega', 'trimestre_entrega'], 5);
+      const etpbRaw = getCatalogoValue_(obj, row, ['etpb'], 6);
+      const ongoingAkiraRaw = getCatalogoValue_(obj, row, ['ongoing_akira', 'on_going_akira', 'akira'], 7);
+      const r5Raw = getCatalogoValue_(obj, row, ['r5', 'robot_5', 'robot5', 'robot_5_bei', 'automatizado', 'automatizada'], 8);
+      const comentario = String(getCatalogoValue_(obj, row, ['comentario', 'comentarios', 'observaciones', 'estado_comentario', 'nota_estado'], 11) || '').trim();
       const key = buildMenuOptionKey_(pais, id);
 
       return {

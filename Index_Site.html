@@ -3767,9 +3767,15 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
     state.meta = meta;
     state.indexCache.clear();
     if (!state.cutoff && payload.quarters.length) {
+      // El trimestre en curso todavia no esta cerrado: el corte por defecto
+      // es el trimestre ANTERIOR al actual, igual que getLastClosedFeatureQuarter()
+      // en el resto del site (Senda de Features Transformadas).
       const now = new Date();
-      const nowRank = now.getFullYear() * 4 + (Math.floor(now.getMonth() / 3) + 1);
-      const past = payload.quarters.map(quarterRank).filter(function (rank) { return rank <= nowRank; });
+      const currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+      const lastClosedQuarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
+      const lastClosedYear = currentQuarter === 1 ? now.getFullYear() - 1 : now.getFullYear();
+      const lastClosedRank = lastClosedYear * 4 + lastClosedQuarter;
+      const past = payload.quarters.map(quarterRank).filter(function (rank) { return rank <= lastClosedRank; });
       state.cutoff = past.length ? Math.max.apply(null, past) : quarterRank(payload.quarters[payload.quarters.length - 1]);
     }
     setStamp(meta, status);

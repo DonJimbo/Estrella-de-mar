@@ -1,3 +1,31 @@
+/* =========================================================
+   APLICACIÓN WEB UNIFICADA — Global Transformation Hub
+   - Páginas embebibles para Google Sites.
+   - API GTH: ?api=1&action=...
+   - API Dashboard EDC: ?action=...
+   ========================================================= */
+
+function doGet(e) {
+  e = e || {};
+  e.parameter = e.parameter || {};
+  const params = e.parameter;
+if (params.vista) {
+  return renderUnifiedSitePage_(params.vista);
+}
+  // API de presupuestos, FTEs, KPIs, catálogo y adopción.
+  if (String(params.api || '') === '1') {
+    return handleApiRequest_(e);
+  }
+
+  // Conserva tanto las llamadas actuales con action como la llamada antigua
+  // que utilizaba únicamente callback para obtener el snapshot EDC.
+  if (params.action || params.callback) {
+    return handleDashboardEDCApi_(e);
+  }
+
+return renderUnifiedSitePage_('inicio');
+}
+
 const SPREADSHEET_ID = '1DuyYpJUbYOaVKuhfmUAia1M4pJNI5CErX-DZ7FBXuhU';
 
 const SHEET_PRESUPUESTOS = '05_PRESUPUESTO_SITES';
@@ -8,6 +36,7 @@ const SHEET_FTES_KPIS = '08_FTSs_SITES_3';
 // KPIs
 const SHEET_KPIS = '07_KPIS_SITES';
 const SHEET_CATALOGO_KPIS = '11_CATALOGO_KPIs';
+const SHEET_OPCIONES_MENU_SITES = '15_OPCIONES_MENU_SITES';
 
 // Archivo HTML único donde están Presupuestos y FTEs
 const MAIN_INDEX_FILE = 'Index_Presupuestos';
@@ -16,7 +45,7 @@ const MAIN_INDEX_FILE = 'Index_Presupuestos';
    ROUTER PRINCIPAL
    ========================================================= */
 
-function doGet(e) {
+function renderGthPage_(e) {
   e = e || {};
   e.parameter = e.parameter || {};
 
@@ -91,67 +120,7 @@ function getWebAppUrl_() {
    API JSONP PARA GOOGLE SITES / HTML DIRECTO
    ========================================================= */
 
-function handleApiRequest_(e) {
-  const action = String(e.parameter.action || '').trim();
-
-  try {
-    let data;
-
-    if (action === 'ping') {
-      data = {
-        ok: true,
-        message: 'API funcionando correctamente',
-        timestamp: new Date().toISOString()
-      };
-
-    } else if (action === 'getCatalogoKpisData' || action === 'getCatalogoData') {
-      data = getCatalogoKpisData();
-
-    } else if (action === 'getPresupuestoData') {
-      data = getPresupuestoData();
-
-    } else if (action === 'getFtesData' || action === 'getFTEsData') {
-      data = getFtesData();
-
-    } else if (action === 'getFtesPersonasData') {
-      data = getFtesPersonasData();
-
-    } else if (action === 'getFtesKpisData') {
-      data = getFtesKpisData();
-
-    } else if (action === 'getKpisData') {
-      data = getKpisData();
-
-    } else if (
-      action === 'getAllFtesPresupuestoData' ||
-      action === 'getAllPresupuestoFtesData' ||
-      action === 'getAllPresupuestosFtesData'
-    ) {
-      data = {
-        presupuesto: getPresupuestoData(),
-        ftes: getFtesData(),
-        ftesPersonas: getFtesPersonasData(),
-        ftesKpis: getFtesKpisData()
-      };
-
-    } else {
-      throw new Error('Acción API no reconocida: ' + action);
-    }
-
-    return jsonpResponse_(e, {
-      status: 'ok',
-      action: action,
-      data: data
-    });
-
-  } catch (error) {
-    return jsonpResponse_(e, {
-      status: 'error',
-      action: action,
-      message: error && error.message ? error.message : String(error)
-    });
-  }
-}
+function handleApiRequest_(e) { return gthApiDispatch_(e); }
 
 function jsonpResponse_(e, payload) {
   const callback = String(e.parameter.callback || '').trim();
@@ -928,22 +897,27 @@ function normalizeCountry_(value) {
 
     'HOLDING': 'HOLDING',
 
+    'ES': 'ESPAÑA',
     'SPA': 'ESPAÑA',
     'ESPANA': 'ESPAÑA',
     'ESPAÑA': 'ESPAÑA',
     'SPAIN': 'ESPAÑA',
 
+    'MX': 'MÉXICO',
     'MEX': 'MÉXICO',
     'MEXICO': 'MÉXICO',
     'MÉXICO': 'MÉXICO',
 
+    'PE': 'PERÚ',
     'PER': 'PERÚ',
     'PERU': 'PERÚ',
     'PERÚ': 'PERÚ',
 
+    'CO': 'COLOMBIA',
     'COL': 'COLOMBIA',
     'COLOMBIA': 'COLOMBIA',
 
+    'AR': 'ARGENTINA',
     'ARG': 'ARGENTINA',
     'ARGENTINA': 'ARGENTINA'
   };
@@ -996,83 +970,175 @@ function getCatalogoKpisData() {
   }
 
   const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return [];
 
-  if (values.length < 2) {
-    return [];
-  }
+  // La primera fila de datos no siempre es la fila 1. Detectamos la cabecera
+  // para conservar el funcionamiento aunque se añada un título al Excel.
+  const headerRowIndex = findCatalogoHeaderRow_(values);
+  const headers = (values[headerRowIndex] || []).map(normalizeHeader_);
+  const menuOptionsByKey = getMenuOptionsByKpi_(ss);
 
-  const headers = values[0].map(h => normalizeHeader_(h));
-
-  const rows = values.slice(1)
+  return values.slice(headerRowIndex + 1)
     .filter(row => row.some(cell => cell !== '' && cell !== null))
     .map(row => {
       const obj = {};
+      headers.forEach((header, index) => { if (header) obj[header] = row[index]; });
 
-      headers.forEach((header, index) => {
-        obj[header] = row[index];
-      });
-
-      const id = String(getValue_(obj, ['id', 'id_kpi', 'codigo', 'cod']) || row[0] || '').trim();
-      const pais = normalizeCountry_(getValue_(obj, ['pais', 'country', 'geografia']) || row[1] || '');
-      const bloque = String(getValue_(obj, ['bloque_funcional', 'bloquefuncional', 'bloque', 'categoria', 'category']) || row[2] || '').trim();
-      const solucion = String(getValue_(obj, ['solucion_funcional', 'solucionfuncional', 'solucion', 'nombre', 'kpi', 'indicador']) || row[3] || '').trim();
-      const qTarget = getValue_(obj, ['q_target', 'qtarget', 'target', 'target_referencia', 'target_q']) || row[4] || '';
-      // Q Real:
-      // Columna F de 11_CATALOGO_KPIs.
-      // Si la columna F tiene cualquier valor, la funcionalidad cuenta como entregada.
-      const qRealRaw = row[5];
-      const qReal = qRealRaw === null || qRealRaw === undefined ? '' : qRealRaw;
-
-      // ETPB:
-      // Columna G de 11_CATALOGO_KPIs.
-      // Se conserva también el valor bruto para diferenciar FALSE explícito de celda vacía.
-      const etpbRaw = row[6];
-      const etpb = toBoolean_(etpbRaw);
-    // Ongoing Akira:
-      // Columna H de 11_CATALOGO_KPIs.
-      // Si H = TRUE => se cuenta como Ongoing Akira.
-      // Si H está vacío o FALSE => no se cuenta.
-      const ongoingAkiraRaw = row[7];
-      const ongoingAkira = toBoolean_(ongoingAkiraRaw);
-
-      const r5 = toBoolean_(
-        getValue_(obj, [
-          'r5',
-          'robot_5',
-          'robot5',
-          'robot_5_bei',
-          'automatizado',
-          'automatizada'
-        ]) !== ''
-          ? getValue_(obj, [
-              'r5',
-              'robot_5',
-              'robot5',
-              'robot_5_bei',
-              'automatizado',
-              'automatizada'
-            ])
-          : row[8]
-      );
+      // Estructura confirmada del catálogo: A país, B KPI ID, C bloque,
+      // D solución funcional, E descripción y L comentario de estado.
+      const id = String(getCatalogoValue_(obj, row, ['id_kpi', 'kpi_id', 'id', 'codigo', 'cod'], 1) || '').trim();
+      const paisRaw = getCatalogoValue_(obj, row, ['pais', 'country', 'geografia'], 0);
+      const pais = normalizeCountry_(paisRaw);
+      const bloque = String(getCatalogoValue_(obj, row, ['bloque_funcional', 'bloquefuncional', 'bloque', 'categoria', 'category'], 2) || '').trim();
+      const solucion = String(getCatalogoValue_(obj, row, ['solucion_funcional', 'solucionfuncional', 'solucion', 'nombre', 'kpi', 'indicador'], 3) || '').trim();
+      const descripcion = String(getCatalogoValue_(obj, row, ['descripcion', 'descripcion_solucion', 'detalle', 'description'], 4) || '').trim();
+      const qTarget = getCatalogoValue_(obj, row, ['q_target', 'qtarget', 'target', 'target_referencia', 'target_q', 'trimestre_target'], -1);
+      const qRealRaw = getCatalogoValue_(obj, row, ['q_real', 'qreal', 'entrega', 'fecha_entrega', 'trimestre_entrega'], 6);
+      const etpbRaw = getCatalogoValue_(obj, row, ['etpb'], 7);
+      const ongoingAkiraRaw = getCatalogoValue_(obj, row, ['ongoing_akira', 'on_going_akira', 'akira'], 8);
+      const r5Raw = getCatalogoValue_(obj, row, ['r5', 'robot_5', 'robot5', 'robot_5_bei', 'automatizado', 'automatizada'], 9);
+      const comentario = String(getCatalogoValue_(obj, row, ['comentario', 'comentarios', 'observaciones', 'estado_comentario', 'nota_estado'], 12) || '').trim();
+      const key = buildMenuOptionKey_(pais, id);
 
       return {
         id: id,
         pais: pais,
+        paisOriginal: String(paisRaw || '').trim(),
         bloqueFuncional: bloque,
         solucionFuncional: solucion,
-        qTarget: qTarget,
-        qReal: qReal,
+        descripcion: descripcion,
+        qTarget: qTarget || '',
+        qReal: qRealRaw === null || qRealRaw === undefined ? '' : qRealRaw,
         qRealRaw: qRealRaw,
-        etpb: etpb,
+        etpb: toBoolean_(etpbRaw),
         etpbRaw: etpbRaw,
-        ongoingAkira: ongoingAkira,
+        ongoingAkira: toBoolean_(ongoingAkiraRaw),
         ongoingAkiraRaw: ongoingAkiraRaw,
-        r5: r5,
-        robot5: r5,
-        automatizado: r5
+        r5: toBoolean_(r5Raw),
+        r5Raw: r5Raw,
+        robot5: toBoolean_(r5Raw),
+        automatizado: toBoolean_(r5Raw),
+        comentario: comentario,
+        // Se conserva highlights para no romper ninguna vista que ya lo use.
+        highlights: descripcion,
+        menuOptions: menuOptionsByKey[key] || []
       };
     })
     .filter(row => row.id || row.solucionFuncional || row.bloqueFuncional);
+}
 
-  return rows;
+/** Identifica la fila de cabeceras de 11_CATALOGO_KPIs de forma tolerante. */
+function findCatalogoHeaderRow_(values) {
+  let bestIndex = 0;
+  let bestScore = -1;
+
+  values.slice(0, 12).forEach((row, index) => {
+    const headers = row.map(normalizeHeader_);
+    let score = 0;
+    if (headers.some(header => ['pais', 'country', 'geografia'].indexOf(header) >= 0)) score += 2;
+    if (headers.some(header => header === 'id' || header === 'id_kpi' || header === 'kpi_id')) score += 2;
+    if (headers.some(header => header.indexOf('solucion') >= 0)) score += 3;
+    if (headers.some(header => header.indexOf('bloque') >= 0)) score += 1;
+    if (score > bestScore) { bestScore = score; bestIndex = index; }
+  });
+
+  return bestScore >= 4 ? bestIndex : 0;
+}
+
+/** Devuelve una celda por nombre de cabecera y, si no existe, por posición. */
+function getCatalogoValue_(obj, row, names, fallbackIndex) {
+  const value = getValue_(obj, names);
+  if (value !== '') return value;
+  return fallbackIndex >= 0 && row && row[fallbackIndex] !== undefined ? row[fallbackIndex] : '';
+}
+
+/** Clave estable para cruzar 15_OPCIONES_MENU_SITES por país y KPI ID. */
+function buildMenuOptionKey_(country, id) {
+  return normalizeCountry_(country) + '|' + String(id || '').trim().toUpperCase();
+}
+
+/**
+ * Lee la matriz 15_OPCIONES_MENU_SITES. Cada opción activa de la fila se
+ * devuelve como etiqueta; funciona tanto con TRUE/Sí/X como con texto directo.
+ */
+function getMenuOptionsByKpi_(spreadsheet) {
+  const sheet = spreadsheet.getSheetByName(SHEET_OPCIONES_MENU_SITES);
+  if (!sheet || sheet.getLastRow() < 2) return {};
+
+  const values = sheet.getDataRange().getValues();
+  const headerRowIndex = findMenuOptionsHeaderRow_(values);
+  const headers = (values[headerRowIndex] || []).map(value => String(value || '').trim());
+  const normalizedHeaders = headers.map(normalizeHeader_);
+  const countryIndex = findHeaderIndexInArray_(normalizedHeaders, ['pais', 'country', 'geografia'], 0);
+  const idIndex = findHeaderIndexInArray_(normalizedHeaders, ['kpi_id', 'id_kpi', 'id', 'codigo', 'cod'], 1);
+  const result = {};
+
+  values.slice(headerRowIndex + 1).forEach(row => {
+    const country = normalizeCountry_(row[countryIndex]);
+    const id = String(row[idIndex] || '').trim();
+    if (!country || !id) return;
+
+    const options = [];
+    row.forEach((cell, index) => {
+      if (index === countryIndex || index === idIndex || isDisabledMenuOption_(cell)) return;
+      const header = headers[index] || '';
+      const value = String(cell).trim();
+
+      if (isEnabledMenuOption_(cell)) {
+        if (header) options.push(header);
+      } else if (value) {
+        // Cuando el Excel contiene directamente el nombre de la opción en vez
+        // de una marca, el texto de la celda es la etiqueta a mostrar.
+        options.push(value);
+      }
+    });
+
+    result[buildMenuOptionKey_(country, id)] = uniqueTextValues_(options);
+  });
+
+  return result;
+}
+
+function findMenuOptionsHeaderRow_(values) {
+  let bestIndex = 0;
+  let bestScore = -1;
+  values.slice(0, 12).forEach((row, index) => {
+    const headers = row.map(normalizeHeader_);
+    const hasCountry = findHeaderIndexInArray_(headers, ['pais', 'country', 'geografia'], -1) >= 0;
+    const hasId = findHeaderIndexInArray_(headers, ['kpi_id', 'id_kpi', 'id', 'codigo', 'cod'], -1) >= 0;
+    const score = (hasCountry ? 2 : 0) + (hasId ? 2 : 0) + headers.filter(Boolean).length / 100;
+    if (score > bestScore) { bestScore = score; bestIndex = index; }
+  });
+  return bestScore >= 4 ? bestIndex : 0;
+}
+
+function findHeaderIndexInArray_(headers, aliases, fallbackIndex) {
+  for (let i = 0; i < aliases.length; i++) {
+    const wanted = normalizeHeader_(aliases[i]);
+    const exactIndex = headers.indexOf(wanted);
+    if (exactIndex >= 0) return exactIndex;
+  }
+  for (let j = 0; j < aliases.length; j++) {
+    const wanted = normalizeHeader_(aliases[j]);
+    const partialIndex = headers.findIndex(header => header && (header.indexOf(wanted) >= 0 || wanted.indexOf(header) >= 0));
+    if (partialIndex >= 0) return partialIndex;
+  }
+  return fallbackIndex;
+}
+
+function isEnabledMenuOption_(value) {
+  if (value === true || value === 1) return true;
+  const text = String(value || '').trim().toUpperCase();
+  return ['TRUE', 'VERDADERO', 'SI', 'SÍ', 'YES', 'Y', 'X', '1', 'OK'].indexOf(text) >= 0;
+}
+
+function isDisabledMenuOption_(value) {
+  if (value === '' || value === null || value === undefined || value === false || value === 0) return true;
+  return ['FALSE', 'FALSO', 'NO', 'N', '0', '-'].indexOf(String(value).trim().toUpperCase()) >= 0;
+}
+
+function uniqueTextValues_(values) {
+  const seen = {};
+  return values.map(value => String(value || '').trim())
+    .filter(value => value && !seen[value] && (seen[value] = true));
 }

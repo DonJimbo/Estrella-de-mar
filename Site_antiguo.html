@@ -1669,7 +1669,93 @@
         .catalogo-kpis-page .catalogo-column-filter-title,.catalogo-kpis-page .catalogo-date-filter-year{font-weight:700}
         .catalogo-kpis-page .catalogo-column-filter-option{font-weight:500}
         .catalogo-kpis-page .catalogo-column-filter-mini-btn{font-weight:650}
-        @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b{animation:none!important;transition:none!important}}
+
+        /* Uso de NextGen por bloque funcional. */
+        .traffic-section-actions{display:flex;align-items:center;justify-content:flex-end;gap:.6rem;flex-wrap:wrap}
+        .bbva-2025-cta{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.25rem;padding:.55rem .9rem;border:1px solid rgba(255,255,255,.55);border-radius:999px;background:#5BBEFF;color:#004481;font-size:.7rem;line-height:1.1;font-weight:900;letter-spacing:.035em;text-transform:uppercase;box-shadow:0 5px 14px rgba(0,68,129,.22);transition:transform .2s ease,filter .2s ease,box-shadow .2s ease;text-align:center}
+        .bbva-2025-cta:hover{transform:translateY(-2px);filter:brightness(1.04);box-shadow:0 9px 18px rgba(0,68,129,.3)}
+        .bbva-2025-cta:focus-visible{outline:3px solid #fff;outline-offset:2px}
+        .nextgen-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1.25rem}
+        .nextgen-card{min-width:0;background:#fff;border:1px solid #E2E6EA;border-radius:1rem;box-shadow:0 5px 18px rgba(7,14,70,.045);overflow:hidden}
+        .nextgen-card-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:1.15rem 1.25rem;border-bottom:1px solid #E2E6EA;background:linear-gradient(110deg,#fff 0%,#F7F8F8 100%)}
+        .nextgen-country-title{display:flex;align-items:center;gap:.7rem;min-width:0;color:#004481;font-size:1.08rem;line-height:1.15;font-weight:900;letter-spacing:.035em;text-transform:uppercase}
+        .nextgen-table-head,.nextgen-block-row{display:grid;grid-template-columns:minmax(0,1fr) 4.5rem minmax(8.8rem,1.2fr);column-gap:.8rem;align-items:center}
+        .nextgen-table-head{padding:.8rem 1.25rem;border-bottom:1px solid #E2E6EA;color:#61708a;font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+        .nextgen-block-list{padding:.18rem 1.25rem .5rem}
+        .nextgen-block-row{width:100%;padding:.8rem 0;border:0;border-bottom:1px solid #EEF1F4;background:transparent;text-align:left;cursor:pointer;transition:background-color .18s ease,transform .18s ease}
+        .nextgen-block-row:last-child{border-bottom:0}
+        .nextgen-block-row:hover{background:#F7F8F8;transform:translateX(2px)}
+        .nextgen-block-row:focus-visible{outline:2px solid #85C8FF;outline-offset:2px;border-radius:.4rem}
+        .nextgen-block-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#004481;font-size:.9rem;line-height:1.2;font-weight:750}
+        .nextgen-advance{color:#009EAE;font-size:.88rem;font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+        .nextgen-use{display:flex;align-items:center;gap:.55rem;min-width:0}
+        .nextgen-track{height:.6rem;min-width:0;flex:1;border-radius:999px;background:#E9EDF2;overflow:hidden}
+        .nextgen-bar{display:block;height:100%;border-radius:999px;background:#004481}
+        .nextgen-use-value{width:3rem;flex:none;color:#004481;font-size:.84rem;font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+        @media(min-width:760px){.nextgen-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(min-width:1280px){.nextgen-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+        @media(max-width:520px){.nextgen-table-head,.nextgen-block-row{grid-template-columns:minmax(0,1fr) 3.7rem minmax(7.6rem,1fr);column-gap:.45rem}.nextgen-card-head,.nextgen-table-head,.nextgen-block-list{padding-left:.85rem;padding-right:.85rem}.nextgen-block-label{font-size:.76rem}.nextgen-advance,.nextgen-use-value{font-size:.72rem}.nextgen-country-title{font-size:.9rem}}
+
+        /* Resaltado breve al llegar desde Uso de NextGen al Roadmap. */
+        @keyframes epRoadmapHighlight{0%,100%{background:transparent;box-shadow:inset 0 0 0 transparent}20%,72%{background:rgba(133,200,255,.28);box-shadow:inset 4px 0 0 #004481,0 0 0 2px rgba(133,200,255,.42)}}
+        #ep-roadmap .ep-roadmap-highlight{animation:epRoadmapHighlight 2s ease-in-out both;border-radius:.55rem}
+        @keyframes nextGenBlockHighlight{0%,100%{background:transparent;box-shadow:inset 0 0 0 transparent}20%,72%{background:rgba(133,200,255,.3);box-shadow:inset 4px 0 0 #004481,0 0 0 2px rgba(133,200,255,.42)}}
+        #ep-nextgen .nextgen-block-highlight{animation:nextGenBlockHighlight 2s ease-in-out both;border-radius:.5rem}
+
+        /* Inicio: seis columnas que se expanden al pasar el ratón, sin alterar la versión móvil. */
+        #section-docs .support-hub-card{min-width:0}
+        @media(min-width:1024px){
+            #section-docs .support-docs-grid{display:flex!important;flex-wrap:nowrap;align-items:stretch;gap:.75rem}
+            #section-docs .support-docs-grid>.support-hub-card{flex:1 1 0;min-width:7rem;min-height:12.2rem;padding:1.1rem;overflow:hidden;transition:flex .34s cubic-bezier(.22,.8,.22,1),transform .24s ease,box-shadow .24s ease,border-color .24s ease}
+            #section-docs .support-docs-grid>.support-hub-card:hover,#section-docs .support-docs-grid>.support-hub-card:focus-within{flex:2.45 1 0}
+            #section-docs .support-hub-card .support-hub-detail{max-height:0;margin:0;overflow:hidden;opacity:0;pointer-events:none;transition:max-height .28s ease,opacity .2s ease,margin .28s ease}
+            #section-docs .support-hub-card:hover .support-hub-detail,#section-docs .support-hub-card:focus-within .support-hub-detail{max-height:10rem;margin-top:.65rem;opacity:1;pointer-events:auto}
+            #section-docs .support-hub-card .support-session-list{gap:.45rem}
+            #section-docs .support-hub-card h3{font-size:.76rem;line-height:1.2;letter-spacing:.055em}
+            #section-docs .support-hub-card:hover h3,#section-docs .support-hub-card:focus-within h3{font-size:.88rem}
+            #section-docs .support-hub-card .support-session-title{font-size:.76rem}
+            #section-docs .support-hub-card:hover .support-session-title,#section-docs .support-hub-card:focus-within .support-session-title{font-size:.88rem}
+            #section-docs .support-hub-card .support-session-icon,#section-docs .support-hub-card>div:first-child{flex-shrink:0}
+        }
+
+        /* Documentación de soporte: composición editorial, más densa y consistente. */
+        #section-docs .support-docs-grid>.support-hub-card{position:relative}
+        #section-docs .support-hub-card>div:first-child{margin-bottom:.9rem}
+        #section-docs .support-hub-card h3{max-width:16ch}
+        #section-docs .support-session-card{border-top-color:#FDE466}
+        #section-docs .support-session-card .support-session-head{flex-direction:column;align-items:flex-start;gap:.8rem}
+        #section-docs .support-session-card .support-session-title{padding:0;line-height:1.15}
+        #section-docs .support-session-card:hover .support-session-title,#section-docs .support-session-card:focus-within .support-session-title{color:#D1A800}
+        @media(min-width:1024px){
+            #section-docs .support-docs-grid>.support-hub-card{min-height:11.25rem;padding:1.2rem 1.05rem 1.1rem}
+            #section-docs .support-docs-grid>.support-hub-card:hover,#section-docs .support-docs-grid>.support-hub-card:focus-within{flex:2.7 1 0}
+            #section-docs .support-hub-card h3,#section-docs .support-hub-card .support-session-title{font-size:.8rem;line-height:1.18}
+            #section-docs .support-hub-card:hover h3,#section-docs .support-hub-card:focus-within h3,#section-docs .support-hub-card:hover .support-session-title,#section-docs .support-hub-card:focus-within .support-session-title{font-size:.98rem}
+            #section-docs .support-hub-card .support-hub-detail{max-height:0}
+            #section-docs .support-hub-card:hover .support-hub-detail,#section-docs .support-hub-card:focus-within .support-hub-detail{max-height:12rem}
+        }
+
+        /* Uso de NextGen: seis países en dos filas legibles dentro de la misma vista. */
+        #ep-nextgen{border-color:#D4EDFC;box-shadow:0 8px 25px rgba(0,68,129,.08)}
+        #ep-nextgen .nextgen-section-head{background:#004481;border-color:#004481}
+        #ep-nextgen .nextgen-grid{gap:1rem}
+        #ep-nextgen .nextgen-card{border-radius:.8rem;border-color:#D4E5F2;box-shadow:0 4px 14px rgba(0,68,129,.07)}
+        #ep-nextgen .nextgen-card-head{padding:.85rem 1rem;background:#F2FAFF;border-top:3px solid #004481}
+        #ep-nextgen .nextgen-country-title{font-size:1.02rem;color:#004481}
+        #ep-nextgen .nextgen-table-head{padding:.6rem 1rem;font-size:.65rem;background:#fff;color:#52647C}
+        #ep-nextgen .nextgen-block-list{padding:.1rem 1rem .35rem}
+        #ep-nextgen .nextgen-block-row{padding:.55rem 0}
+        #ep-nextgen .nextgen-block-label{font-size:.84rem;color:#172B4D}
+        #ep-nextgen .nextgen-advance,#ep-nextgen .nextgen-use-value{font-size:.8rem;color:#004481}
+        #ep-nextgen .nextgen-track{height:.5rem;background:#E6EEF5}
+        #ep-nextgen .nextgen-bar{background:#004481}
+        @media(min-width:1024px){#ep-nextgen .nextgen-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+        /* Matriz comparativa de NextGen: filas = bloques, columnas = países. */
+        #ep-nextgen .nextgen-grid{display:block}.nextgen-view-toolbar{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap}.nextgen-view-switch{display:inline-flex;overflow:hidden;border:1px solid #B6CDE1;border-radius:999px;background:#fff}.nextgen-view-switch button{border:0;background:transparent;padding:.45rem .7rem;color:#64748B;font-size:.7rem;font-weight:850;cursor:pointer}.nextgen-view-switch button.is-active{background:#004481;color:#fff}.nextgen-context{color:#52647C;font-size:.75rem;font-weight:700}.nextgen-total-strip{display:grid;grid-template-columns:repeat(6,minmax(112px,1fr));gap:.6rem;margin-bottom:1rem;overflow-x:auto}.nextgen-total-card{min-width:112px;padding:.65rem .7rem;border:1px solid #D7E5F2;border-radius:.75rem;background:#fff}.nextgen-total-card-head{display:flex;align-items:center;gap:.35rem;color:#004481;font-size:.68rem;font-weight:900}.nextgen-total-card-value{display:block;margin-top:.35rem;color:#004481;font-size:1.05rem;font-weight:950}.nextgen-matrix-scroll{overflow-x:auto;border:1px solid #D7E5F2;border-radius:.9rem;background:#fff}.nextgen-matrix{width:100%;min-width:980px;border-collapse:separate;border-spacing:0}.nextgen-matrix th{position:sticky;top:0;z-index:2;padding:.7rem;border-bottom:1px solid #D7E5F2;background:#F8FBFE;color:#52647C;font-size:.64rem;font-weight:900;letter-spacing:.05em;text-align:center;text-transform:uppercase}.nextgen-matrix th:first-child{position:sticky;left:0;z-index:3;min-width:220px;text-align:left}.nextgen-matrix td{padding:.55rem;border-bottom:1px solid #EEF2F6;text-align:center;vertical-align:middle}.nextgen-matrix tbody tr:last-child td{border-bottom:0}.nextgen-matrix-block{position:sticky;left:0;z-index:1;background:#fff;color:#004481;font-size:.76rem;font-weight:900;text-align:left!important}.nextgen-matrix-cell{min-width:112px;cursor:pointer}.nextgen-matrix-cell:hover{background:#F2FAFF}.nextgen-cell-top{display:flex;justify-content:space-between;gap:.4rem;color:#52647C;font-size:.61rem;font-weight:800}.nextgen-cell-top strong{color:#004481}.nextgen-cell-track{height:.4rem;margin-top:.38rem;overflow:hidden;border-radius:999px;background:#E6EEF5}.nextgen-cell-bar{display:block;height:100%;border-radius:inherit;background:#004481}.nextgen-empty-cell{color:#94A3B8;font-size:.68rem}.nextgen-row-focus td{background:#F2FAFF}.nextgen-row-focus .nextgen-matrix-block{background:#F2FAFF}
+        .nextgen-view-toolbar{gap:.75rem;margin-bottom:.75rem}.nextgen-view-switch button{padding:.52rem .82rem;font-size:.78rem}.nextgen-context{font-size:.82rem;color:#46536D}.nextgen-round-flag{display:inline-grid;place-items:center;overflow:hidden;border:2px solid #fff;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,68,129,.2);vertical-align:middle}.nextgen-round-flag img{display:block;width:100%;height:100%;object-fit:cover}#ep-nextgen #nextGenCountryControl,#ep-nextgen #nextGenBlockControl{font-size:.78rem;line-height:1.2}#ep-nextgen #nextGenCountrySelect,#ep-nextgen #nextGenBlockSelect{min-height:2.25rem;padding:.38rem .62rem;font-size:.88rem;font-weight:750}#ep-nextgen #nextGenCountrySelect{min-width:9.5rem}.nextgen-matrix{min-width:680px}.nextgen-matrix th{padding:.62rem .7rem;font-size:.7rem}.nextgen-matrix th:first-child{z-index:4;min-width:240px}.nextgen-matrix td{padding:.56rem .7rem;font-size:.88rem}.nextgen-matrix-block{font-size:.88rem}.nextgen-matrix-metric{color:#52647C;font-size:.76rem!important;font-weight:850;text-align:left!important}.nextgen-matrix-value{min-width:102px;color:#004481;font-size:.9rem!important;font-weight:900;cursor:pointer}.nextgen-matrix-value:hover{background:#F2FAFF}.nextgen-empty-cell{font-size:.8rem}.nextgen-matrix-compact-row{cursor:pointer}.nextgen-matrix-compact-row:hover td{background:#F2FAFF}.nextgen-matrix-compact-row:hover .nextgen-matrix-block{background:#F2FAFF}.nextgen-matrix-score{min-width:150px;color:#004481;font-size:.92rem!important;font-weight:900}@media(max-width:900px){#ep-nextgen #nextGenCountrySelect,#ep-nextgen #nextGenBlockSelect{font-size:.86rem}.nextgen-matrix{min-width:620px}}
+
+        @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b,#ep-roadmap .ep-roadmap-highlight,#ep-nextgen .nextgen-block-highlight{animation:none!important;transition:none!important}}
     </style>
 </head>
 <body class="bg-[#F1F5F9] text-gray-800">
@@ -1795,7 +1881,7 @@
                     </div>
                     
                     <div class="support-docs-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5">
-                        <div class="support-session-card">
+                        <div class="support-session-card support-hub-card">
                             <div class="support-session-head">
                                 <div class="support-session-icon">
                                     <i data-lucide="calendar-check-2" class="w-5 h-5"></i>
@@ -1803,7 +1889,7 @@
                                 <h3 class="support-session-title">Sesiones<br>de trabajo</h3>
                             </div>
 
-                            <div class="support-session-list">
+                            <div class="support-session-list support-hub-detail">
                                 <button type="button" onclick="switchPage('page-monthly', null)" class="support-session-item primary">
                                     <span class="support-session-item-left">
                                         <span class="support-session-num">01</span>
@@ -1830,44 +1916,44 @@
                             </div>
                         </div>
 
-                        <button onclick="window.openModal('modal-calendario')" class="text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#FB923C]">
+                        <button onclick="window.openModal('modal-calendario')" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#FB923C]">
                             <div class="bg-orange-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#FB923C] transition-colors">
                                 <i data-lucide="calendar-days" class="w-6 h-6 text-[#FB923C] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#FB923C] transition-colors">Calendario de Actualización de KPIs</h3>
-                            <p class="text-xs text-gray-500 mt-auto leading-relaxed">Fechas clave, closures de sprint y sesiones SteerCo del programa.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Fechas clave, closures de sprint y sesiones SteerCo del programa.</p>
                         </button>
 
-                        <button onclick="switchPage('page-catalogo-kpis', document.getElementById('nav-catalogo-kpis')); setTimeout(() => { if (window.initCatalogoKpis) window.initCatalogoKpis(); }, 80);" class="text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#001391]">
+                        <button onclick="switchPage('page-catalogo-kpis', document.getElementById('nav-catalogo-kpis')); setTimeout(() => { if (window.initCatalogoKpis) window.initCatalogoKpis(); }, 80);" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#001391]">
                             <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#001391] transition-colors">
                                 <i data-lucide="book-open" class="w-6 h-6 text-[#001391] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#001391] transition-colors">Layout KPIs</h3>
-                            <p class="text-xs text-gray-500 mt-auto leading-relaxed">Listado detallado de indicadores, bloques y soluciones funcionales.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Listado detallado de indicadores, bloques y soluciones funcionales.</p>
                         </button>
 
-                        <button onclick="window.openModal('modal-procedimiento')" class="text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#5BBEFF]">
+                        <button onclick="window.openModal('modal-procedimiento')" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#5BBEFF]">
                             <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#5BBEFF] transition-colors">
                                 <i data-lucide="file-check-2" class="w-6 h-6 text-[#004481] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#5BBEFF] transition-colors">Solicitud de Cambios de KPIs</h3>
-                            <p class="text-xs text-gray-500 mt-auto leading-relaxed">Normativas y procesos para la modificación y actualización de KPIs.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Normativas y procesos para la modificación y actualización de KPIs.</p>
                         </button>
 
-                        <a href="https://docs.google.com/spreadsheets/d/1Id49v5fUc8CJbjIEgWByl2xQzLKYSOw0Fjc9aChxU7M/edit?usp=sharing" target="_blank" class="executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#48AE64]">
+                        <a href="https://docs.google.com/spreadsheets/d/1Id49v5fUc8CJbjIEgWByl2xQzLKYSOw0Fjc9aChxU7M/edit?usp=sharing" target="_blank" class="support-hub-card executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#48AE64]">
                             <div class="bg-green-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#48AE64] transition-colors">
                                 <i data-lucide="users" class="w-6 h-6 text-[#48AE64] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#48AE64] transition-colors">Equipos EDC</h3>
-                            <p class="text-xs text-gray-500 mt-auto leading-relaxed">Directorio de contactos, roles y organigrama de los equipos.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Directorio de contactos, roles y organigrama de los equipos.</p>
                         </a>
 
-                        <a href="https://docs.google.com/presentation/d/1h6UValzrxejT-t8hem9fbsA2kQv7Ib7iDWiCn8TyIOw/edit?slide=id.g3cd3ca7b2e2_0_364#slide=id.g3cd3ca7b2e2_0_364" target="_blank" class="text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
+                        <a href="https://docs.google.com/presentation/d/1h6UValzrxejT-t8hem9fbsA2kQv7Ib7iDWiCn8TyIOw/edit?slide=id.g3cd3ca7b2e2_0_364#slide=id.g3cd3ca7b2e2_0_364" target="_blank" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
                             <div class="bg-purple-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#8B5CF6] transition-colors">
                                 <i data-lucide="network" class="w-6 h-6 text-[#8B5CF6] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#8B5CF6] transition-colors">Modelo de Gobierno</h3>
-                            <p class="text-xs text-gray-500 mt-auto leading-relaxed">Comités, escalado de decisiones y flujos de comunicación.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Comités, escalado de decisiones y flujos de comunicación.</p>
                         </a>
                     </div>
                 </div>
@@ -2539,7 +2625,10 @@
                 <section id="section-traffic" class="executive-card overflow-hidden scroll-offset">
                     <div class="bg-[#004481] px-6 py-4 flex items-center justify-between border-b border-[#004481]">
                         <div class="flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-white/80"></i><h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">Traffic to Next Gen Web Empresas <span class="dynamic-q-label px-2 py-0.5 rounded-md bg-white/20 text-white text-[9px] font-bold"></span></h2></div>
-                        <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
+                        <div class="traffic-section-actions">
+                            <button type="button" onclick="window.openNextGenByBlock()" class="bbva-2025-cta"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver uso de NextGen por Bloque Funcional</button>
+                            <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
+                        </div>
                     </div>
                     <div class="p-6 bg-gray-50/50 grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="inner-card p-5 flex flex-col chart-card-small relative group">
@@ -2671,6 +2760,7 @@
                     <nav class="flex overflow-x-auto hide-scrollbar gap-2 justify-start md:justify-center pb-1">
                         <button onclick="window.scrollToSection('ep-targets')" class="kpi-nav-btn px-4 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider whitespace-nowrap transition-all border border-[#004481] bg-[#004481] text-white shadow-sm flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3 h-3"></i> Targets & Evolución</button>
                         <button onclick="window.scrollToSection('ep-roadmap')" class="kpi-nav-btn px-4 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider whitespace-nowrap transition-all border border-gray-300 bg-white text-[#004481] hover:bg-gray-50 flex items-center gap-1.5"><i data-lucide="git-merge" class="w-3 h-3"></i> FT transformadas</button>
+                        <button onclick="window.scrollToSection('ep-nextgen')" class="kpi-nav-btn px-4 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider whitespace-nowrap transition-all border border-gray-300 bg-white text-[#004481] hover:bg-slate-50 flex items-center gap-1.5"><i data-lucide="network" class="w-3 h-3"></i> Uso NextGen</button>
                     </nav>
                 </div>
 
@@ -2715,6 +2805,25 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="ep-nextgen" class="executive-card overflow-hidden scroll-offset mb-8">
+                    <div class="nextgen-section-head px-6 py-4 flex items-center justify-between border-b">
+                        <div class="flex items-center gap-2"><i data-lucide="network" class="w-4 h-4 text-white/80"></i><h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">Uso de NextGen por bloque funcional</h2></div>
+                        <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
+                    </div>
+                    <div class="p-4 md:p-6 bg-[#F7F8F8]">
+                        <div class="nextgen-view-toolbar">
+                            <div class="nextgen-view-switch" role="group" aria-label="Cambiar visión de NextGen"><button type="button" class="is-active" data-nextgen-mode="country">Por país</button><button type="button" data-nextgen-mode="functional">Por bloque funcional</button></div>
+                            <div class="flex flex-wrap items-center gap-3"><label id="nextGenCountryControl" class="font-bold uppercase tracking-wider text-[#52647C]">País <select id="nextGenCountrySelect" class="ml-1 rounded-md border border-[#B6CDE1] bg-white text-[#004481] outline-none" onchange="window.changeNextGenSelection('country', this.value)"></select></label><label id="nextGenBlockControl" class="hidden font-bold uppercase tracking-wider text-[#52647C]">Bloque funcional <select id="nextGenBlockSelect" class="ml-1 max-w-[300px] rounded-md border border-[#B6CDE1] bg-white text-[#004481] outline-none" onchange="window.changeNextGenSelection('block', this.value)"></select></label></div>
+                        </div>
+                        <div id="nextGenContext" class="nextgen-context mb-3"></div>
+                        <div id="nextGenTotals" class="nextgen-total-strip"></div>
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-4 text-[10px] font-bold uppercase tracking-wider text-[#46536D]"><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-[#85C8FF]"></span> Avance total</span><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-[#004481]"></span> Uso total de NextGen</span></div>
+                        <div id="epNextGenByBlock" class="nextgen-grid">
+                            <div class="py-16 flex flex-col items-center justify-center text-slate-400 gap-3"><i data-lucide="network" class="w-8 h-8 text-[#001391] opacity-40"></i><span class="text-sm font-medium">Sincroniza para visualizar el uso de NextGen por bloque funcional.</span></div>
                         </div>
                     </div>
                 </section>
@@ -4145,7 +4254,7 @@
         };
 
         // --- VARIABLES GLOBALES ---
-        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, featuresEvolution2025=null;
+        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, featuresEvolution2025=null;
         let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, featureProgressLoading=false, featureProgressLoadError='', trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
         const chartColors = {'España':'#a855f7','México':'#22c55e','Perú':'#ef4444','Colombia':'#1e3a8a','Argentina':'#3b82f6','TOTAL':'#004481'};
         const flagsMap = { 'Holding':'Holding','España':'es','México':'mx','Perú':'pe','Colombia':'co','Argentina':'ar','TOTAL':'global','Global':'global','ALL':'global'};
@@ -4171,6 +4280,66 @@
             if (v===null||v===undefined||v==='') return null;
             if (typeof v==='string') v=v.replace(',','.').trim();
             let n=Number(v); return Number.isFinite(n)?Math.round(n*10)/10:null;
+        }
+        function getFunctionalBlockKey(value) {
+            const normalized = String(value ?? '')
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .replace(/[./_-]/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+            const aliases = {
+                'OTROS': 'otros-productos',
+                'OTROS PROD': 'otros-productos',
+                'OTROS PRODUCTOS': 'otros-productos',
+                'CAP TRANSVER': 'capacidades-transversales',
+                'CAP TRANSVERSAL': 'capacidades-transversales',
+                'CAPACIDADES TRANSVERSALES': 'capacidades-transversales',
+                'COMEX': 'comercio-exterior',
+                'COMERCIO EXTERIOR': 'comercio-exterior'
+            };
+            return aliases[normalized] || normalized.toLowerCase().replace(/\s+/g, '-');
+        }
+        function formatNextGenBlockLabel(value) {
+            const key = getFunctionalBlockKey(value);
+            const labels = {
+                'otros-productos': 'Otros Productos',
+                'capacidades-transversales': 'Capacidades Transversales'
+            };
+            return labels[key] || String(value ?? '').trim();
+        }
+        function parseSlideBfData(sheet) {
+            if (!sheet || !sheet['!ref'] || !window.XLSX) return null;
+            const normalizeLabel = value => String(value ?? '')
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .replace(/\s+/g, ' ').trim().toUpperCase();
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
+            const headerIndex = rows.findIndex(row => {
+                const labels = (row || []).map(normalizeLabel);
+                return labels.some(label => label === 'PAIS' || label.startsWith('PAIS '))
+                    && labels.some(label => label.includes('BLOQUE'))
+                    && labels.some(label => label.includes('AVANCE'))
+                    && labels.some(label => label.includes('NEXTGEN'));
+            });
+            if (headerIndex < 0) return null;
+
+            const header = rows[headerIndex];
+            const getColumn = predicate => header.findIndex(cell => predicate(normalizeLabel(cell)));
+            const countryColumn = getColumn(label => label === 'PAIS' || label.startsWith('PAIS '));
+            const blockColumn = getColumn(label => label.includes('BLOQUE'));
+            const advanceColumn = getColumn(label => label.includes('AVANCE'));
+            const nextGenColumn = getColumn(label => label.includes('NEXTGEN'));
+            if ([countryColumn, blockColumn, advanceColumn, nextGenColumn].some(column => column < 0)) return null;
+
+            const countries = {'ESPANA':'España','MEXICO':'México','PERU':'Perú','COLOMBIA':'Colombia','ARGENTINA':'Argentina','GLOBAL':'TOTAL','TOTAL':'TOTAL'};
+            const result = {};
+            rows.slice(headerIndex + 1, headerIndex + 61).forEach(row => {
+                const country = countries[normalizeLabel(row?.[countryColumn])];
+                const block = String(row?.[blockColumn] ?? '').trim();
+                const advance = normalizePercent(row?.[advanceColumn]);
+                const nextGen = normalizePercent(row?.[nextGenColumn]);
+                if (!country || !block || (advance === null && nextGen === null)) return;
+                if (!result[country]) result[country] = [];
+                result[country].push({bloque:block, avance:advance, nextGen});
+            });
+            return Object.keys(result).length ? result : null;
         }
         function getMigratedValues(quarter, country) {
             if(!migratedDataGlobal) return {sendaR:null, sendaT:null, gemaR:null, gemaT:null};
@@ -4437,6 +4606,7 @@ window.EDCNps = (() => {
                     const pptSheet = findSheet('PPT Status');
                     const ftSheet = findSheet('Roadmap FT', 'Roadmap_FT', 'RoadmapFT');
                     const backlogFtSheet = findSheet('Backlog FT', 'Backlog_FT', 'BacklogFT');
+                    const slideBfSheet = findSheet('Slide BF', 'Slide_BF', 'SlideBF');
                     const consSheet = findSheet('Consolidado KPIs EDC 2026');
                     const getV = (s, c) => (s && s[c]) ? s[c].v : null;
                     const getRaw = (s, c) => (s && s[c]) ? (s[c].w || s[c].v) : null;
@@ -4742,6 +4912,13 @@ window.EDCNps = (() => {
                             endProductDataGlobal[c].push({bloque:bName, fin:getRaw(ftSheet,cols.fin+r), progreso:normalizePercent(getV(ftSheet,cols.progreso+r)), target26:t26, target26Q1:normalizePercent(getV(ftSheet,cols.target26Q1+r)), target26Q2:normalizePercent(getV(ftSheet,cols.target26Q2+r)), target26Q3:normalizePercent(getV(ftSheet,cols.target26Q3+r)), target26Q4:normalizePercent(getV(ftSheet,cols.target26Q4+r))});
                         }
                     });
+
+                    // USO DE NEXTGEN POR BLOQUE FUNCIONAL: pestaña "Slide BF", filas 31–90.
+                    // Se conserva como una vista independiente del roadmap para no alterar sus cálculos.
+                    nextGenByBlockDataGlobal = parseSlideBfData(slideBfSheet);
+                    if (!nextGenByBlockDataGlobal) {
+                        console.warn('No se han encontrado datos válidos en la pestaña Slide BF.');
+                    }
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -5439,7 +5616,189 @@ window.EDCNps = (() => {
             }else document.getElementById('migratedFlagsContainer').classList.add('hidden');
         }
 
+        const nextGenViewState = { mode: 'country', country: '', block: '' };
+
+        function nextGenEscape(value) {
+            return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function nextGenPercent(value) {
+            const number = Number(value);
+            return Number.isFinite(number) ? `${number.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 1 })}%` : '—';
+        }
+
+        function nextGenCountryLabel(country) { return country === 'TOTAL' ? 'Global' : country; }
+        function nextGenCountryIcon(country, classes = 'w-5 h-5') {
+            return country === 'TOTAL'
+                ? window.getGlobalIconHtml(classes)
+                : `<span class="nextgen-round-flag ${classes}"><img src="https://flagcdn.com/w40/${flagsMap[country]}.png" alt=""></span>`;
+        }
+
+        function getNextGenRecord(country, blockKey) {
+            return (nextGenByBlockDataGlobal[country] || []).find(row => getFunctionalBlockKey(row.bloque) === blockKey) || null;
+        }
+
+        function getNextGenTotal(country, quarter) {
+            const trafficValue = snapshotDataGlobal?.[quarter]?.[country]?.nextgen;
+            if (Number.isFinite(Number(trafficValue))) return Number(trafficValue);
+            const totalRow = (nextGenByBlockDataGlobal[country] || []).find(row => /TOTAL|CONSOLIDADO/i.test(String(row.bloque || '')));
+            return totalRow && Number.isFinite(Number(totalRow.nextGen)) ? Number(totalRow.nextGen) : null;
+        }
+
+        window.changeNextGenSelection = function(type, value) {
+            if (type === 'country') nextGenViewState.country = value;
+            if (type === 'block') nextGenViewState.block = value;
+            renderNextGenByBlock();
+        };
+
+        function renderNextGenByBlock() {
+            const container = document.getElementById('epNextGenByBlock');
+            const totals = document.getElementById('nextGenTotals');
+            const context = document.getElementById('nextGenContext');
+            if (!container || !totals || !context) return;
+
+            const emptyState = message => {
+                totals.innerHTML = '';
+                context.textContent = '';
+                container.innerHTML = `<div class="py-16 flex flex-col items-center justify-center text-slate-400 gap-3 nextgen-empty-state"><i data-lucide="network" class="w-8 h-8 text-[#001391] opacity-40"></i><span class="text-sm font-medium">${message}</span></div>`;
+                updateIcons();
+            };
+            if (!nextGenByBlockDataGlobal) { emptyState('Sincroniza para visualizar el uso de NextGen por bloque funcional.'); return; }
+
+            const baseCountries = countryOrder.filter(country => Array.isArray(nextGenByBlockDataGlobal[country]) && nextGenByBlockDataGlobal[country].length);
+            if (!baseCountries.length) { emptyState('No hay datos de uso de NextGen por país.'); return; }
+            const comparisonCountries = [...baseCountries, ...(Array.isArray(nextGenByBlockDataGlobal.TOTAL) && nextGenByBlockDataGlobal.TOTAL.length ? ['TOTAL'] : [])];
+            const initialCountry = document.getElementById('fGeo_ep')?.value;
+            const initialNextGenCountry = initialCountry === 'ALL' ? 'TOTAL' : initialCountry;
+            if (!comparisonCountries.includes(nextGenViewState.country)) nextGenViewState.country = comparisonCountries.includes(initialNextGenCountry) ? initialNextGenCountry : baseCountries[0];
+            const quarter = document.getElementById('fTri_ep')?.value === 'ALL' || !document.getElementById('fTri_ep')?.value ? '26Q2' : document.getElementById('fTri_ep').value;
+            const roadmapData = typeof window.getEndProductDataForQuarter === 'function'
+                ? window.getEndProductDataForQuarter(endProductDataGlobal, quarter)
+                : endProductDataGlobal;
+            const roadmapOrder = (roadmapData?.TOTAL || [])
+                .filter(row => !/TOTAL|CONSOLIDADO/i.test(String(row.bloque || '')))
+                .map(row => getFunctionalBlockKey(row.bloque));
+            const roadmapRank = new Map(roadmapOrder.map((key, index) => [key, index]));
+            const allBlocks = [...new Map(baseCountries.flatMap(country => (nextGenByBlockDataGlobal[country] || []).map(row => [getFunctionalBlockKey(row.bloque), row.bloque]))).entries()]
+                .filter(([key, label]) => !/TOTAL|CONSOLIDADO/i.test(String(label || '')))
+                .map(([key, label]) => ({ key, label: formatNextGenBlockLabel(label) }))
+                .sort((a, b) => (roadmapRank.get(a.key) ?? 999) - (roadmapRank.get(b.key) ?? 999) || a.label.localeCompare(b.label, 'es'));
+            if (!allBlocks.length) { emptyState('No hay bloques funcionales disponibles para esta vista.'); return; }
+            if (!allBlocks.some(block => block.key === nextGenViewState.block)) nextGenViewState.block = allBlocks[0].key;
+
+            const countrySelect = document.getElementById('nextGenCountrySelect');
+            const blockSelect = document.getElementById('nextGenBlockSelect');
+            if (countrySelect) countrySelect.innerHTML = comparisonCountries.map(country => `<option value="${nextGenEscape(country)}">${nextGenEscape(nextGenCountryLabel(country))}</option>`).join('');
+            if (blockSelect) blockSelect.innerHTML = allBlocks.map(block => `<option value="${nextGenEscape(block.key)}">${nextGenEscape(block.label)}</option>`).join('');
+            if (countrySelect) countrySelect.value = nextGenViewState.country;
+            if (blockSelect) blockSelect.value = nextGenViewState.block;
+            document.getElementById('nextGenCountryControl')?.classList.toggle('hidden', nextGenViewState.mode !== 'country');
+            document.getElementById('nextGenBlockControl')?.classList.toggle('hidden', nextGenViewState.mode !== 'functional');
+            document.querySelectorAll('[data-nextgen-mode]').forEach(button => {
+                button.classList.toggle('is-active', button.dataset.nextgenMode === nextGenViewState.mode);
+                button.onclick = () => { nextGenViewState.mode = button.dataset.nextgenMode; renderNextGenByBlock(); };
+            });
+
+            totals.innerHTML = comparisonCountries.map(country => {
+                const total = getNextGenTotal(country, quarter);
+                return `<article class="nextgen-total-card"><div class="nextgen-total-card-head">${nextGenCountryIcon(country, 'w-4 h-4')}<span>${nextGenEscape(nextGenCountryLabel(country))}</span></div><strong class="nextgen-total-card-value">${nextGenPercent(total)}</strong></article>`;
+            }).join('');
+
+            const selectedBlock = allBlocks.find(block => block.key === nextGenViewState.block);
+            const columns = nextGenViewState.mode === 'country' ? [nextGenViewState.country] : comparisonCountries;
+            const rows = nextGenViewState.mode === 'country'
+                ? allBlocks.filter(block => getNextGenRecord(nextGenViewState.country, block.key))
+                : [selectedBlock];
+            context.textContent = nextGenViewState.mode === 'country'
+                ? `Visión país · ${nextGenCountryLabel(nextGenViewState.country)}: todos sus bloques funcionales y su avance.`
+                : `Visión bloque funcional · ${selectedBlock.label}: comparación por país.`;
+
+            let tableRows = '';
+            let tableHead = '';
+            if (nextGenViewState.mode === 'country') {
+                tableHead = '<th>Bloque funcional</th><th>Avance</th><th>Uso de NextGen</th>';
+                tableRows = rows.map(block => {
+                    const row = getNextGenRecord(nextGenViewState.country, block.key);
+                    if (!row) return '';
+                    const attributes = `data-nextgen-country="${nextGenEscape(nextGenViewState.country)}" data-nextgen-block="${nextGenEscape(row.bloque)}" title="Abrir el bloque en la gráfica de progreso"`;
+                    return `<tr class="nextgen-matrix-compact-row" ${attributes}><td class="nextgen-matrix-block">${nextGenEscape(block.label)}</td><td class="nextgen-matrix-score">${nextGenPercent(row.avance)}</td><td class="nextgen-matrix-score">${nextGenPercent(row.nextGen)}</td></tr>`;
+                }).join('');
+            } else {
+                const metrics = [
+                    { key: 'avance', label: 'Avance' },
+                    { key: 'nextGen', label: 'Uso de NextGen' }
+                ];
+                tableHead = `<th>Bloque funcional</th><th>Indicador</th>${columns.map(country => `<th>${nextGenCountryIcon(country, 'w-5 h-5 mr-1')} ${nextGenEscape(nextGenCountryLabel(country))}</th>`).join('')}`;
+                tableRows = rows.map(block => metrics.map((metric, index) => {
+                    const cells = columns.map(country => {
+                        const row = getNextGenRecord(country, block.key);
+                        if (!row) return '<td class="nextgen-empty-cell">—</td>';
+                        return `<td class="nextgen-matrix-value" data-nextgen-country="${nextGenEscape(country)}" data-nextgen-block="${nextGenEscape(row.bloque)}" title="Abrir el bloque en la gráfica de progreso">${nextGenPercent(row[metric.key])}</td>`;
+                    }).join('');
+                    return `<tr class="nextgen-row-focus">${index === 0 ? `<td rowspan="2" class="nextgen-matrix-block">${nextGenEscape(block.label)}</td>` : ''}<td class="nextgen-matrix-metric">${metric.label}</td>${cells}</tr>`;
+                }).join('')).join('');
+            }
+            container.innerHTML = `<div class="nextgen-matrix-scroll"><table class="nextgen-matrix"><thead><tr>${tableHead}</tr></thead><tbody>${tableRows}</tbody></table></div>`;
+            container.querySelectorAll('[data-nextgen-country][data-nextgen-block]').forEach(cell => cell.addEventListener('click', () => window.focusRoadmapBlock(cell.dataset.nextgenCountry, cell.dataset.nextgenBlock)));
+            updateIcons();
+        }
+
+        window.openNextGenByBlock = function() {
+            const navButton = typeof window.getSiteNavButtonForPage === 'function'
+                ? window.getSiteNavButtonForPage('page-endproduct')
+                : null;
+            if (typeof window.switchPage === 'function') window.switchPage('page-endproduct', navButton);
+            window.setTimeout(() => {
+                renderNextGenByBlock();
+                document.getElementById('ep-nextgen')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 120);
+        };
+
+        window.focusRoadmapBlock = function(country, block) {
+            const selectedCountry = country === 'TOTAL' ? 'ALL' : country;
+            const geoSelect = document.getElementById('fGeo_ep');
+            if (geoSelect) {
+                geoSelect.value = selectedCountry;
+                if (typeof window.handleGeoChange === 'function') window.handleGeoChange(geoSelect);
+            }
+
+            const navButton = typeof window.getSiteNavButtonForPage === 'function'
+                ? window.getSiteNavButtonForPage('page-endproduct')
+                : null;
+            if (typeof window.switchPage === 'function') window.switchPage('page-endproduct', navButton);
+
+            window.setTimeout(() => {
+                renderEndProduct();
+                const key = getFunctionalBlockKey(block);
+                const target = Array.from(document.querySelectorAll('#epDotPlotRows [data-ep-block-key]'))
+                    .find(row => row.dataset.epBlockKey === key);
+                if (!target) return;
+                document.querySelectorAll('#epDotPlotRows .ep-roadmap-highlight')
+                    .forEach(row => row.classList.remove('ep-roadmap-highlight'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('ep-roadmap-highlight');
+                window.setTimeout(() => target.classList.remove('ep-roadmap-highlight'), 2000);
+            }, 120);
+        };
+
+        window.focusNextGenBlock = function(country, block) {
+            // Esta interacción es únicamente de navegación visual: no modifica ningún filtro.
+            const countryKey = country === 'Global' || country === 'TOTAL' ? 'TOTAL' : country;
+            const blockKey = getFunctionalBlockKey(block);
+            const target = Array.from(document.querySelectorAll('#epNextGenByBlock [data-nextgen-country][data-nextgen-block]'))
+                .find(row => row.dataset.nextgenCountry === countryKey
+                    && getFunctionalBlockKey(row.dataset.nextgenBlock) === blockKey);
+            if (!target) return;
+
+            document.querySelectorAll('#epNextGenByBlock .nextgen-block-highlight')
+                .forEach(row => row.classList.remove('nextgen-block-highlight'));
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('nextgen-block-highlight');
+            window.setTimeout(() => target.classList.remove('nextgen-block-highlight'), 2000);
+        };
+
         function renderEndProduct() {
+            renderNextGenByBlock();
             if(!endProductDataGlobal||!endProductDataGlobal['TOTAL']) return;
             const geo=document.getElementById('fGeo_ep').value, cQ=document.getElementById('fTri_ep').value==='ALL'?'26Q2':document.getElementById('fTri_ep').value;
             const progressData = typeof window.getEndProductDataForQuarter === 'function'
@@ -5457,11 +5816,20 @@ window.EDCNps = (() => {
                 let dPs=[]; aC.forEach(c=>{const d=progressData[c].find(x=>x.bloque===bN);if(d&&d.progreso!==null)dPs.push({c:c,b:d.bloque,v:d.progreso,f:d.fin,t26:d.target26,t1:d.target26Q1,t2:d.target26Q2,t3:d.target26Q3,t4:d.target26Q4,iT:false});});
                 if(geo==='ALL'){const dTot=progressData['TOTAL'].find(x=>x.bloque===bN);if(dTot&&dTot.progreso!==null)dPs.push({c:'Global',b:dTot.bloque,v:dTot.progreso,f:dTot.fin,t26:dTot.target26,t1:dTot.target26Q1,t2:dTot.target26Q2,t3:dTot.target26Q3,t4:dTot.target26Q4,iT:true});}
                 let g={}; dPs.forEach(p=>{let k=Math.round(p.v); if(!g[k])g[k]=[]; g[k].push(p);});
-                let h=''; for(let k in g){g[k].forEach((p,i)=>{let o=(i-(g[k].length-1)/2)*14; let dA=`data-country="${p.c}" data-bloque="${p.b}" data-fin="${p.f??'N/D'}" data-progreso="${p.v??'N/D'}" data-target26="${p.t26??'N/D'}" data-target26q1="${p.t1??'N/D'}" data-target26q2="${p.t2??'N/D'}" data-target26q3="${p.t3??'N/D'}" data-target26q4="${p.t4??'N/D'}"`; let tE=`onmouseenter="showEpTooltip(this)" onmousemove="moveEpTooltip(event)" onmouseleave="hideEpTooltip()"`; h+=p.iT?`<div ${tE} ${dA} class="absolute top-1/2 w-3.5 h-3.5 rounded-full bg-[#004481] border-2 border-white shadow-md z-20 group cursor-default" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"></div>`:`<div ${tE} ${dA} class="absolute top-1/2 w-[24px] h-[24px] rounded-full border-2 border-white shadow-sm bg-white hover:shadow-lg hover:z-[60] transition-all hover:scale-125 group cursor-default flex items-center justify-center z-10" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"><img src="https://flagcdn.com/w40/${flagsMap[p.c]}.png" class="w-full h-full object-cover rounded-full pointer-events-none"></div>`;});} return h;
+                let h=''; for(let k in g){g[k].forEach((p,i)=>{let o=(i-(g[k].length-1)/2)*14; let dA=`data-country="${p.c}" data-bloque="${p.b}" data-fin="${p.f??'N/D'}" data-progreso="${p.v??'N/D'}" data-target26="${p.t26??'N/D'}" data-target26q1="${p.t1??'N/D'}" data-target26q2="${p.t2??'N/D'}" data-target26q3="${p.t3??'N/D'}" data-target26q4="${p.t4??'N/D'}" data-nextgen-point="true" role="button" tabindex="0"`; let tE=`onmouseenter="showEpTooltip(this)" onmousemove="moveEpTooltip(event)" onmouseleave="hideEpTooltip()"`; h+=p.iT?`<div ${tE} ${dA} class="absolute top-1/2 w-3.5 h-3.5 rounded-full bg-[#004481] border-2 border-white shadow-md z-20 group cursor-pointer hover:scale-125 transition-transform" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"></div>`:`<div ${tE} ${dA} class="absolute top-1/2 w-[24px] h-[24px] rounded-full border-2 border-white shadow-sm bg-white hover:shadow-lg hover:z-[60] transition-all hover:scale-125 group cursor-pointer flex items-center justify-center z-10" style="left:calc(${p.v}% + ${o}px);transform:translate(-50%,-50%);"><img src="https://flagcdn.com/w40/${flagsMap[p.c]}.png" class="w-full h-full object-cover rounded-full pointer-events-none"></div>`;});} return h;
             };
             
-            document.getElementById('epDotPlotRows').innerHTML=rB.map(b=>`<div class="flex items-center min-h-[48px] py-1 relative border-b border-gray-100 hover:bg-gray-50/80 transition-colors group rounded-sm"><div class="w-[220px] md:w-[320px] flex-shrink-0 text-[#004481] text-[12px] md:text-[14px] font-black uppercase tracking-tight whitespace-normal break-words leading-tight pl-2 pr-8 md:pr-10 text-right transition-colors" title="${b.bloque}">${b.bloque}</div><div class="flex-1 relative h-full min-h-[48px] flex items-center group-hover:bg-blue-50/30 transition-colors rounded-r-md"><div class="absolute w-full h-[2px] bg-gray-200 rounded-full overflow-hidden"></div>${hSD?bMH(b.bloque):''}</div></div>`).join('') + (cRTot?`<div class="flex items-center min-h-[56px] py-1 relative bg-blue-50/50 border-t-2 border-[#004481] rounded-b-md mt-2 px-1 shadow-inner"><div class="w-[220px] md:w-[320px] flex-shrink-0 text-[#004481] text-[13px] md:text-[15px] font-black uppercase tracking-widest whitespace-normal break-words leading-tight pl-2 pr-8 md:pr-10 text-right flex items-center justify-end gap-1.5"><i data-lucide="layers" class="w-4 h-4 flex-shrink-0"></i> <span>${cRTot.bloque}</span></div><div class="flex-1 relative h-full min-h-[56px] flex items-center"><div class="absolute w-full h-[3px] bg-[#004481]/20 rounded-full"></div>${hSD?bMH(cRTot.bloque):''}</div></div>`:'');
-            
+            document.getElementById('epDotPlotRows').innerHTML=rB.map(b=>`<div data-ep-block-key="${getFunctionalBlockKey(b.bloque)}" class="flex items-center min-h-[48px] py-1 relative border-b border-gray-100 hover:bg-gray-50/80 transition-colors group rounded-sm"><div class="w-[220px] md:w-[320px] flex-shrink-0 text-[#004481] text-[12px] md:text-[14px] font-black uppercase tracking-tight whitespace-normal break-words leading-tight pl-2 pr-8 md:pr-10 text-right transition-colors" title="${b.bloque}">${b.bloque}</div><div class="flex-1 relative h-full min-h-[48px] flex items-center group-hover:bg-blue-50/30 transition-colors rounded-r-md"><div class="absolute w-full h-[2px] bg-gray-200 rounded-full overflow-hidden"></div>${hSD?bMH(b.bloque):''}</div></div>`).join('') + (cRTot?`<div class="flex items-center min-h-[56px] py-1 relative bg-blue-50/50 border-t-2 border-[#004481] rounded-b-md mt-2 px-1 shadow-inner"><div class="w-[220px] md:w-[320px] flex-shrink-0 text-[#004481] text-[13px] md:text-[15px] font-black uppercase tracking-widest whitespace-normal break-words leading-tight pl-2 pr-8 md:pr-10 text-right flex items-center justify-end gap-1.5"><i data-lucide="layers" class="w-4 h-4 flex-shrink-0"></i> <span>${cRTot.bloque}</span></div><div class="flex-1 relative h-full min-h-[56px] flex items-center"><div class="absolute w-full h-[3px] bg-[#004481]/20 rounded-full"></div>${hSD?bMH(cRTot.bloque):''}</div></div>`:'');
+            document.getElementById('epDotPlotRows').querySelectorAll('[data-nextgen-point]').forEach(point => {
+                const goToNextGen = () => window.focusNextGenBlock(point.dataset.country, point.dataset.bloque);
+                point.addEventListener('click', goToNextGen);
+                point.addEventListener('keydown', event => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    event.preventDefault();
+                    goToNextGen();
+                });
+            });
+
             document.getElementById('epDotPlotLegend').innerHTML=aC.map(c=>`<div onclick="document.getElementById('fGeo_ep').value='${c}';window.handleGeoChange(document.getElementById('fGeo_ep'));" class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-[#004481] transition-all cursor-pointer flex-shrink-0"><img src="https://flagcdn.com/w40/${flagsMap[c]}.png" class="w-6 rounded-[2px] shadow-sm border border-gray-100 object-cover"><span class="text-[10px] font-black text-gray-700 uppercase tracking-widest">${c}</span></div>`).join('') + (geo!=='ALL'?`<div onclick="document.getElementById('fGeo_ep').value='ALL';window.handleGeoChange(document.getElementById('fGeo_ep'));" class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100 transition-all flex-shrink-0"><i data-lucide="arrow-left" class="w-4 h-4 text-[#004481]"></i><span class="text-[10px] font-black text-[#004481] uppercase tracking-widest">Ver Todos</span></div>`:'');
 
             let h_p=hSD&&cR?.progreso!=null?cR.progreso:'--', h_t=cR?.target26Q4!=null?cR.target26Q4:'--', h_f=cR?.fin||'--';

@@ -1,24 +1,15 @@
 /**
- * GLOBAL TRANSFORMATION HUB · Capa de caché y matriz de adopción
+ * GLOBAL TRANSFORMATION HUB · API en vivo y matriz de adopción
  * ---------------------------------------------------------------
  * Este fichero se AÑADE al proyecto de Apps Script «Presupuestos» (el que
  * contiene getPresupuestoData, getFtesData, getKpisData, getCatalogoKpisData…).
- * No sustituye a nada: reutiliza esas funciones y les pone una caché delante.
+ * No sustituye a nada: reutiliza esas funciones.
  *
- * Qué resuelve:
- *   1. Cada visita recalculaba todo desde las pestañas. Ahora se calcula una
- *      vez, se guarda y se sirve en milisegundos.
- *   2. Cada bloque del site abría su propia conexión. Ahora existe un único
- *      `getBootstrap` que devuelve todo en una sola llamada.
- *   3. El navegador recibía filas con 20 campos duplicados. El snapshot de
- *      adopción viaja en arrays compactos (≈8 veces menos bytes).
- *   4. Toda respuesta incluye `meta.generatedAt`, la fecha y hora reales del
- *      último cálculo, para poder pintarla en pantalla.
- *
- * Tres niveles de caché:
- *   CacheService  → memoria, 6 h, respuesta inmediata.
- *   Fichero Drive → duradero, sobrevive al vaciado de CacheService.
- *   Recálculo     → solo si no hay nada guardado o se pide actualizar.
+ * Sin caché: cada petición recalcula los datos directamente desde las
+ * pestañas. Es más lento que servir una copia guardada, pero evita que el
+ * site muestre información desactualizada (por ejemplo, cuando una pestaña
+ * se alimenta de IMPORTRANGE, cuyos cambios no siempre disparan los
+ * triggers de edición que invalidarían una caché).
  *
  * Todos los identificadores llevan el prefijo GTH_/gth para no chocar con los
  * que ya existen en el proyecto.
@@ -29,15 +20,10 @@
    ========================================================= */
 
 const GTH_CACHE = {
-  NS: 'GTH_V1',
-  TTL_SECONDS: 21600,           // 6 h en CacheService
-  CHUNK_SIZE: 90000,            // CacheService admite ~100 KB por clave
-  FOLDER_NAME: 'GTH · Caché de datos',
-  TZ: 'Europe/Madrid',
-  LOCK_MS: 45000
+  TZ: 'Europe/Madrid'
 };
 
-/** Conjuntos de datos cacheables. La clave es la que viaja en `action`. */
+/** Conjuntos de datos que sirve la API. La clave es la que viaja en `action`. */
 const GTH_DATASETS = {
   presupuesto:   function () { return getPresupuestoData(); },
   ftes:          function () { return getFtesData(); },
@@ -67,7 +53,6 @@ const GTH_COUNTRIES = [
 function gthApiDispatch_(e) {
   const params = (e && e.parameter) || {};
   const action = String(params.action || '').trim();
-  const force = String(params.force || '') === '1' || action.indexOf('refresh') === 0;
   const started = Date.now();
 
   try {
@@ -78,24 +63,16 @@ function gthApiDispatch_(e) {
       data = { ok: true, timestamp: new Date().toISOString() };
 
     } else if (action === 'getCacheMeta') {
-      // Llamada ligera: solo versiones y fechas, sin mover los datos.
+      // Se mantiene por compatibilidad con llamadas antiguas del front-end:
+      // ya no hay caché, así que solo informa de la hora actual del servidor.
       data = gthAllMeta_();
 
-    } else if (action === 'getBootstrap') {
-      // Una sola conexión para todo el site.
+    } else if (action === 'getBootstrap' || action === 'refreshCache' || action === 'refreshAll') {
+      // Una sola conexión para todo el site. Sin distinción "normal"/"forzado":
+      // siempre se calcula en el momento.
       const parts = {};
       Object.keys(GTH_DATASETS).forEach(function (name) {
-        const result = gthCached_(name, force);
-        parts[name] = result.data;
-        meta[name] = result.meta;
-      });
-      data = parts;
-
-    } else if (action === 'refreshCache' || action === 'refreshAll') {
-      Object.keys(GTH_DATASETS).forEach(function (name) { gthInvalidate_(name); });
-      const parts = {};
-      Object.keys(GTH_DATASETS).forEach(function (name) {
-        const result = gthCached_(name, true);
+        const result = gthCompute_(name);
         parts[name] = result.data;
         meta[name] = result.meta;
       });
@@ -104,8 +81,7 @@ function gthApiDispatch_(e) {
     } else {
       const name = gthResolveDataset_(action);
       if (!name) throw new Error('Acción API no reconocida: ' + action);
-      if (force) gthInvalidate_(name);
-      const result = gthCached_(name, force);
+      const result = gthCompute_(name);
       data = result.data;
       meta = result.meta;
     }
@@ -164,166 +140,37 @@ function gthJsonp_(e, payload) {
 }
 
 /* =========================================================
-   MOTOR DE CACHÉ
+   CÁLCULO EN VIVO
    ========================================================= */
 
-/**
- * Devuelve { data, meta }. Busca en memoria, luego en Drive y, solo si no hay
- * nada utilizable, recalcula. El bloqueo evita que dos visitas simultáneas
- * disparen el mismo cálculo.
- */
-function gthCached_(name, force) {
+/** Calcula un conjunto de datos directamente, sin pasar por ninguna caché. */
+function gthCompute_(name) {
   if (!GTH_DATASETS[name]) throw new Error('Conjunto de datos desconocido: ' + name);
-
-  if (!force) {
-    const hot = gthReadMemory_(name);
-    if (hot) return { data: hot.data, meta: gthMeta_(name, 'memoria') };
-
-    const warm = gthReadDrive_(name);
-    if (warm) {
-      gthWriteMemory_(name, warm.raw);
-      return { data: warm.data, meta: gthMeta_(name, 'disco') };
-    }
-  }
-
-  const lock = LockService.getScriptLock();
-  lock.waitLock(GTH_CACHE.LOCK_MS);
-  try {
-    // Otra ejecución puede haber terminado mientras esperábamos el bloqueo.
-    if (!force) {
-      const arrived = gthReadMemory_(name);
-      if (arrived) return { data: arrived.data, meta: gthMeta_(name, 'memoria') };
-    }
-
-    const data = GTH_DATASETS[name]();
-    const generatedAtMs = Date.now();
-    const raw = JSON.stringify({ v: generatedAtMs, d: data });
-
-    gthWriteMemory_(name, raw);
-    gthWriteDrive_(name, raw);
-    PropertiesService.getScriptProperties().setProperties({
-      [GTH_CACHE.NS + '_VER_' + name]: String(generatedAtMs),
-      [GTH_CACHE.NS + '_AT_' + name]: String(generatedAtMs)
-    });
-
-    return { data: data, meta: gthMeta_(name, 'recalculo') };
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-function gthInvalidate_(name) {
-  const cache = CacheService.getScriptCache();
-  const count = Number(cache.get(GTH_CACHE.NS + '_N_' + name) || 0);
-  const keys = [GTH_CACHE.NS + '_N_' + name];
-  for (let i = 0; i < count; i += 1) keys.push(GTH_CACHE.NS + '_C_' + name + '_' + i);
-  cache.removeAll(keys);
-}
-
-/* ---------- Nivel 1: CacheService, troceado ---------- */
-
-function gthReadMemory_(name) {
-  try {
-    const cache = CacheService.getScriptCache();
-    const count = Number(cache.get(GTH_CACHE.NS + '_N_' + name) || 0);
-    if (!count) return null;
-    const keys = [];
-    for (let i = 0; i < count; i += 1) keys.push(GTH_CACHE.NS + '_C_' + name + '_' + i);
-    const parts = cache.getAll(keys);
-    let raw = '';
-    for (let i = 0; i < count; i += 1) {
-      const chunk = parts[keys[i]];
-      if (chunk === null || chunk === undefined) return null;   // trozo caducado
-      raw += chunk;
-    }
-    const parsed = JSON.parse(raw);
-    return { data: parsed.d, raw: raw };
-  } catch (error) {
-    return null;
-  }
-}
-
-function gthWriteMemory_(name, raw) {
-  try {
-    const cache = CacheService.getScriptCache();
-    const values = {};
-    let count = 0;
-    for (let i = 0; i < raw.length; i += GTH_CACHE.CHUNK_SIZE) {
-      values[GTH_CACHE.NS + '_C_' + name + '_' + count] = raw.substr(i, GTH_CACHE.CHUNK_SIZE);
-      count += 1;
-    }
-    values[GTH_CACHE.NS + '_N_' + name] = String(count);
-    cache.putAll(values, GTH_CACHE.TTL_SECONDS);
-  } catch (error) {
-    // La caché en memoria es una optimización: si falla, queda la de Drive.
-    Logger.log('Caché en memoria no disponible para ' + name + ': ' + error);
-  }
-}
-
-/* ---------- Nivel 2: fichero JSON comprimido en Drive ---------- */
-
-function gthCacheFolder_() {
-  const props = PropertiesService.getScriptProperties();
-  const stored = props.getProperty(GTH_CACHE.NS + '_FOLDER');
-  if (stored) {
-    try { return DriveApp.getFolderById(stored); } catch (ignored) {}
-  }
-  const existing = DriveApp.getFoldersByName(GTH_CACHE.FOLDER_NAME);
-  const folder = existing.hasNext() ? existing.next() : DriveApp.createFolder(GTH_CACHE.FOLDER_NAME);
-  props.setProperty(GTH_CACHE.NS + '_FOLDER', folder.getId());
-  return folder;
-}
-
-function gthReadDrive_(name) {
-  try {
-    const fileId = PropertiesService.getScriptProperties().getProperty(GTH_CACHE.NS + '_FILE_' + name);
-    if (!fileId) return null;
-    const gzipped = DriveApp.getFileById(fileId).getBlob();
-    const raw = Utilities.ungzip(gzipped).getDataAsString('UTF-8');
-    const parsed = JSON.parse(raw);
-    return { data: parsed.d, raw: raw };
-  } catch (error) {
-    return null;
-  }
-}
-
-function gthWriteDrive_(name, raw) {
-  try {
-    const props = PropertiesService.getScriptProperties();
-    const key = GTH_CACHE.NS + '_FILE_' + name;
-    const gzipped = Utilities.gzip(
-      Utilities.newBlob(raw, 'application/json', name + '.json'),
-      name + '.json.gz'
-    );
-    const existingId = props.getProperty(key);
-    if (existingId) {
-      // La copia anterior se retira solo después de crear la nueva.
-      try { DriveApp.getFileById(existingId).setTrashed(true); } catch (ignored) {}
-    }
-    const created = gthCacheFolder_().createFile(gzipped);
-    props.setProperty(key, created.getId());
-  } catch (error) {
-    Logger.log('No se pudo guardar la caché en Drive para ' + name + ': ' + error);
-  }
-}
-
-/* ---------- Metadatos ---------- */
-
-function gthMeta_(name, source) {
-  const props = PropertiesService.getScriptProperties();
-  const ms = Number(props.getProperty(GTH_CACHE.NS + '_AT_' + name) || 0);
+  const data = GTH_DATASETS[name]();
+  const generatedAtMs = Date.now();
   return {
-    dataset: name,
-    version: String(ms || ''),
-    generatedAtMs: ms,
-    generatedAt: ms ? gthFormatDate_(ms) : '',
-    source: source
+    data: data,
+    meta: {
+      dataset: name,
+      version: String(generatedAtMs),
+      generatedAtMs: generatedAtMs,
+      generatedAt: gthFormatDate_(generatedAtMs),
+      source: 'en vivo'
+    }
   };
 }
 
 function gthAllMeta_() {
+  const generatedAtMs = Date.now();
+  const meta = {
+    dataset: 'todos',
+    version: String(generatedAtMs),
+    generatedAtMs: generatedAtMs,
+    generatedAt: gthFormatDate_(generatedAtMs),
+    source: 'en vivo'
+  };
   const result = {};
-  Object.keys(GTH_DATASETS).forEach(function (name) { result[name] = gthMeta_(name, 'consulta'); });
+  Object.keys(GTH_DATASETS).forEach(function (name) { result[name] = meta; });
   return result;
 }
 
@@ -486,46 +333,6 @@ function gthTruthy_(value) {
 }
 
 /* =========================================================
-   AUTOMATISMOS
-   ========================================================= */
-
-/** Ejecuta esto una vez desde el editor. Deja la caché lista y programada. */
-function instalarCacheGTH() {
-  ScriptApp.getProjectTriggers()
-    .filter(function (trigger) {
-      return ['gthRecalcularCache', 'gthInvalidarPorEdicion'].indexOf(trigger.getHandlerFunction()) >= 0;
-    })
-    .forEach(function (trigger) { ScriptApp.deleteTrigger(trigger); });
-
-  // Recálculo nocturno: por la mañana los datos ya están calientes.
-  ScriptApp.newTrigger('gthRecalcularCache')
-    .timeBased().everyDays(1).atHour(6).inTimezone(GTH_CACHE.TZ).create();
-
-  // Cualquier edición del libro marca la caché como caducada.
-  ScriptApp.newTrigger('gthInvalidarPorEdicion')
-    .forSpreadsheet(SpreadsheetApp.openById(SPREADSHEET_ID))
-    .onChange().create();
-
-  gthRecalcularCache();
-}
-
-function gthRecalcularCache() {
-  Object.keys(GTH_DATASETS).forEach(function (name) {
-    try {
-      gthInvalidate_(name);
-      gthCached_(name, true);
-    } catch (error) {
-      Logger.log('Error recalculando ' + name + ': ' + error);
-    }
-  });
-}
-
-function gthInvalidarPorEdicion() {
-  Object.keys(GTH_DATASETS).forEach(function (name) { gthInvalidate_(name); });
-  PropertiesService.getScriptProperties().setProperty(GTH_CACHE.NS + '_DIRTY', String(Date.now()));
-}
-
-/* =========================================================
    COMPROBACIONES
    ========================================================= */
 
@@ -541,7 +348,7 @@ function gthProbarAdopcion() {
 function gthProbarVelocidad() {
   Object.keys(GTH_DATASETS).forEach(function (name) {
     const t0 = Date.now();
-    gthCached_(name, false);
+    gthCompute_(name);
     Logger.log(name + ': ' + (Date.now() - t0) + ' ms');
   });
 }

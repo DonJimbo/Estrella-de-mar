@@ -35,12 +35,7 @@ const EDC_DASHBOARD = {
   FORM_ID: '1FAIpQLSeUakNmL159DcWndrEhStWV4UsCJoOPPSbiBDlwORM9qMDdPA',
   FORMULARIO_SHEET_NAME: 'Formulario',
 
-  TIMEZONE: 'Europe/Madrid',
-  CACHE_FILE_NAME: 'EDC Site · copia de datos para caché.xlsx',
-  PROP_CACHE_FILE_ID: 'EDC_SITE_CACHE_FILE_ID',
-  PROP_CACHE_SOURCE_UPDATED: 'EDC_SITE_CACHE_SOURCE_UPDATED',
-  PROP_CACHE_REFRESHED_AT: 'EDC_SITE_CACHE_REFRESHED_AT',
-  PROP_RELEVANT_DATA_VERSION: 'EDC_RELEVANT_DATA_VERSION'
+  TIMEZONE: 'Europe/Madrid'
 };
 
 /* =========================================================
@@ -60,15 +55,9 @@ function handleDashboardEDCApi_(e) {
   try {
     let payload;
 
-    if (action === 'getSnapshot' || action === 'getData') {
+    if (action === 'getSnapshot' || action === 'getData' || action === 'refreshCache' || action === 'refreshData') {
+      // Sin caché: cualquiera de estas acciones exporta el libro en el momento.
       payload = getSnapshotPayload_();
-    } else if (action === 'getCacheStatus') {
-      payload = {
-        status: 'success',
-        data: getCacheStatus_()
-      };
-    } else if (action === 'refreshCache' || action === 'refreshData') {
-      payload = refreshDashboardCache_();
     } else if (action === 'getEquiposEDC') {
       payload = {
         status: 'success',
@@ -118,74 +107,23 @@ function edcJsonpResponse_(params, payload) {
    ========================================================= */
 
 /**
- * CacheService no admite un XLSX completo. Por ello la caché persistente se
- * guarda como una copia XLSX en Drive y el navegador conserva además su propia
- * copia en IndexedDB. Así se evita exportar el libro en cada visita.
+ * Sin caché: exporta el libro y lo devuelve al momento, en cada llamada.
+ * Más lento que servir una copia guardada, pero evita que el site muestre
+ * datos desactualizados (por ejemplo cuando una pestaña se alimenta de
+ * IMPORTRANGE, cuyos cambios no disparan los triggers de edición que
+ * invalidarían una caché).
  */
 function getSnapshotPayload_() {
-  const properties = PropertiesService.getScriptProperties();
-  let fileId = properties.getProperty(EDC_DASHBOARD.PROP_CACHE_FILE_ID);
-
-  if (!fileId) {
-    refreshDashboardCache_();
-    fileId = properties.getProperty(EDC_DASHBOARD.PROP_CACHE_FILE_ID);
-  }
-
-  if (!fileId) {
-    throw new Error('No se ha podido crear la copia de datos del dashboard.');
-  }
-
-  const cacheFile = DriveApp.getFileById(fileId);
-  const base64 = Utilities.base64Encode(cacheFile.getBlob().getBytes());
-
+  const xlsxBlob = exportDashboardSpreadsheet_();
+  const generatedAtMs = Date.now();
   return {
     status: 'success',
-    data: base64,
-    meta: getCacheStatus_()
-  };
-}
-
-/**
- * Reexporta la fuente una sola vez y sustituye de forma segura la copia usada
- * por el site. Se usa un bloqueo para que dos visitantes no la recreen a la vez.
- */
-function refreshDashboardCache_() {
-  const lock = LockService.getScriptLock();
-  lock.waitLock(30000);
-
-  try {
-    const sourceUpdatedAt = getRelevantDataVersion_();
-    const xlsxBlob = exportDashboardSpreadsheet_();
-    const newCacheFile = DriveApp.createFile(xlsxBlob)
-      .setName(EDC_DASHBOARD.CACHE_FILE_NAME);
-
-    const properties = PropertiesService.getScriptProperties();
-    const previousFileId = properties.getProperty(EDC_DASHBOARD.PROP_CACHE_FILE_ID);
-    const refreshedAt = Date.now();
-
-    properties.setProperties({
-      [EDC_DASHBOARD.PROP_CACHE_FILE_ID]: newCacheFile.getId(),
-      [EDC_DASHBOARD.PROP_CACHE_SOURCE_UPDATED]: String(sourceUpdatedAt),
-      [EDC_DASHBOARD.PROP_CACHE_REFRESHED_AT]: String(refreshedAt)
-    });
-
-    // Solo se envía a la papelera después de haber guardado la nueva copia.
-    if (previousFileId && previousFileId !== newCacheFile.getId()) {
-      try {
-        DriveApp.getFileById(previousFileId).setTrashed(true);
-      } catch (ignored) {
-        // No se interrumpe la actualización si una copia antigua no se puede eliminar.
-      }
+    data: Utilities.base64Encode(xlsxBlob.getBytes()),
+    meta: {
+      sourceUpdatedAt: formatMadrid_(generatedAtMs),
+      refreshedAt: formatMadrid_(generatedAtMs)
     }
-
-    return {
-      status: 'success',
-      data: Utilities.base64Encode(newCacheFile.getBlob().getBytes()),
-      meta: getCacheStatus_()
-    };
-  } finally {
-    lock.releaseLock();
-  }
+  };
 }
 
 /** Exporta el spreadsheet mediante Drive API, igual que hacía el código previo. */
@@ -203,56 +141,15 @@ function exportDashboardSpreadsheet_() {
     throw new Error('No se pudo exportar el libro de datos (' + response.getResponseCode() + ').');
   }
 
-  return response.getBlob().setName(EDC_DASHBOARD.CACHE_FILE_NAME);
+  return response.getBlob().setName('EDC Site · copia de datos.xlsx');
 }
 
 /**
- * Esta consulta es ligera: solo lee la fecha del archivo fuente. El HTML la usa
- * para saber si debe mostrar el aviso de actualización sin descargar el XLSX.
- */
-function getCacheStatus_() {
-  const properties = PropertiesService.getScriptProperties();
-  const sourceUpdatedAt = getRelevantDataVersion_();
-  const cachedSourceUpdatedAt = Number(properties.getProperty(EDC_DASHBOARD.PROP_CACHE_SOURCE_UPDATED) || 0);
-  const refreshedAt = Number(properties.getProperty(EDC_DASHBOARD.PROP_CACHE_REFRESHED_AT) || 0);
-
-  return {
-    cacheVersion: cachedSourceUpdatedAt ? String(cachedSourceUpdatedAt) : '',
-    sourceVersion: String(sourceUpdatedAt),
-    sourceUpdatedAt: sourceUpdatedAt ? formatMadrid_(sourceUpdatedAt) : '',
-    refreshedAt: refreshedAt ? formatMadrid_(refreshedAt) : '',
-    hasCache: !!properties.getProperty(EDC_DASHBOARD.PROP_CACHE_FILE_ID),
-    hasNewData: sourceUpdatedAt > cachedSourceUpdatedAt
-  };
-}
-
-/**
- * Ejecutar una vez desde el editor para dejar instalados los automatismos.
- * Apps Script programa la ejecución dentro de la franja de las 08:00 de Madrid.
- */
-function instalarActualizacionDiariaEDC() {
-  deleteTriggersByHandler_('actualizarCacheProgramada');
-  ScriptApp.newTrigger('actualizarCacheProgramada')
-    .timeBased()
-    .everyDays(1)
-    .atHour(8)
-    .inTimezone(EDC_DASHBOARD.TIMEZONE)
-    .create();
-}
-
-/** Función llamada cada mañana por el activador horario. */
-function actualizarCacheProgramada() {
-  refreshDashboardCache_();
-}
-
-/**
- * Preparación única: crea la copia inicial, instala la actualización diaria y
- * registra el trigger que copia las solicitudes del formulario a «Formulario».
+ * Preparación única: concede permisos, registra el trigger que copia las
+ * solicitudes del formulario a «Formulario». Sin automatismos de caché:
+ * ya no hace falta refrescar ni vigilar ediciones.
  */
 function instalarDashboardEDC() {
-  instalarVigilanciaCambiosBaseEDC();
-  refreshDashboardCache_();
-  instalarActualizacionDiariaEDC();
   configurarFormularioIdentificadoEDC();
   instalarTriggerFormularioEDC();
 }
@@ -261,39 +158,6 @@ function deleteTriggersByHandler_(handlerName) {
   ScriptApp.getProjectTriggers()
     .filter(trigger => trigger.getHandlerFunction() === handlerName)
     .forEach(trigger => ScriptApp.deleteTrigger(trigger));
-}
-
-/**
- * Registra los cambios de las pestañas que alimentan el dashboard. Al ser un
- * trigger de edición de spreadsheet, las escrituras del script en «Formulario»
- * no provocan avisos falsos de actualización en el site.
- */
-function instalarVigilanciaCambiosBaseEDC() {
-  deleteTriggersByHandler_('registrarCambioBaseEDC');
-  const spreadsheet = SpreadsheetApp.openById(EDC_DASHBOARD.DASHBOARD_SPREADSHEET_ID);
-  ScriptApp.newTrigger('registrarCambioBaseEDC')
-    .forSpreadsheet(spreadsheet)
-    .onEdit()
-    .create();
-
-  const properties = PropertiesService.getScriptProperties();
-  if (!properties.getProperty(EDC_DASHBOARD.PROP_RELEVANT_DATA_VERSION)) {
-    const updatedAt = DriveApp.getFileById(EDC_DASHBOARD.DASHBOARD_SPREADSHEET_ID).getLastUpdated().getTime();
-    properties.setProperty(EDC_DASHBOARD.PROP_RELEVANT_DATA_VERSION, String(updatedAt));
-  }
-}
-
-function registrarCambioBaseEDC(e) {
-  const sheetName = e && e.range && e.range.getSheet ? e.range.getSheet().getName() : '';
-  if (edcNormalizeHeader_(sheetName) === edcNormalizeHeader_(EDC_DASHBOARD.FORMULARIO_SHEET_NAME)) return;
-  PropertiesService.getScriptProperties().setProperty(EDC_DASHBOARD.PROP_RELEVANT_DATA_VERSION, String(Date.now()));
-}
-
-function getRelevantDataVersion_() {
-  const properties = PropertiesService.getScriptProperties();
-  const storedVersion = Number(properties.getProperty(EDC_DASHBOARD.PROP_RELEVANT_DATA_VERSION) || 0);
-  if (storedVersion) return storedVersion;
-  return DriveApp.getFileById(EDC_DASHBOARD.DASHBOARD_SPREADSHEET_ID).getLastUpdated().getTime();
 }
 
 function formatMadrid_(milliseconds) {
@@ -663,8 +527,4 @@ function probarEquiposEDC() {
   const people = getEquiposEDC_();
   Logger.log('Contactos leídos: ' + people.length);
   Logger.log(JSON.stringify(people.slice(0, 5), null, 2));
-}
-
-function probarEstadoCacheEDC() {
-  Logger.log(JSON.stringify(getCacheStatus_(), null, 2));
 }

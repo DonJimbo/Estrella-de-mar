@@ -1,16 +1,10 @@
 function getDashboardPayloadForClient(action) {
   const requestedAction = String(action || 'getSnapshot').trim();
 
-  if (requestedAction === 'getSnapshot' || requestedAction === 'getData') {
+  if (requestedAction === 'getSnapshot' || requestedAction === 'getData' ||
+      requestedAction === 'refreshCache' || requestedAction === 'refreshData') {
+    // Sin caché: cualquiera de estas acciones exporta el libro en el momento.
     return getSnapshotPayload_();
-  }
-
-  if (requestedAction === 'getCacheStatus') {
-    return { status: 'success', data: getCacheStatus_() };
-  }
-
-  if (requestedAction === 'refreshCache' || requestedAction === 'refreshData') {
-    return refreshDashboardCache_();
   }
 
   if (requestedAction === 'getEquiposEDC') {

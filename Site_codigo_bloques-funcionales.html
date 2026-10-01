@@ -1959,8 +1959,6 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
 #gth-tf .tf-stamp{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--grey4);background:#fff;border:var(--line);border-radius:999px;padding:7px 14px}
 #gth-tf .tf-stamp b{color:var(--midnight);font-weight:700}
 #gth-tf .tf-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);flex:none}
-#gth-tf .tf-dot.is-stale{background:var(--mandarin)}
-#gth-tf .tf-dot.is-off{background:var(--grey3)}
 #gth-tf .tf-actions{display:flex;gap:8px;align-items:center}
 
 #gth-tf .tf-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border-radius:999px;font-size:12px;font-weight:700;background:#fff;border:var(--line);color:var(--electric);transition:background .16s,border-color .16s}
@@ -1971,10 +1969,6 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
 #gth-tf .tf-btn svg{width:15px;height:15px;flex:none}
 #gth-tf .tf-btn.is-busy svg{animation:tf-spin 1s linear infinite}
 @keyframes tf-spin{to{transform:rotate(360deg)}}
-
-#gth-tf .tf-update-note{display:none;align-items:center;gap:12px;background:#fff;border:1px solid var(--mandarin);border-left-width:4px;border-radius:var(--r-md);padding:12px 16px;font-size:13px;margin-bottom:16px}
-#gth-tf .tf-update-note.is-on{display:flex}
-#gth-tf .tf-update-note span{color:var(--grey4)}
 
 /* ---------- Hero: el dato que manda ---------- */
 #gth-tf .tf-hero{background:linear-gradient(112deg,var(--electric) 0%,#0a1fb4 58%,#1230d6 100%);border-radius:var(--r-lg);padding:28px 30px;color:#fff;display:grid;grid-template-columns:minmax(210px,auto) 1fr;gap:34px;align-items:center;margin-bottom:16px}
@@ -2155,6 +2149,16 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
                     <a id="nav-catalogo-kpis" href="https://sites.google.com/bbva.com/site-edc/layout-kpis" target="_top" class="site-nav-btn px-3 py-2 text-xs font-semibold text-slate-500 hover:text-[#004481] hover:bg-slate-50 rounded-lg transition-colors">Layout KPIs</a>
                     <span id="siteNavActiveIndicator" aria-hidden="true"></span>
                 </nav>
+
+                <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
+                    <div class="flex flex-col items-end justify-center">
+                        <div class="flex items-center gap-1 mb-1">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-[10px] font-black text-slate-700 leading-none tracking-wide">ONLINE</span>
+                        </div>
+                        <span id="liveClock" class="font-mono font-bold text-[#004481] text-xs leading-none">--:--:--</span>
+                    </div>
+                </div>
 
             </div>
         </header>
@@ -3180,12 +3184,6 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
     </div>
   </header>
 
-  <div class="tf-update-note" id="tfUpdateNote" role="status">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFB56B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
-    <span>Hay cálculos más recientes en el origen. Estás viendo la última copia guardada.</span>
-    <button type="button" class="tf-btn is-primary" id="tfUpdateNow">Traer los nuevos</button>
-  </div>
-
   <div class="tf-hero">
     <div class="tf-hero-figure">
       <div class="tf-hero-pct" id="tfHeroPct">—<sup>%</sup></div>
@@ -3245,8 +3243,6 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
   // Sustituye por la URL /exec del Apps Script donde hayas publicado el .gs.
   const GTH_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwlciajOHldg2zgQenD6bDE9TtePO1gAjX6a9ZkQ9xNaa6ZQ2RXbET-vVUUVVgA0Xxqbg/exec';
 
-  const DB = { name: 'gth-cache', store: 'datasets', key: 'adopcion' };
-
   const state = {
     snapshot: null,
     meta: null,
@@ -3305,52 +3301,7 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
   }
 
   /* ======================================================================
-     2 · CACHÉ LOCAL
-     ====================================================================== */
-
-  function openDb() {
-    return new Promise(function (resolve, reject) {
-      if (!window.indexedDB) { reject(new Error('Sin IndexedDB')); return; }
-      const request = indexedDB.open(DB.name, 1);
-      request.onupgradeneeded = function () {
-        const db = request.result;
-        if (!db.objectStoreNames.contains(DB.store)) db.createObjectStore(DB.store);
-      };
-      request.onsuccess = function () { resolve(request.result); };
-      request.onerror = function () { reject(request.error); };
-    });
-  }
-
-  async function readLocal() {
-    if (DEMO) return null;
-    try {
-      const db = await openDb();
-      return await new Promise(function (resolve, reject) {
-        const request = db.transaction(DB.store, 'readonly').objectStore(DB.store).get(DB.key);
-        request.onsuccess = function () { resolve(request.result || null); };
-        request.onerror = function () { reject(request.error); };
-      });
-    } catch (error) {
-      try { return JSON.parse(localStorage.getItem('gth-adopcion') || 'null'); } catch (e) { return null; }
-    }
-  }
-
-  async function writeLocal(record) {
-    if (DEMO) return;
-    try {
-      const db = await openDb();
-      await new Promise(function (resolve, reject) {
-        const request = db.transaction(DB.store, 'readwrite').objectStore(DB.store).put(record, DB.key);
-        request.onsuccess = function () { resolve(); };
-        request.onerror = function () { reject(request.error); };
-      });
-    } catch (error) {
-      try { localStorage.setItem('gth-adopcion', JSON.stringify(record)); } catch (e) {}
-    }
-  }
-
-  /* ======================================================================
-     3 · CÁLCULO
+     2 · CÁLCULO
      ====================================================================== */
 
   const C = { COUNTRY: 0, FEATURE: 1, TARGET: 2, REAL: 3, FLAGS: 4, ID: 5, QT: 6, QR: 7, NOTE: 8, MENU: 9 };
@@ -3745,15 +3696,10 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
     }).join('');
   }
 
-  function setStamp(meta, status) {
-    const dot = $('tfDot');
+  function setStamp(meta) {
     const stamp = $('tfStamp');
-    dot.className = 'tf-dot' + (status === 'stale' ? ' is-stale' : (status === 'offline' ? ' is-off' : ''));
     if (!meta || !meta.generatedAt) { stamp.textContent = 'Sin fecha de cálculo'; return; }
-    const label = status === 'offline'
-      ? 'Copia guardada en este navegador · '
-      : 'Datos calculados el ';
-    stamp.innerHTML = label + '<b>' + esc(meta.generatedAt) + '</b>';
+    stamp.innerHTML = 'Datos calculados el <b>' + esc(meta.generatedAt) + '</b>';
   }
 
   function setBusy(isBusy) {
@@ -3764,7 +3710,7 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
     button.lastChild.textContent = isBusy ? ' Actualizando…' : ' Actualizar datos';
   }
 
-  function adopt(payload, meta, status) {
+  function adopt(payload, meta) {
     state.snapshot = payload;
     state.meta = meta;
     state.indexCache.clear();
@@ -3780,7 +3726,7 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
       const past = payload.quarters.map(quarterRank).filter(function (rank) { return rank <= lastClosedRank; });
       state.cutoff = past.length ? Math.max.apply(null, past) : quarterRank(payload.quarters[payload.quarters.length - 1]);
     }
-    setStamp(meta, status);
+    setStamp(meta);
     renderScale();
     render();
   }
@@ -3791,27 +3737,7 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
   }
 
   async function boot() {
-    const local = await readLocal();
-    if (local && local.payload) adopt(local.payload, local.meta, 'offline');
-
-    try {
-      const response = await jsonp('getCacheMeta');
-      const remote = (response.data && response.data.adopcion) || null;
-      const localVersion = String((local && local.meta && local.meta.version) || '');
-      if (local && local.payload && remote && remote.version && String(remote.version) === localVersion) {
-        setStamp(remote, 'fresh');
-        return;                                  // la copia local ya es la buena
-      }
-      if (local && local.payload && remote) {
-        setStamp(local.meta, 'stale');
-        $('tfUpdateNote').classList.add('is-on');
-        return;                                  // se avisa, no se interrumpe
-      }
-      await fetchSnapshot(false);
-    } catch (error) {
-      if (!state.snapshot) showError(error.message);
-      else setStamp(state.meta, 'offline');
-    }
+    await fetchSnapshot(false);
   }
 
   async function fetchSnapshot(force) {
@@ -3820,13 +3746,10 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
       const response = await jsonp(force ? 'refreshAdopcion' : 'getAdopcionSnapshot', force);
       const payload = response.data;
       const meta = response.meta || {};
-      await writeLocal({ payload: payload, meta: meta, savedAt: Date.now() });
       state.cutoff = state.cutoff || 0;
-      adopt(payload, meta, 'fresh');
-      $('tfUpdateNote').classList.remove('is-on');
+      adopt(payload, meta);
     } catch (error) {
-      if (!state.snapshot) showError(error.message);
-      else setStamp(state.meta, 'offline');
+      showError(error.message);
     } finally {
       setBusy(false);
     }
@@ -3935,7 +3858,6 @@ body,body.bg-\[\#F1F5F9\],.bg-\[\#F1F5F9\]{background-color:var(--bbva-sand) !im
   });
 
   $('tfRefresh').addEventListener('click', function () { if (!state.busy) fetchSnapshot(true); });
-  $('tfUpdateNow').addEventListener('click', function () { if (!state.busy) fetchSnapshot(true); });
   $('tfExport').addEventListener('click', exportCsv);
 
   window.GTHTransformadas = {
@@ -7286,10 +7208,9 @@ window.EDCNps = (() => {
         }
 
         // ==========================================
-        // CACHÉ DEL DASHBOARD Y SINCRONIZACIÓN (JSONP)
+        // SINCRONIZACIÓN DEL DASHBOARD (JSONP, siempre en vivo)
         // ==========================================
         const DASHBOARD_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbw5-YDWrG78H9YHuj9hS1Nd8K7BzTsh_WRAFTkqdywCwYN3dGgirXetAnP2KCVLJAasxA/exec';
-        const DASHBOARD_BROWSER_CACHE = { db: 'edc-dashboard-cache', store: 'snapshots', key: 'principal' };
 
         // JSONP mantiene la compatibilidad con Google Sites sin abrir CORS.
         window.dashboardJsonp = function(action) {
@@ -7317,61 +7238,11 @@ window.EDCNps = (() => {
             });
         };
 
-        function openDashboardCacheDb() {
-            return new Promise((resolve, reject) => {
-                if (!window.indexedDB) { reject(new Error('IndexedDB no está disponible.')); return; }
-                const request = indexedDB.open(DASHBOARD_BROWSER_CACHE.db, 1);
-                request.onupgradeneeded = () => {
-                    const db = request.result;
-                    if (!db.objectStoreNames.contains(DASHBOARD_BROWSER_CACHE.store)) db.createObjectStore(DASHBOARD_BROWSER_CACHE.store);
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error || new Error('No se ha podido abrir la caché local.'));
-            });
-        }
-
-        async function getDashboardBrowserCache() {
-            try {
-                const db = await openDashboardCacheDb();
-                return await new Promise((resolve, reject) => {
-                    const request = db.transaction(DASHBOARD_BROWSER_CACHE.store, 'readonly').objectStore(DASHBOARD_BROWSER_CACHE.store).get(DASHBOARD_BROWSER_CACHE.key);
-                    request.onsuccess = () => resolve(request.result || null);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) { return null; }
-        }
-
-        async function saveDashboardBrowserCache(record) {
-            try {
-                const db = await openDashboardCacheDb();
-                await new Promise((resolve, reject) => {
-                    const request = db.transaction(DASHBOARD_BROWSER_CACHE.store, 'readwrite').objectStore(DASHBOARD_BROWSER_CACHE.store).put(record, DASHBOARD_BROWSER_CACHE.key);
-                    request.onsuccess = () => resolve();
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) {
-                // La caché local es una optimización: si el navegador la bloquea,
-                // el dashboard sigue funcionando descargando la copia central.
-                console.warn('No se pudo guardar la caché local del dashboard.', error);
-            }
-        }
-
         function setDashboardLastUpdate(meta) {
             const target = document.getElementById('dashboardLastUpdate');
             if (!target) return;
             const date = meta && (meta.refreshedAt || meta.sourceUpdatedAt);
             target.textContent = date ? `Datos calculados el ${date}` : 'Sin fecha de actualización';
-        }
-
-        window.hideDashboardUpdatePrompt = function() {
-            document.getElementById('dashboardDataUpdatePrompt')?.setAttribute('hidden', '');
-        };
-
-        function showDashboardUpdatePrompt() {
-            const prompt = document.getElementById('dashboardDataUpdatePrompt');
-            if (!prompt) return;
-            prompt.removeAttribute('hidden');
-            updateIcons();
         }
 
         function setDashboardRefreshBusy(button, isBusy) {
@@ -7390,7 +7261,7 @@ window.EDCNps = (() => {
             const byteNumbers = new Uint8Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i += 1) byteNumbers[i] = byteCharacters.charCodeAt(i);
             const blob = new Blob([byteNumbers], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const file = new File([blob], 'datos_edc_cache.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const file = new File([blob], 'datos_edc.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const transfer = new DataTransfer();
             transfer.items.add(file);
             const input = document.getElementById('fileInput');
@@ -7399,50 +7270,20 @@ window.EDCNps = (() => {
             setDashboardLastUpdate(meta);
         }
 
-        window.syncDataAPI = async function(button, forceRefresh) {
+        // Sin caché local: cada llamada trae los datos en vivo desde Apps Script.
+        window.syncDataAPI = async function(button) {
             const restoreButton = setDashboardRefreshBusy(button, true);
             if (typeof window.setPrimaryDashboardsLoading === 'function') window.setPrimaryDashboardsLoading();
             try {
-                if (forceRefresh) {
-                    const response = await window.dashboardJsonp('refreshCache');
-                    const meta = response.meta || response.data?.meta || {};
-                    const base64 = response.data && typeof response.data === 'string' ? response.data : response.data?.data;
-                    if (!base64) throw new Error('La actualización no ha devuelto datos.');
-                    await saveDashboardBrowserCache({ version: meta.cacheVersion || meta.sourceVersion || '', base64, meta });
-                    applyDashboardSnapshot(base64, meta);
-                    window.hideDashboardUpdatePrompt();
-                    window.showToast('Datos actualizados correctamente.', 'success');
-                    return;
-                }
-
-                const [local, statusResponse] = await Promise.all([getDashboardBrowserCache(), window.dashboardJsonp('getCacheStatus')]);
-                const status = statusResponse.data || {};
-                const expectedVersion = status.cacheVersion || status.sourceVersion || '';
-
-                if (local && local.base64) {
-                    // La vista se pinta al instante con la copia del navegador.
-                    applyDashboardSnapshot(local.base64, expectedVersion === local.version ? status : (local.meta || status));
-                    if (status.hasNewData || (expectedVersion && local.version && expectedVersion !== local.version)) showDashboardUpdatePrompt();
-                    return;
-                }
-
                 const snapshotResponse = await window.dashboardJsonp('getSnapshot');
-                const meta = snapshotResponse.meta || snapshotResponse.data?.meta || status;
+                const meta = snapshotResponse.meta || snapshotResponse.data?.meta || {};
                 const base64 = snapshotResponse.data && typeof snapshotResponse.data === 'string' ? snapshotResponse.data : snapshotResponse.data?.data;
                 if (!base64) throw new Error('No se ha recibido una copia de datos válida.');
-                await saveDashboardBrowserCache({ version: meta.cacheVersion || meta.sourceVersion || '', base64, meta });
                 applyDashboardSnapshot(base64, meta);
-                if (meta.hasNewData) showDashboardUpdatePrompt();
             } catch (error) {
-                const local = await getDashboardBrowserCache();
-                if (local && local.base64) {
-                    applyDashboardSnapshot(local.base64, local.meta || {});
-                    window.showToast('Mostrando la última copia disponible en este navegador.', 'info');
-                } else {
-                    console.error('Error al sincronizar el dashboard:', error);
-                    if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
-                    window.showToast('No se han podido cargar los datos: ' + (error && error.message ? error.message : 'sin respuesta'), 'error');
-                }
+                console.error('Error al sincronizar el dashboard:', error);
+                if (typeof window.setPrimaryDashboardsLoadError === 'function') window.setPrimaryDashboardsLoadError();
+                window.showToast('No se han podido cargar los datos: ' + (error && error.message ? error.message : 'sin respuesta'), 'error');
             } finally {
                 restoreButton();
             }
@@ -14804,79 +14645,6 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         };
         window.switchPage.__catalogoKpisPatched = true;
     }
-})();
-</script>
-
-<!-- Pegar este bloque justo ANTES de </body> en cada HTML del dashboard. -->
-<style>
-  body{padding-bottom:52px!important}
-  #edc-cache-status{position:fixed;right:10px;bottom:3px;z-index:999999;display:flex;align-items:center;gap:7px;width:max-content;max-width:none;white-space:nowrap;padding:7px 9px;border:1px solid #cbeaff;border-radius:10px;background:#fff;color:#071a3d;box-shadow:0 6px 18px rgba(0,68,129,.16);font:12px Arial,sans-serif}
-  #edc-cache-status button{border:0;border-radius:7px;padding:6px 8px;background:#004481;color:#fff;font-weight:700;white-space:nowrap;cursor:pointer}
-  #edc-cache-status .edc-cache-later{background:#eef5fb;color:#004481}
-  #edc-cache-status .edc-cache-dot{width:8px;height:8px;border-radius:50%;background:#48AE64;flex:none}
-</style>
-<script>
-(function () {
-  const API = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwlciajOHldg2zgQenD6bDE9TtePO1gAjX6a9ZkQ9xNaa6ZQ2RXbET-vVUUVVgA0Xxqbg/exec';
-  const KEY = 'edc-dashboard-cache-version';
-
-  function request(action, force) {
-    return new Promise(function (resolve, reject) {
-      const callback = 'edcCacheCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-      window[callback] = function (response) {
-        delete window[callback];
-        const node = document.getElementById(callback);
-        if (node) node.remove();
-        response && response.status === 'ok' ? resolve(response.data) : reject(new Error('No se pudo consultar la actualización.'));
-      };
-      const script = document.createElement('script');
-      script.id = callback;
-      script.src = API + '?api=1&action=' + encodeURIComponent(action) + (force ? '&force=1' : '') + '&callback=' + callback + '&t=' + Date.now();
-      script.onerror = function () { delete window[callback]; reject(new Error('Sin conexión con la base de datos.')); };
-      document.body.appendChild(script);
-    });
-  }
-
-  function latest(meta) {
-    return Math.max.apply(null, Object.keys(meta || {}).map(function (key) { return Number(meta[key].generatedAtMs || 0); }).concat([0]));
-  }
-
-  function format(ms) {
-    return new Date(ms).toLocaleString('es-ES', { dateStyle:'short', timeStyle:'short' });
-  }
-
-  function show(message, canRefresh) {
-    const old = document.getElementById('edc-cache-status');
-    if (old) old.remove();
-    const box = document.createElement('div');
-    box.id = 'edc-cache-status';
-    box.innerHTML = '<span class="edc-cache-dot"></span><span>' + message + '</span>' + (canRefresh ? '<button id="edc-cache-refresh">Actualizar ahora</button><button class="edc-cache-later" id="edc-cache-later">Más tarde</button>' : '');
-    document.body.appendChild(box);
-    const later = document.getElementById('edc-cache-later');
-    if (later) later.onclick = function () { box.remove(); };
-    const refresh = document.getElementById('edc-cache-refresh');
-    if (refresh) refresh.onclick = function () {
-      refresh.disabled = true;
-      refresh.textContent = 'Actualizando…';
-      request('refreshAll', true).then(function () { location.reload(); }).catch(function () { refresh.disabled = false; refresh.textContent = 'Reintentar'; });
-    };
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    request('getCacheMeta').then(function (meta) {
-      const version = latest(meta);
-      if (!version) return;
-      const previous = Number(localStorage.getItem(KEY) || 0);
-      localStorage.setItem(KEY, String(version));
-      if (previous && version > previous) {
-        show('Se ha detectado una actualización en la base de datos. ¿Desea recargar para visualizar la última versión?', true);
-      } else {
-        show('Datos actualizados: ' + format(version), true);
-      }
-    }).catch(function () {
-      show('Mostrando la última información disponible.', false);
-    });
-  });
 })();
 </script>
 

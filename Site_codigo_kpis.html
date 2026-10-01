@@ -6204,15 +6204,13 @@ window.EDCNps = (() => {
                             else realCols[key] = colLetter;
                         }
 
-                        // El dato numérico puede estar en la misma fila que la etiqueta o en la
-                        // fila siguiente: se elige la que realmente tenga valores.
-                        const sampleCols = [...Object.values(realCols), ...Object.values(targetCols)].slice(0, 6);
-                        const rowHasData = excelRow => sampleCols.some(col => normalizePercent(getV(sheet, col + excelRow)) !== null);
+                        // La etiqueta, el código de país y el propio dato están todos en la
+                        // misma fila (confirmado sobre la hoja real): no hay que adivinar entre
+                        // la fila de la etiqueta y la siguiente.
                         const rowsByGeo = {};
                         labelMatches.forEach(({ row, geo }) => {
                             if (rowsByGeo[geo]) return; // se queda con la primera coincidencia
-                            const sameRow = row + 1, nextRow = row + 2;
-                            rowsByGeo[geo] = rowHasData(nextRow) ? nextRow : (rowHasData(sameRow) ? sameRow : nextRow);
+                            rowsByGeo[geo] = row + 1;
                         });
 
                         const endMonthByQuarter = {1:3,2:6,3:9,4:12};

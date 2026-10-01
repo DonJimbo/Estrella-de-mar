@@ -6134,6 +6134,8 @@ window.EDCNps = (() => {
                     });
 
                     // PENETRACIÓN DIGITAL 3x3 (única vista): pestaña "Consolidado KPIs EDC 2026".
+                    // Columnas de respaldo únicamente para cuando no se localiza la fila/cabecera
+                    // por texto (ver buildDigitalPenetration3x3 más abajo, que es el método principal).
                     // Es la misma matriz que 1x3, usando sus filas equivalentes 59–66.
                     // Total 59 · España 60 · México 61 · Perú 62 · Colombia 63 · Argentina 64 · Uruguay 65 · Turquía 66.
                     const digitalPenQuarterCols = {
@@ -6146,16 +6148,6 @@ window.EDCNps = (() => {
                         '27Q3':{real:'CC',target:'CP',fallback:'CD'}, '27Q4':{real:'CF',target:'CS',fallback:'CG'}
                     };
                     const digitalPenRows = {'TOTAL':59,'España':60,'México':61,'Perú':62,'Colombia':63,'Argentina':64,'Uruguay':65,'Turquía':66};
-                    digitalPenDataGlobal = {};
-                    Object.entries(digitalPenQuarterCols).forEach(([qKey, cols]) => {
-                        digitalPenDataGlobal[qKey] = {};
-                        Object.entries(digitalPenRows).forEach(([country, row]) => {
-                            const real = cols.real ? normalizePercent(getV(consSheet, cols.real + row)) : null;
-                            let target = cols.target ? normalizePercent(getV(consSheet, cols.target + row)) : null;
-                            if (target === null && cols.fallback) target = normalizePercent(getV(consSheet, cols.fallback + row));
-                            digitalPenDataGlobal[qKey][country] = {real, target};
-                        });
-                    });
 
                     // PENETRACIÓN DIGITAL 3x3. Se lee de "Consolidado KPIs EDC 2026":
                     // las columnas mensuales son Real y las columnas "Tar" son Target.
@@ -6221,6 +6213,24 @@ window.EDCNps = (() => {
                         });
                         return series;
                     };
+
+                    // Localiza la fila y las columnas por su texto real en la hoja, en vez de
+                    // letras fijas: así no se rompe si el Excel desplaza filas o columnas.
+                    digitalPenDataGlobal = buildDigitalPenetration3x3(consSheet);
+                    if (!digitalPenDataGlobal) {
+                        console.warn('No se ha localizado "Enterprise Channels Digital Penetration 3x3" por cabecera en Consolidado KPIs EDC 2026; usando columnas de respaldo.');
+                        digitalPenDataGlobal = {};
+                        Object.entries(digitalPenQuarterCols).forEach(([qKey, cols]) => {
+                            digitalPenDataGlobal[qKey] = {};
+                            Object.entries(digitalPenRows).forEach(([country, row]) => {
+                                const real = cols.real ? normalizePercent(getV(consSheet, cols.real + row)) : null;
+                                let target = cols.target ? normalizePercent(getV(consSheet, cols.target + row)) : null;
+                                if (target === null && cols.fallback) target = normalizePercent(getV(consSheet, cols.fallback + row));
+                                digitalPenDataGlobal[qKey][country] = {real, target};
+                            });
+                        });
+                    }
+
                     const ratingColsMap = {'25Q1':{real:'AL',target:'AY',fallback:'AV'},'25Q2':{real:'AO',target:'BB',fallback:'AV'},'25Q3':{real:'AR',target:'BE',fallback:'AV'},'25Q4':{real:'AU',target:'BH',fallback:'AV'},'26Q1':{real:'BK',target:'BX',fallback:'BU'},'26Q2':{real:'BN',target:'CA',fallback:'BU'},'26Q3':{real:'BQ',target:'CD',fallback:'BU'},'26Q4':{real:'BT',target:'CG',fallback:'BU'},'27Q1':{real:'BW',target:'CJ',fallback:'BX'},'27Q2':{real:'BZ',target:'CM',fallback:'CA'},'27Q3':{real:'CC',target:'CP',fallback:'CD'},'27Q4':{real:'CF',target:'CS',fallback:'CG'}};
                     const iosRows = [42,43,44,45,46], androidRows = [48,49,50,51,52];
                     ratingDataGlobal = {};

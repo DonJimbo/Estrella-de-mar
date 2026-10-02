@@ -59,14 +59,14 @@
         #trafficLegend .traffic-country-toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid #dfe7f1;background:#fff;color:#475569;padding:6px 9px;border-radius:7px;box-shadow:0 1px 3px rgba(0,68,129,.04);cursor:pointer;transition:opacity .18s ease,filter .18s ease,background-color .18s ease,border-color .18s ease,transform .18s ease}
         #trafficLegend .traffic-country-toggle:hover{border-color:#85c8ff;background:#f8fbff;transform:translateY(-1px)}
         #trafficLegend .traffic-country-toggle[aria-pressed="false"]{opacity:.34;filter:grayscale(1);background:#f1f5f9;border-color:#e2e8f0;box-shadow:none}
-        #trafficLegend .traffic-country-toggle img{width:17px;height:12px;object-fit:cover;border-radius:2px;border:1px solid #e2e8f0}
+        #trafficLegend .traffic-country-toggle img{width:16px;height:16px;object-fit:cover;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,68,129,.2)}
         #trafficLegend .traffic-country-toggle .traffic-country-dot{width:8px;height:4px;border-radius:999px;flex:none}
         #trafficLegend .traffic-country-toggle span{font-size:10px;line-height:1;font-weight:900;text-transform:uppercase;letter-spacing:.025em}
         #section-rating .rating-country-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;width:100%;align-items:stretch}
         #section-rating .rating-country-grid.rating-single{grid-template-columns:minmax(0,420px);justify-content:start}
         #section-rating .rating-country-card{min-width:0;display:flex;flex-direction:column;gap:12px;padding:18px;background:#fff;border:1px solid #dfe7f1;border-radius:16px;text-align:left;box-shadow:0 2px 8px rgba(0,68,129,.03)}
         #section-rating .rating-country-heading{display:flex;align-items:center;gap:9px;color:#004481;font-size:17px;font-weight:900;line-height:1.15}
-        #section-rating .rating-country-heading img{width:26px;height:18px;object-fit:cover;border-radius:3px;border:1px solid #dfe7f1;box-shadow:0 1px 3px rgba(0,68,129,.15);flex:none}
+        #section-rating .rating-country-heading img{width:26px;height:26px;object-fit:cover;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,68,129,.2);flex:none}
         #section-rating .rating-platforms{display:grid;grid-template-columns:1fr;gap:8px}
         #section-rating .rating-platform{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'label real' 'stars target';align-items:center;column-gap:10px;row-gap:3px;padding:10px 12px;background:#f8fafc;border:1px solid #edf1f7;border-radius:12px}
         #section-rating .rating-platform-label{grid-area:label;color:#526176;font-size:11px;line-height:1.1;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
@@ -113,7 +113,7 @@
         .feature-progress-detail{padding:18px 20px 10px;min-width:1080px}
         .feature-progress-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 16px;border-bottom:1px solid #e8eef5}
         .feature-progress-title{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:900;color:#004481;letter-spacing:.01em}
-        .feature-progress-flag{width:30px;height:22px;object-fit:cover;border-radius:3px;border:1px solid #dfe7f1;box-shadow:0 1px 3px rgba(0,68,129,.15)}
+        .feature-progress-flag{width:28px;height:28px;object-fit:cover;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,68,129,.2)}
         .feature-progress-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
         .feature-progress-back,.feature-progress-more{border:1px solid #cbdceb;background:#fff;color:#004481;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:900;cursor:pointer}
         .feature-progress-more{background:#004481;border-color:#004481;color:#fff}
@@ -557,6 +557,12 @@
         }
         .steerco-cover-flag.steerco-flag {
             border-radius: 9999px;
+        }
+        .steerco-cover-flag img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .steerco-cover-visual {
             position: absolute;
@@ -1795,8 +1801,9 @@
         /* Uso de NextGen: cabecera de la tarjeta con el tono del site. */
         #ep-nextgen{border-color:#D4EDFC;box-shadow:0 8px 25px rgba(0,68,129,.08)}
         #ep-nextgen .nextgen-section-head{background:#004481;border-color:#004481}
-        #ep-nextgen .nextgen-round-flag{display:inline-grid;place-items:center;overflow:hidden;border:2px solid #fff;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,68,129,.2);vertical-align:middle}
-        #ep-nextgen .nextgen-round-flag img{display:block;width:100%;height:100%;object-fit:cover}
+        /* Bandera redonda: estilo único de bandera para todo el site (filtros, KPIs, FTEs, SteerCo, Layout KPIs). */
+        .nextgen-round-flag{display:inline-grid;place-items:center;overflow:hidden;border:2px solid #fff;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,68,129,.2);vertical-align:middle}
+        .nextgen-round-flag img{display:block;width:100%;height:100%;object-fit:cover}
 
         /* Presentación de Modelo de Gobierno dentro del site. */
         /* El reproductor de Google Slides reserva espacio para su barra inferior.
@@ -2428,27 +2435,27 @@
                         <div class="steerco-country-selector-shell">
                             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                                 <button type="button" onclick="window.selectSteercoCountry('ESPAÑA', this)" class="steerco-country-btn steerco-country-btn-modern">
-                                    <span class="steerco-flag steerco-flag-es" title="España" aria-label="Bandera de España"></span>
+                                    <span class="nextgen-round-flag w-8 h-8" title="España" aria-label="Bandera de España"><img src="https://flagcdn.com/w40/es.png" alt=""></span>
                                     <span class="steerco-country-label">España</span>
                                 </button>
 
                                 <button type="button" onclick="window.selectSteercoCountry('MÉXICO', this)" class="steerco-country-btn steerco-country-btn-modern">
-                                    <span class="steerco-flag steerco-flag-mx" title="México" aria-label="Bandera de México"></span>
+                                    <span class="nextgen-round-flag w-8 h-8" title="México" aria-label="Bandera de México"><img src="https://flagcdn.com/w40/mx.png" alt=""></span>
                                     <span class="steerco-country-label">México</span>
                                 </button>
 
                                 <button type="button" onclick="window.selectSteercoCountry('PERÚ', this)" class="steerco-country-btn steerco-country-btn-modern">
-                                    <span class="steerco-flag steerco-flag-pe" title="Perú" aria-label="Bandera de Perú"></span>
+                                    <span class="nextgen-round-flag w-8 h-8" title="Perú" aria-label="Bandera de Perú"><img src="https://flagcdn.com/w40/pe.png" alt=""></span>
                                     <span class="steerco-country-label">Perú</span>
                                 </button>
 
                                 <button type="button" onclick="window.selectSteercoCountry('COLOMBIA', this)" class="steerco-country-btn steerco-country-btn-modern">
-                                    <span class="steerco-flag steerco-flag-co" title="Colombia" aria-label="Bandera de Colombia"></span>
+                                    <span class="nextgen-round-flag w-8 h-8" title="Colombia" aria-label="Bandera de Colombia"><img src="https://flagcdn.com/w40/co.png" alt=""></span>
                                     <span class="steerco-country-label">Colombia</span>
                                 </button>
 
                                 <button type="button" onclick="window.selectSteercoCountry('ARGENTINA', this)" class="steerco-country-btn steerco-country-btn-modern">
-                                    <span class="steerco-flag steerco-flag-ar" title="Argentina" aria-label="Bandera de Argentina"></span>
+                                    <span class="nextgen-round-flag w-8 h-8" title="Argentina" aria-label="Bandera de Argentina"><img src="https://flagcdn.com/w40/ar.png" alt=""></span>
                                     <span class="steerco-country-label">Argentina</span>
                                 </button>
                             </div>
@@ -2552,7 +2559,6 @@
                                 </span>
                                 <select id="fGeo" onchange="window.handleGeoChange(this)" class="w-full bg-transparent border-none outline-none appearance-none font-bold text-[#004481] text-sm cursor-pointer z-10 pr-8">
                                     <option value="ALL">Global (Todas)</option>
-                                    <option value="Holding">Holding</option>
                                     <option value="España">España</option>
                                     <option value="México">México</option>
                                     <option value="Perú">Perú</option>
@@ -3215,6 +3221,11 @@
             return `<div class="${customClass} relative inline-block shrink-0 rounded-full" title="Global"><div class="absolute inset-[15%] rounded-full border-[1.5px] border-[#004481]"></div><img src="https://flagcdn.com/w20/es.png" class="absolute top-0 left-1/2 -translate-x-1/2 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w20/co.png" class="absolute top-[22%] right-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w20/pe.png" class="absolute bottom-0 right-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w20/ar.png" class="absolute bottom-0 left-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w20/mx.png" class="absolute top-[22%] left-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"></div>`;
         };
 
+        // Generador del icono Holding: no tiene bandera real, se usa un emblema redondo a juego.
+        window.getHoldingIconHtml = function(customClass = "w-5 h-5") {
+            return `<span class="nextgen-round-flag ${customClass}" title="Holding" style="background:#004481"><svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg></span>`;
+        };
+
         // ==========================================
         // MANEJO DE TOOLTIPS FLOTANTES
         // ==========================================
@@ -3231,7 +3242,7 @@
             const tq4 = el.getAttribute('data-tq4');
 
             const fVal = v => (v === 'undefined' || v === 'null' || !v) ? 'N/D' : fmtPct(parseFloat(v));
-            let flagHtml = flag === 'global' ? window.getGlobalIconHtml('w-4 h-4 inline-block align-middle') : `<img src="https://flagcdn.com/w20/${flag}.png" class="inline-block w-4 shadow-sm rounded-sm">`;
+            let flagHtml = flag === 'global' ? window.getGlobalIconHtml('w-4 h-4 inline-block align-middle') : `<span class="nextgen-round-flag w-4 h-4 inline-block align-middle"><img src="https://flagcdn.com/w40/${flag}.png" alt=""></span>`;
 
             tt.innerHTML = `
                 <div class="text-center mb-2 pb-2 border-b border-gray-100">
@@ -3256,7 +3267,7 @@
             if(!tt) return;
             const cname = el.getAttribute('data-cname');
             const flag = el.getAttribute('data-flag');
-            let flagHtml = flag === 'global' ? window.getGlobalIconHtml('w-4 h-4 inline-block align-middle') : `<img src="https://flagcdn.com/w20/${flag}.png" class="inline-block w-4 shadow-sm rounded-sm">`;
+            let flagHtml = flag === 'global' ? window.getGlobalIconHtml('w-4 h-4 inline-block align-middle') : `<span class="nextgen-round-flag w-4 h-4 inline-block align-middle"><img src="https://flagcdn.com/w40/${flag}.png" alt=""></span>`;
             
             tt.innerHTML = `
                 <div class="text-center">
@@ -3623,13 +3634,13 @@
         window.getSteercoFlagClass = function(country) {
             const normalized = String(country || '').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             const map = {
-                'ESPANA': 'steerco-flag-es',
-                'MEXICO': 'steerco-flag-mx',
-                'PERU': 'steerco-flag-pe',
-                'COLOMBIA': 'steerco-flag-co',
-                'ARGENTINA': 'steerco-flag-ar'
+                'ESPANA': 'es',
+                'MEXICO': 'mx',
+                'PERU': 'pe',
+                'COLOMBIA': 'co',
+                'ARGENTINA': 'ar'
             };
-            return map[normalized] || 'steerco-flag-es';
+            return map[normalized] || 'es';
         };
 
         window.renderSteercoPlaceholder = function(message) {
@@ -3658,7 +3669,7 @@
                 return;
             }
 
-            const flagClass = window.getSteercoFlagClass(country);
+            const flagCode = window.getSteercoFlagClass(country);
 
             mount.innerHTML = `
                 <div class="steerco-cover-wrap">
@@ -3671,7 +3682,7 @@
                             <div class="steerco-cover-zigzag"></div>
                             <div class="steerco-cover-title">BBVA Empresas</div>
                             <div class="steerco-cover-country">${country}</div>
-                            <span class="steerco-flag steerco-cover-flag ${flagClass}" title="${country}" aria-label="Bandera de ${country}"></span>
+                            <span class="steerco-cover-flag" title="${country}" aria-label="Bandera de ${country}"><img src="https://flagcdn.com/w160/${flagCode}.png" alt=""></span>
                         </div>
 
                         <div class="steerco-cover-visual" aria-hidden="true">
@@ -5084,14 +5095,13 @@ window.EDCNps = (() => {
             document.getElementById('fGeo').value = el.value;
             if (document.getElementById('fGeo_ep')) document.getElementById('fGeo_ep').value = el.value === 'Holding' ? 'ALL' : el.value;
             
-            // --- SOLUCIÓN PARA EL ICONO DE HOLDING ---
             let iconHtml;
             if (code === 'global') {
                 iconHtml = window.getGlobalIconHtml('w-5 h-5');
             } else if (el.value === 'Holding') {
-                iconHtml = '<i data-lucide="building" class="w-5 h-5 text-[#004481]"></i>';
+                iconHtml = window.getHoldingIconHtml('w-5 h-5');
             } else {
-                iconHtml = `<img src="https://flagcdn.com/w20/${code}.png" class="w-5 inline-block rounded-[2px] shadow-sm">`;
+                iconHtml = `<span class="nextgen-round-flag w-5 h-5"><img src="https://flagcdn.com/w40/${code}.png" alt=""></span>`;
             }
             
             const iconEl = document.getElementById('geoIcon');
@@ -5653,12 +5663,12 @@ window.EDCNps = (() => {
                 chartDigPenBarInstance = new Chart(ctxDP, {
                     type:'bar', data:{labels:cArr,datasets:[{type:'line',label:'Target',data:tD,borderColor:'#F59E0B',backgroundColor:'#F59E0B',borderWidth:3,showLine:false,pointStyle:'line',rotation:0,pointRadius:27,pointHoverRadius:27,datalabels:{align:'top',anchor:'end',color:'#D97706',backgroundColor:'rgba(255,255,255,.96)',borderRadius:4,padding:3,font:{weight:'900',size:12},formatter:fmtPosPct,offset:8}},{type:'bar',label:'Real',data:rD,backgroundColor:'#004481',datalabels:{align:'center',color:'white',font:{weight:'bold',size:14},formatter:fmtPosPct}}]},
                     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:38,bottom:45}},plugins:{legend:chartLegendTopOpts},scales:{y:{display:false,min:0,suggestedMax:110},x:{grid:{display:false},ticks:{display:false}}},
-                    onClick:(e,el)=>{if(el.length>0){const c=cArr[el[0].index];let lH=vQs.filter(k=>digitalPenDataGlobal[k][c].real||digitalPenDataGlobal[k][c].target); window.openInCardOverlay('overlay-digital', `Histórico - ${c} ${c==='TOTAL'?window.getGlobalIconHtml('w-4 h-4 inline-block ml-1 align-text-bottom'):`<img src="https://flagcdn.com/w20/${flagsMap[c]}.png" class="inline w-4 ml-1 rounded-sm shadow-sm">`}`); setTimeout(()=>{if(window.modalDigChart)window.modalDigChart.destroy();window.modalDigChart=new Chart(document.getElementById('canvas-overlay-digital'),{type:'bar',data:{labels:lH,datasets:[{type:'line',label:'Target',data:lH.map(k=>digitalPenDataGlobal[k][c].target||null),borderColor:'#F59E0B',datalabels:{display:true,align:'top',color:'#F59E0B',font:{weight:'bold',size:10},formatter:fmtPosPct}},{type:'bar',label:'Real',data:lH.map(k=>digitalPenDataGlobal[k][c].real||null),backgroundColor:'#004481',datalabels:{color:'white',align:'end',anchor:'center',font:{size:12,weight:'bold'},formatter:fmtPosPct}}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:10}},scales:{y:{max:100,display:false},x:{grid:{display:false}}},plugins:{legend:chartLegendTopOpts}}});updateIcons();},300);}}
-                    }, plugins:[{id:'htmlFlagsSync',afterDraw:(ch)=>{const xA=ch.scales.x, bY=ch.scales.y.bottom; if(flagsC.children.length===0){ch.data.labels.forEach((l,i)=>{const el=document.createElement('div'); el.className='absolute flex flex-col items-center justify-center -translate-x-1/2'; el.style.left=`${xA.getPixelForTick(i)}px`; el.style.top=`${bY+5}px`; el.innerHTML=`<span class="text-[10px] font-black text-gray-500 mb-1.5 leading-none">${cQ}</span>${l==='TOTAL'?window.getGlobalIconHtml('w-7 h-7 mx-auto mb-1'):`<img src="https://flagcdn.com/w40/${flagsMap[l]}.png" class="w-7 rounded-[2px] shadow-sm border border-gray-200 mx-auto">`}`; flagsC.appendChild(el);}); updateIcons(); }else{ch.data.labels.forEach((l,i)=>{if(flagsC.children[i]){flagsC.children[i].style.left=`${xA.getPixelForTick(i)}px`;flagsC.children[i].style.top=`${bY+5}px`;}});} }}]
+                    onClick:(e,el)=>{if(el.length>0){const c=cArr[el[0].index];let lH=vQs.filter(k=>digitalPenDataGlobal[k][c].real||digitalPenDataGlobal[k][c].target); window.openInCardOverlay('overlay-digital', `Histórico - ${c} ${c==='TOTAL'?window.getGlobalIconHtml('w-4 h-4 inline-block ml-1 align-text-bottom'):`<span class="nextgen-round-flag w-4 h-4 inline-block ml-1 align-text-bottom"><img src="https://flagcdn.com/w40/${flagsMap[c]}.png" alt=""></span>`}`); setTimeout(()=>{if(window.modalDigChart)window.modalDigChart.destroy();window.modalDigChart=new Chart(document.getElementById('canvas-overlay-digital'),{type:'bar',data:{labels:lH,datasets:[{type:'line',label:'Target',data:lH.map(k=>digitalPenDataGlobal[k][c].target||null),borderColor:'#F59E0B',datalabels:{display:true,align:'top',color:'#F59E0B',font:{weight:'bold',size:10},formatter:fmtPosPct}},{type:'bar',label:'Real',data:lH.map(k=>digitalPenDataGlobal[k][c].real||null),backgroundColor:'#004481',datalabels:{color:'white',align:'end',anchor:'center',font:{size:12,weight:'bold'},formatter:fmtPosPct}}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:10}},scales:{y:{max:100,display:false},x:{grid:{display:false}}},plugins:{legend:chartLegendTopOpts}}});updateIcons();},300);}}
+                    }, plugins:[{id:'htmlFlagsSync',afterDraw:(ch)=>{const xA=ch.scales.x, bY=ch.scales.y.bottom; if(flagsC.children.length===0){ch.data.labels.forEach((l,i)=>{const el=document.createElement('div'); el.className='absolute flex flex-col items-center justify-center -translate-x-1/2'; el.style.left=`${xA.getPixelForTick(i)}px`; el.style.top=`${bY+5}px`; el.innerHTML=`<span class="text-[10px] font-black text-gray-500 mb-1.5 leading-none">${cQ}</span>${l==='TOTAL'?window.getGlobalIconHtml('w-7 h-7 mx-auto mb-1'):`<span class="nextgen-round-flag w-7 h-7 mx-auto mb-1" style="display:inline-grid"><img src="https://flagcdn.com/w40/${flagsMap[l]}.png" alt=""></span>`}`; flagsC.appendChild(el);}); updateIcons(); }else{ch.data.labels.forEach((l,i)=>{if(flagsC.children[i]){flagsC.children[i].style.left=`${xA.getPixelForTick(i)}px`;flagsC.children[i].style.top=`${bY+5}px`;}});} }}]
                 });
             }else{
                 flagsC.className='hidden';
-                if(document.getElementById('title-dig-pen')) document.getElementById('title-dig-pen').innerHTML=`<img src="https://flagcdn.com/w40/${flagsMap[geo]}.png" class="w-6 h-auto inline-block align-text-bottom mr-2 rounded-[2px] shadow-sm border border-gray-100"> ${modeTitle} - <span class="text-[#004481]">${geo}</span>`;
+                if(document.getElementById('title-dig-pen')) document.getElementById('title-dig-pen').innerHTML=`<span class="nextgen-round-flag w-6 h-6 inline-block align-text-bottom mr-2"><img src="https://flagcdn.com/w40/${flagsMap[geo]}.png" alt=""></span> ${modeTitle} - <span class="text-[#004481]">${geo}</span>`;
                 let lH=vQs.filter(k=>digitalPenDataGlobal[k]?.[geo]?.real||digitalPenDataGlobal[k]?.[geo]?.target);
                 chartDigPenBarInstance = new Chart(ctxDP, {
                     type:'bar', data:{labels:lH,datasets:[{type:'line',label:'Target',data:lH.map(k=>digitalPenDataGlobal[k][geo].target||null),borderColor:'#F59E0B',datalabels:{display:true,align:'top',color:'#F59E0B',font:{weight:'bold',size:14},formatter:fmtPosPct}},{type:'bar',label:'Real',data:lH.map(k=>digitalPenDataGlobal[k][geo].real||null),backgroundColor:'#004481',datalabels:{color:'white',align:'center',font:{size:20,weight:'bold'},formatter:fmtPosPct}}]},
@@ -5734,7 +5744,7 @@ window.EDCNps = (() => {
             const iF=document.getElementById('migratedInteractiveFlags'); iF.innerHTML='';
             if(geo==='ALL'){
                 document.getElementById('migratedFlagsContainer').classList.remove('hidden');
-                iF.innerHTML=`<div class="interactive-flag-btn flex flex-col items-center gap-1.5 p-2 px-3 rounded-lg bg-white border border-gray-200 active" onclick="window.applyFilters()"><div class="flex items-center justify-center h-6 md:h-7">${window.getGlobalIconHtml('w-6 h-6 md:w-7 md:h-7')}</div><span class="text-[9px] md:text-[10px] font-bold text-gray-600 uppercase mt-1">Total</span></div>` + allCountriesList.filter(c=>c!=='Holding').map(c=>`<div class="interactive-flag-btn flex flex-col items-center gap-1.5 p-2 px-3 rounded-lg bg-white border border-gray-100 shadow-sm" onclick="document.querySelectorAll('.interactive-flag-btn').forEach(b=>b.classList.remove('active','border-[#004481]'));this.classList.add('active','border-[#004481]');let v=getMigratedValues('${cQ}','${c}');window.toggleEmptyState('canvas-container-migrated',v.sendaR===null&&v.gemaR===null,'Pendiente de datos (${cQ})');document.getElementById('migratedMainTitle').innerHTML='${c}';chartMigSendaGlobal=window.drawGauge('chartMigratedSendaGlobal',v.sendaR,v.sendaT,'chartMigSendaGlobal');chartMigGemaGlobal=window.drawGauge('chartMigratedGemaGlobal',v.gemaR,v.gemaT,'chartMigGemaGlobal');window.upT(v);"><img src="https://flagcdn.com/w40/${flagsMap[c]}.png" class="w-6 md:w-7 rounded-[2px] shadow-sm border border-gray-200"><span class="text-[9px] md:text-[10px] font-bold text-gray-600 uppercase">${c}</span></div>`).join('');
+                iF.innerHTML=`<div class="interactive-flag-btn flex flex-col items-center gap-1.5 p-2 px-3 rounded-lg bg-white border border-gray-200 active" onclick="window.applyFilters()"><div class="flex items-center justify-center h-6 md:h-7">${window.getGlobalIconHtml('w-6 h-6 md:w-7 md:h-7')}</div><span class="text-[9px] md:text-[10px] font-bold text-gray-600 uppercase mt-1">Total</span></div>` + allCountriesList.filter(c=>c!=='Holding').map(c=>`<div class="interactive-flag-btn flex flex-col items-center gap-1.5 p-2 px-3 rounded-lg bg-white border border-gray-100 shadow-sm" onclick="document.querySelectorAll('.interactive-flag-btn').forEach(b=>b.classList.remove('active','border-[#004481]'));this.classList.add('active','border-[#004481]');let v=getMigratedValues('${cQ}','${c}');window.toggleEmptyState('canvas-container-migrated',v.sendaR===null&&v.gemaR===null,'Pendiente de datos (${cQ})');document.getElementById('migratedMainTitle').innerHTML='${c}';chartMigSendaGlobal=window.drawGauge('chartMigratedSendaGlobal',v.sendaR,v.sendaT,'chartMigSendaGlobal');chartMigGemaGlobal=window.drawGauge('chartMigratedGemaGlobal',v.gemaR,v.gemaT,'chartMigGemaGlobal');window.upT(v);"><span class="nextgen-round-flag w-6 h-6 md:w-7 md:h-7"><img src="https://flagcdn.com/w40/${flagsMap[c]}.png" alt=""></span><span class="text-[9px] md:text-[10px] font-bold text-gray-600 uppercase">${c}</span></div>`).join('');
                 updateIcons();
             }else document.getElementById('migratedFlagsContainer').classList.add('hidden');
         }
@@ -5856,7 +5866,7 @@ window.EDCNps = (() => {
                 return `<div class="ng-row" data-open="${open}">` +
                     `<button type="button" class="ng-row-btn" data-toggle="pais:${nextGenEscape(country)}" aria-expanded="${open}">` +
                     `<span class="ng-caret">${ngCaret}</span>` +
-                    `<span class="ng-row-name">${nextGenCountryIcon(country, 'w-6 h-5')}` +
+                    `<span class="ng-row-name">${nextGenCountryIcon(country, 'w-6 h-6')}` +
                     `<span><span class="ng-row-label">${nextGenEscape(nextGenCountryLabel(country))}</span>` +
                     `<span class="ng-row-note">${blocksForCountry.length} bloques funcionales</span></span></span>` +
                     ngBar(total) +
@@ -5878,14 +5888,14 @@ window.EDCNps = (() => {
 
                 const present = countries.map(country => {
                     const has = !!getNextGenRecord(country, block.key);
-                    return `<span style="display:inline-flex;opacity:${has ? 1 : .32};filter:${has ? 'none' : 'grayscale(1)'}">${nextGenCountryIcon(country, 'w-4 h-3')}</span>`;
+                    return `<span style="display:inline-flex;opacity:${has ? 1 : .32};filter:${has ? 'none' : 'grayscale(1)'}">${nextGenCountryIcon(country, 'w-4 h-4')}</span>`;
                 }).join('');
 
                 const drawer = entries.length
                     ? entries.map(entry => {
                         const attrs = `data-nextgen-country="${nextGenEscape(entry.country)}" data-nextgen-block="${nextGenEscape(entry.row.bloque)}"`;
                         return `<div class="ng-subrow" ${attrs} title="Abrir el bloque en la gráfica de progreso">` +
-                            `<div class="ng-subname">${nextGenCountryIcon(entry.country, 'w-5 h-4')}<span>${nextGenEscape(nextGenCountryLabel(entry.country))}</span></div>` +
+                            `<div class="ng-subname">${nextGenCountryIcon(entry.country, 'w-5 h-5')}<span>${nextGenEscape(nextGenCountryLabel(entry.country))}</span></div>` +
                             ngBar(entry.row.nextGen, true) +
                             `<div class="ng-subpct">${nextGenPercent(entry.row.nextGen)}<small>Av. ${nextGenPercent(entry.row.avance)}</small></div>` +
                             `<div></div></div>`;
@@ -5911,7 +5921,7 @@ window.EDCNps = (() => {
             if (!allBlocks.length) return ngPanel('Matriz de uso de NextGen', '', '<div class="ng-empty">Ningún bloque coincide con la búsqueda.</div>');
 
             const head = '<tr><th class="ng-matrix-row-head">Bloque funcional</th>' +
-                countries.map(country => `<th>${nextGenCountryIcon(country, 'w-5 h-4')}${nextGenEscape(nextGenCountryLabel(country))}</th>`).join('') + '</tr>';
+                countries.map(country => `<th>${nextGenCountryIcon(country, 'w-5 h-5')}${nextGenEscape(nextGenCountryLabel(country))}</th>`).join('') + '</tr>';
 
             const body = allBlocks.map(block => {
                 const cells = countries.map(country => {
@@ -8259,7 +8269,11 @@ window.EDCNps = (() => {
       transition: width 0.8s ease;
     }
 
-    /* --- FLAGS --- */
+    /* --- BANDERA REDONDA (estilo único de bandera para todo el site) --- */
+    .nextgen-round-flag{display:inline-grid;place-items:center;overflow:hidden;border:2px solid #fff;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,68,129,.2);vertical-align:middle;flex-shrink:0}
+    .nextgen-round-flag img{display:block;width:100%;height:100%;object-fit:cover}
+
+    /* --- FLAGS (sin uso tras pasar a banderas redondas; se deja por compatibilidad) --- */
     .flag-icon {
       display: inline-block;
       width: 38px;
@@ -11740,8 +11754,41 @@ window.EDCNps = (() => {
       return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
     }
 
+    const FLAG_ISO_CODE = { ESPANA: 'es', MEXICO: 'mx', PERU: 'pe', COLOMBIA: 'co', ARGENTINA: 'ar' };
+    const FLAG_SIZE_BY_LEGACY_CLASS = { 'flag-sm': 'w-5 h-5', 'flag-kpi': 'w-6 h-6', '': 'w-7 h-7' };
+
+    // Icono "Global": mosaico de las 5 banderas del programa, igual que en Bloques Funcionales.
+    function getGlobalIconHtmlFtes(sizeClass) {
+      const layout = [
+        ['es', 'top:0;left:50%;transform:translateX(-50%)'],
+        ['co', 'top:22%;right:0'],
+        ['pe', 'bottom:0;right:10%'],
+        ['ar', 'bottom:0;left:10%'],
+        ['mx', 'top:22%;left:0']
+      ];
+      const dots = layout.map(([code, pos]) =>
+        `<img src="https://flagcdn.com/w20/${code}.png" style="position:absolute;${pos};width:38%;height:38%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px #fff;z-index:1">`
+      ).join('');
+      return `<span class="${sizeClass}" style="position:relative;display:inline-block;flex-shrink:0;vertical-align:middle" title="Global">${dots}</span>`;
+    }
+
+    // Icono "Holding": no tiene bandera real, se representa con un emblema redondo a juego.
+    function getHoldingIconHtmlFtes(sizeClass) {
+      return `<span class="nextgen-round-flag ${sizeClass}" title="Holding" style="background:#004481">` +
+        `<svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
+        `<rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/>` +
+        `<path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>` +
+        `</svg></span>`;
+    }
+
     function flagHTML(country, extraClass = '') {
-      return `<span class="flag-icon ${getFlagClass(country)} ${extraClass}"></span>`;
+      const sizeClass = FLAG_SIZE_BY_LEGACY_CLASS[extraClass] || extraClass || 'w-7 h-7';
+      const c = normalizeCountry(country);
+
+      if (c === 'HOLDING') return getHoldingIconHtmlFtes(sizeClass);
+      if (c === 'ALL' || c === 'GLOBAL' || c === 'TOTAL' || !FLAG_ISO_CODE[c]) return getGlobalIconHtmlFtes(sizeClass);
+
+      return `<span class="nextgen-round-flag ${sizeClass}"><img src="https://flagcdn.com/w40/${FLAG_ISO_CODE[c]}.png" alt=""></span>`;
     }
 
     function getFlagClass(country) {
@@ -12040,9 +12087,9 @@ window.EDCNps = (() => {
       return;
     }
 
-    const flagClass = typeof window.getSteercoFlagClass === 'function'
+    const flagCode = typeof window.getSteercoFlagClass === 'function'
       ? window.getSteercoFlagClass(country)
-      : 'steerco-flag-es';
+      : 'es';
 
     views.cover.innerHTML = `
       <div class="steerco-cover-wrap">
@@ -12055,7 +12102,7 @@ window.EDCNps = (() => {
             <div class="steerco-cover-zigzag"></div>
             <div class="steerco-cover-title">BBVA Empresas</div>
             <div class="steerco-cover-country">${country}</div>
-            <span class="steerco-flag steerco-cover-flag ${flagClass}" title="${country}" aria-label="Bandera de ${country}"></span>
+            <span class="steerco-cover-flag" title="${country}" aria-label="Bandera de ${country}"><img src="https://flagcdn.com/w160/${flagCode}.png" alt=""></span>
           </div>
 
           <div class="steerco-cover-visual" aria-hidden="true">
@@ -12300,15 +12347,11 @@ window.EDCNps = (() => {
   const countryFlagCode=v=>({ESPANA:'es',MEXICO:'mx',PERU:'pe',COLOMBIA:'co',ARGENTINA:'ar'}[normCountry(v)]||'');
   function countryFlagHtml(country, small){
     const c = normCountry(country), nice = niceCountry(c);
-    const cls = ({
-      HOLDING:'sot-flag-holding',
-      ESPANA:'sot-flag-spain',
-      MEXICO:'sot-flag-mexico',
-      PERU:'sot-flag-peru',
-      COLOMBIA:'sot-flag-colombia',
-      ARGENTINA:'sot-flag-argentina'
-    })[c] || 'sot-flag-holding';
-    return `<span class="sot-flag-icon ${cls}" aria-label="${nice}" title="${nice}"></span>`;
+    const sizeClass = small ? 'w-6 h-6' : 'w-8 h-8';
+    if (c === 'HOLDING') return window.getHoldingIconHtml(sizeClass);
+    const code = countryFlagCode(c);
+    if (!code) return window.getGlobalIconHtml(sizeClass);
+    return `<span class="nextgen-round-flag ${sizeClass}" aria-label="${nice}" title="${nice}"><img src="https://flagcdn.com/w40/${code}.png" alt=""></span>`;
   }
   function toNum(v){if(typeof window.toNumber==='function')return window.toNumber(v);if(typeof v==='number')return Number.isFinite(v)?v:0;if(v===null||v===undefined||v==='')return 0;let t=String(v).trim().replace(/[€%\s]/g,'').replace(/M/g,'').replace(/MXN|PEN|COP|ARS/g,'');if(t.includes(',')&&t.includes('.')){if(t.lastIndexOf(',')>t.lastIndexOf('.'))t=t.replace(/\./g,'').replace(',','.');else t=t.replace(/,/g,'');}else if(t.includes(','))t=t.replace(',','.');const n=Number(t);return Number.isFinite(n)?n:0;}
   const fmtBudget=v=>Number(v||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' M€';
@@ -12788,9 +12831,10 @@ window.EDCNps = (() => {
     function flagHtml(countryKey) {
         const meta = CATALOGO_COUNTRY_META[countryKey] || CATALOGO_COUNTRY_META.GLOBAL;
         if (!meta.flag) {
-            return `<span aria-label="${meta.label}" title="${meta.label}" class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border border-[#BDE7FF] text-[#004481] shadow-sm align-middle">🌐</span>`;
+            return window.getGlobalIconHtml ? window.getGlobalIconHtml('w-7 h-7') :
+                `<span aria-label="${meta.label}" title="${meta.label}" class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border border-[#BDE7FF] text-[#004481] shadow-sm align-middle">🌐</span>`;
         }
-        return `<img src="https://flagcdn.com/w40/${meta.flag}.png" alt="${meta.label}" class="inline-block w-7 rounded-[2px] shadow-sm border border-white/70 align-middle">`;
+        return `<span class="nextgen-round-flag w-7 h-7" aria-label="${meta.label}" title="${meta.label}"><img src="https://flagcdn.com/w40/${meta.flag}.png" alt=""></span>`;
     }
 
 
@@ -12854,12 +12898,15 @@ window.EDCNps = (() => {
     }
 
     function getRowClasificacionValue(row) {
-        // Primero se mira si la funcionalidad está entregada (columna Estado):
-        // si lo está, solo puede ser Con Robot 5 o Sin Robot 5. Si está pendiente
-        // o retrasada, solo puede ser ETPB, On Going Akira o Potencial.
-        if (getRowStatus(row) === 'Entregada') return rowUsesRobot5(row) ? 'Con Robot 5' : 'Sin Robot 5';
+        // Se mira primero si la columna Entrega está informada en la base de
+        // datos (11_CATALOGO_KPIs), con independencia del trimestre de corte
+        // seleccionado en el filtro: si lo está, solo puede ser Con Robot 5 o
+        // Sin Robot 5 según la columna Uso de Robot 5. Si no está informada,
+        // solo puede ser ETPB, On Going Akira (Uso de Robot 5 = TRUE) o
+        // Potencial (el resto).
+        if (hasQReal(row)) return rowUsesRobot5(row) ? 'Con Robot 5' : 'Sin Robot 5';
         if (rowEtpbFlag(row)) return 'ETPB';
-        if (rowOngoingAkiraFlag(row)) return 'On Going Akira';
+        if (rowUsesRobot5(row)) return 'On Going Akira';
         return 'Potencial';
     }
 
@@ -13331,19 +13378,20 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     }
 
     function renderCatalogoKpisSummary(rows) {
+        // Entregadas/Pendientes ya no dependen del trimestre de corte seleccionado
+        // (eso solo afecta al badge de "Avance de entrega del catálogo"): aquí se
+        // basan únicamente en si la columna Entrega está informada en la base de
+        // datos, igual que la clasificación de Uso de Robot 5.
         const total = rows.length;
-        const selectedQuarter = getCatalogoSelectedQuarter();
-        const deliveredRows = rows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter));
-        const pendingRows = rows.filter(row => !isCatalogoDeliveredByQuarter(row, selectedQuarter));
+        const deliveredRows = rows.filter(row => hasQReal(row));
+        const pendingRows = rows.filter(row => !hasQReal(row));
         const delivered = deliveredRows.length;
         const pending = pendingRows.length;
         const deliveredRobot5 = deliveredRows.filter(row => rowUsesRobot5(row)).length;
         const deliveredNoRobot5 = Math.max(delivered - deliveredRobot5, 0);
         const pendingEtpbCalc = pendingRows.filter(row => rowEtpbFlag(row)).length;
-        const pendingOngoingCalc = pendingRows.filter(row => rowOngoingAkiraFlag(row)).length;
+        const pendingOngoingCalc = pendingRows.filter(row => !rowEtpbFlag(row) && rowUsesRobot5(row)).length;
         const pendingPotential = Math.max(pending - pendingEtpbCalc - pendingOngoingCalc, 0);
-        const etpbTotal = rows.filter(row => rowEtpbFlag(row)).length;
-        const ongoingTotal = rows.filter(row => rowOngoingAkiraFlag(row)).length;
 
         setText('catalogoTotal', total);
         setText('catalogoDelivered', delivered);
@@ -13354,10 +13402,10 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         setText('catalogoDeliveredRobot5Pct', pct(deliveredRobot5, delivered));
         setText('catalogoDeliveredNoRobot5', deliveredNoRobot5);
         setText('catalogoDeliveredNoRobot5Pct', pct(deliveredNoRobot5, delivered));
-        setText('catalogoPendingEtpb', etpbTotal);
-        setText('catalogoPendingEtpbPct', pct(etpbTotal, total));
-        setText('catalogoPendingOngoing', ongoingTotal);
-        setText('catalogoPendingOngoingPct', pct(ongoingTotal, total));
+        setText('catalogoPendingEtpb', pendingEtpbCalc);
+        setText('catalogoPendingEtpbPct', pct(pendingEtpbCalc, total));
+        setText('catalogoPendingOngoing', pendingOngoingCalc);
+        setText('catalogoPendingOngoingPct', pct(pendingOngoingCalc, total));
         setText('catalogoPendingPotential', pendingPotential);
         setText('catalogoPendingPotentialPct', pct(pendingPotential, pending));
     }

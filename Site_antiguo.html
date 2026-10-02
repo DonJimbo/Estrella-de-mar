@@ -1802,6 +1802,13 @@
         #ep-nextgen .nextgen-round-flag{display:inline-grid;place-items:center;overflow:hidden;border:2px solid #fff;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,68,129,.2);vertical-align:middle}
         #ep-nextgen .nextgen-round-flag img{display:block;width:100%;height:100%;object-fit:cover}
 
+        /* Presentación de Modelo de Gobierno dentro del site. */
+        /* El reproductor de Google Slides reserva espacio para su barra inferior.
+           Esta proporción elimina el relleno negro lateral conservando los controles nativos. */
+        .governance-frame-wrap{display:block;width:100%;aspect-ratio:1.684/1;background:#fff;overflow:hidden}
+        .governance-frame{display:block;width:100%;height:100%;min-height:0;border:0;background:#fff}
+        @media(max-width:640px){.governance-frame-wrap{aspect-ratio:1.46/1}}
+
         @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b,#ep-roadmap .ep-roadmap-highlight,#ep-nextgen .nextgen-block-highlight{animation:none!important;transition:none!important}}
     </style>
 </head>
@@ -1995,13 +2002,13 @@
                             <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Directorio de contactos, roles y organigrama de los equipos.</p>
                         </a>
 
-                        <a href="https://docs.google.com/presentation/d/1h6UValzrxejT-t8hem9fbsA2kQv7Ib7iDWiCn8TyIOw/edit?slide=id.g3cd3ca7b2e2_0_364#slide=id.g3cd3ca7b2e2_0_364" target="_blank" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
+                        <button type="button" onclick="window.openGovernancePresentation()" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
                             <div class="bg-purple-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#8B5CF6] transition-colors">
                                 <i data-lucide="network" class="w-6 h-6 text-[#8B5CF6] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#8B5CF6] transition-colors">Modelo de Gobierno</h3>
                             <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Comités, escalado de decisiones y flujos de comunicación.</p>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -3367,6 +3374,24 @@
                 modal.children[0].classList.remove('scale-100');
             }
             setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        // Modelo de Gobierno: la presentación se visualiza en el propio site.
+        const governancePresentationEmbed = 'https://docs.google.com/presentation/d/1h6UValzrxejT-t8hem9fbsA2kQv7Ib7iDWiCn8TyIOw/embed?start=false&loop=false&delayms=3000';
+        window.openGovernancePresentation = function() {
+            const modal = document.getElementById('modal-gobierno');
+            if (!modal) return;
+            modal.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
+                <div class="bg-[#004481] text-white px-5 py-4 md:px-6 md:py-5 flex justify-between items-center shrink-0 relative overflow-hidden">
+                    <h2 class="text-base md:text-lg font-black flex items-center gap-3 relative z-10"><i data-lucide="network" class="w-5 h-5 text-[#5BBEFF]"></i>Modelo de Gobierno</h2>
+                    <button type="button" onclick="window.closeModal('modal-gobierno')" aria-label="Cerrar presentación" class="relative z-10 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+                <div class="governance-frame-wrap">
+                    <iframe id="governancePresentationFrame" class="governance-frame" title="Modelo de Gobierno" src="${governancePresentationEmbed}#slide=id.g3cd3ca7b2e2_0_364" allowfullscreen></iframe>
+                </div>
+            </div>`;
+            window.openModal('modal-gobierno');
+            updateIcons();
         };
 
 

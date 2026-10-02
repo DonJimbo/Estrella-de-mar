@@ -1311,7 +1311,7 @@
         .catalogo-table-wrap{width:100%;overflow-x:auto;background:#fff}
         .catalogo-detail-table {
     width: 100%;
-    min-width: 1432px;
+    min-width: 1242px;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0;
@@ -1335,13 +1335,7 @@
 .catalogo-detail-table td:nth-child(6) { width: 150px; }
 
 .catalogo-detail-table th:nth-child(7),
-.catalogo-detail-table td:nth-child(7) { width: 145px; }
-
-.catalogo-detail-table th:nth-child(8),
-.catalogo-detail-table td:nth-child(8) { width: 90px; }
-
-.catalogo-detail-table th:nth-child(9),
-.catalogo-detail-table td:nth-child(9) { width: 145px; }
+.catalogo-detail-table td:nth-child(7) { width: 190px; }
 
 
 
@@ -1808,9 +1802,12 @@
         /* Presentación de Modelo de Gobierno dentro del site. */
         /* El reproductor de Google Slides reserva espacio para su barra inferior.
            Esta proporción elimina el relleno negro lateral conservando los controles nativos. */
-        .governance-frame-wrap{display:block;width:100%;aspect-ratio:1.684/1;background:#fff;overflow:hidden}
-        .governance-frame{display:block;width:100%;height:100%;min-height:0;border:0;background:#fff}
-        @media(max-width:640px){.governance-frame-wrap{aspect-ratio:1.46/1}}
+        /* Se usa el truco del padding-bottom en vez de aspect-ratio: Google Sites
+           puede no aplicar aspect-ratio (propiedad más moderna) al pegar el
+           código, lo que dejaba franjas negras a los lados de la diapositiva. */
+        .governance-frame-wrap{position:relative;display:block;width:100%;height:0;padding-bottom:59.38%;background:#fff;overflow:hidden}
+        .governance-frame{position:absolute;top:0;left:0;display:block;width:100%;height:100%;min-height:0;border:0;background:#fff}
+        @media(max-width:640px){.governance-frame-wrap{padding-bottom:68.49%}}
 
         @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b,#ep-roadmap .ep-roadmap-highlight,#ep-nextgen .nextgen-block-highlight{animation:none!important;transition:none!important}}
     </style>
@@ -2192,13 +2189,11 @@
                                         <th><button type="button" id="catalogo-th-qtarget" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('qTarget')">Target <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                         <th><button type="button" id="catalogo-th-qreal" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('qReal')">Entrega <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                         <th><button type="button" id="catalogo-th-estado" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('estado')">Estado <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
-                                        <th><button type="button" id="catalogo-th-usoRobot5" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('usoRobot5')">Uso de Robot 5 <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
-                                        <th><button type="button" id="catalogo-th-etpb" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('etpb')">ETPB <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
-                                        <th><button type="button" id="catalogo-th-ongoingAkira" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('ongoingAkira')">On going Akira <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
+                                        <th><button type="button" id="catalogo-th-clasificacion" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('clasificacion')">Clasificación <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                     </tr>
                                 </thead>
                                 <tbody id="catalogoTableBody">
-                                    <tr><td colspan="9" class="catalogo-table-empty">Cargando funcionalidades...</td></tr>
+                                    <tr><td colspan="7" class="catalogo-table-empty">Cargando funcionalidades...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -12807,9 +12802,7 @@ window.EDCNps = (() => {
         qTarget: { label: 'Target' },
         qReal: { label: 'Entrega' },
         estado: { label: 'Estado' },
-        usoRobot5: { label: 'Uso de Robot 5' },
-        etpb: { label: 'ETPB' },
-        ongoingAkira: { label: 'On going Akira' }
+        clasificacion: { label: 'Clasificación' }
     };
 
     catalogoState.columnFilters = catalogoState.columnFilters || {};
@@ -12861,31 +12854,26 @@ window.EDCNps = (() => {
         return boolVal(value);
     }
 
-    function getRowUsoRobot5Value(row) {
-        return rowUsesRobot5(row) ? 'Sí' : 'No';
+    function getRowClasificacionValue(row) {
+        // Primero se mira si la funcionalidad está entregada (columna Estado):
+        // si lo está, solo puede ser Con Robot 5 o Sin Robot 5. Si está pendiente
+        // o retrasada, solo puede ser ETPB, On Going Akira o Potencial.
+        if (getRowStatus(row) === 'Entregada') return rowUsesRobot5(row) ? 'Con Robot 5' : 'Sin Robot 5';
+        if (rowEtpbFlag(row)) return 'ETPB';
+        if (rowOngoingAkiraFlag(row)) return 'On Going Akira';
+        return 'Potencial';
     }
 
-    function renderUsoRobot5Pill(row) {
-        const usesRobot = rowUsesRobot5(row);
-        return `<span class="catalogo-status-pill ${usesRobot ? 'catalogo-status-apto' : 'catalogo-status-potential'}">${usesRobot ? 'Sí' : 'No'}</span>`;
-    }
-
-    function getRowEtpbValue(row) {
-        return rowEtpbFlag(row) ? 'Sí' : 'No';
-    }
-
-    function renderEtpbPill(row) {
-        const value = rowEtpbFlag(row);
-        return `<span class="catalogo-status-pill ${value ? 'catalogo-status-etpb' : 'catalogo-status-potential'}">${value ? 'Sí' : 'No'}</span>`;
-    }
-
-    function getRowOngoingAkiraValue(row) {
-        return rowOngoingAkiraFlag(row) ? 'Sí' : 'No';
-    }
-
-    function renderOngoingAkiraPill(row) {
-        const value = rowOngoingAkiraFlag(row);
-        return `<span class="catalogo-status-pill ${value ? 'catalogo-status-ongoing' : 'catalogo-status-potential'}">${value ? 'Sí' : 'No'}</span>`;
+    function renderClasificacionPill(row) {
+        const value = getRowClasificacionValue(row);
+        const classByValue = {
+            'Con Robot 5': 'catalogo-status-apto',
+            'Sin Robot 5': 'catalogo-status-potential',
+            'ETPB': 'catalogo-status-etpb',
+            'On Going Akira': 'catalogo-status-ongoing',
+            'Potencial': 'catalogo-status-potential'
+        };
+        return `<span class="catalogo-status-pill ${classByValue[value] || 'catalogo-status-potential'}">${escapeHtml(value)}</span>`;
     }
 
     function getRowStatus(row) {
@@ -12924,9 +12912,7 @@ function getRowStatusTags(row) {
         if (columnKey === 'qTarget') return row.qTarget || row.qtarget || row.target || '';
         if (columnKey === 'qReal') return getRowQRealValue(row);
         if (columnKey === 'estado') return getRowStatus(row);
-        if (columnKey === 'usoRobot5') return getRowUsoRobot5Value(row);
-        if (columnKey === 'etpb') return getRowEtpbValue(row);
-        if (columnKey === 'ongoingAkira') return getRowOngoingAkiraValue(row);
+        if (columnKey === 'clasificacion') return getRowClasificacionValue(row);
         return '';
     }
 
@@ -13014,7 +13000,7 @@ function getRowStatusTags(row) {
     }
 
     function updateCatalogoHeaderFilterStates() {
-        const map = { bloque:'catalogo-th-bloque', solucion:'catalogo-th-solucion', qTarget:'catalogo-th-qtarget', qReal:'catalogo-th-qreal', estado:'catalogo-th-estado', usoRobot5:'catalogo-th-usoRobot5', etpb:'catalogo-th-etpb', ongoingAkira:'catalogo-th-ongoingAkira' };
+        const map = { bloque:'catalogo-th-bloque', solucion:'catalogo-th-solucion', qTarget:'catalogo-th-qtarget', qReal:'catalogo-th-qreal', estado:'catalogo-th-estado', clasificacion:'catalogo-th-clasificacion' };
         Object.entries(map).forEach(([columnKey, id]) => {
             const btn = document.getElementById(id);
             if (!btn) return;
@@ -13187,9 +13173,7 @@ function getRowStatusTags(row) {
         qTarget: 'catalogo-th-qtarget',
         qReal: 'catalogo-th-qreal',
         estado: 'catalogo-th-estado',
-        usoRobot5: 'catalogo-th-usoRobot5',
-        etpb: 'catalogo-th-etpb',
-        ongoingAkira: 'catalogo-th-ongoingAkira'
+        clasificacion: 'catalogo-th-clasificacion'
     };
 
     const trigger = document.getElementById(triggerIds[columnKey]);
@@ -13317,9 +13301,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
                     getCellValue(row, 'qTarget'),
                     getCellValue(row, 'qReal'),
                     statusTags.join(' '),
-                    getCellValue(row, 'usoRobot5'),
-                    getCellValue(row, 'etpb'),
-                    getCellValue(row, 'ongoingAkira')
+                    getCellValue(row, 'clasificacion')
                 ].join(' '));
                 if (!searchText.includes(search)) return false;
             }
@@ -13328,6 +13310,25 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         });
 
         return { selectedRows, rows };
+    }
+
+    // El badge de "Avance de entrega del catálogo" (esquina superior derecha) se
+    // calcula aparte, siempre sobre selectedRows (solo país + trimestre de corte):
+    // no debe moverse al tocar la búsqueda, el estado ni los filtros de columna
+    // de la tabla de detalle de abajo.
+    function renderCatalogoCoverage(selectedRows) {
+        const total = selectedRows.length;
+        const selectedQuarter = getCatalogoSelectedQuarter();
+        const delivered = selectedRows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter)).length;
+        const coverageValue = total ? delivered / total : 0;
+        const coveragePct = (coverageValue * 100).toFixed(2).replace('.', ',') + '%';
+
+        setText('catalogoCoveragePct', coveragePct);
+
+        const fill = document.getElementById('catalogoCoverageFill');
+        if (fill) fill.style.width = Math.max(0, Math.min(100, coverageValue * 100)) + '%';
+
+        setText('catalogoCoverageFoot', `${delivered} de ${total} funcionalidades entregadas hasta ${formatCatalogoQuarter(selectedQuarter)}`);
     }
 
     function renderCatalogoKpisSummary(rows) {
@@ -13344,15 +13345,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         const pendingPotential = Math.max(pending - pendingEtpbCalc - pendingOngoingCalc, 0);
         const etpbTotal = rows.filter(row => rowEtpbFlag(row)).length;
         const ongoingTotal = rows.filter(row => rowOngoingAkiraFlag(row)).length;
-        const coverageValue = total ? delivered / total : 0;
-        const coveragePct = (coverageValue * 100).toFixed(2).replace('.', ',') + '%';
 
-        setText('catalogoCoveragePct', coveragePct);
-
-        const fill = document.getElementById('catalogoCoverageFill');
-        if (fill) fill.style.width = Math.max(0, Math.min(100, coverageValue * 100)) + '%';
-
-        setText('catalogoCoverageFoot', `${delivered} de ${total} funcionalidades entregadas hasta ${formatCatalogoQuarter(selectedQuarter)}`);
         setText('catalogoTotal', total);
         setText('catalogoDelivered', delivered);
         setText('catalogoDeliveredPct', pct(delivered, total));
@@ -13382,7 +13375,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         const { selectedRows, rows } = getFilteredCatalogoRows();
 
         if (!rows.length) {
-            tbody.innerHTML = `<tr><td colspan="9" class="catalogo-table-empty">No hay funcionalidades que coincidan con los filtros aplicados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="catalogo-table-empty">No hay funcionalidades que coincidan con los filtros aplicados.</td></tr>`;
         } else {
             tbody.innerHTML = rows.map(row => `
                 <tr>
@@ -13392,15 +13385,14 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
                     <td>${escapeHtml(getCellValue(row, 'qTarget') || '-')}</td>
                     <td>${escapeHtml(getCellValue(row, 'qReal') || '-')}</td>
                     <td><div class="catalogo-status-cell">${renderStatusPills(row)}</div></td>
-                    <td><div class="catalogo-status-cell">${renderUsoRobot5Pill(row)}</div></td>
-                    <td><div class="catalogo-status-cell">${renderEtpbPill(row)}</div></td>
-                    <td><div class="catalogo-status-cell">${renderOngoingAkiraPill(row)}</div></td>
+                    <td><div class="catalogo-status-cell">${renderClasificacionPill(row)}</div></td>
                 </tr>
             `).join('');
         }
 
         if (count) count.textContent = `Mostrando ${rows.length} de ${selectedRows.length} funcionalidades`;
 
+        renderCatalogoCoverage(selectedRows);
         renderCatalogoKpisSummary(rows);
         updateCatalogoHeaderFilterStates();
         if (window.lucide) window.lucide.createIcons();

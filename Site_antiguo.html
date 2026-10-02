@@ -2068,8 +2068,8 @@
                                     <option value="25Q3">25Q3</option>
                                     <option value="25Q4">25Q4</option>
                                     <option value="26Q1">26Q1</option>
-                                    <option value="26Q2" selected>26Q2</option>
-                                    <option value="26Q3">26Q3</option>
+                                    <option value="26Q2">26Q2</option>
+                                    <option value="26Q3" selected>26Q3</option>
                                     <option value="26Q4">26Q4</option>
                                     <option value="27Q1">27Q1</option>
                                     <option value="27Q2">27Q2</option>
@@ -3221,9 +3221,11 @@
             return `<div class="${customClass} relative inline-block shrink-0 rounded-full" title="Global"><div class="absolute inset-[15%] rounded-full border-[1.5px] border-[#004481]"></div><img src="https://flagcdn.com/w40/es.png" class="absolute top-0 left-1/2 -translate-x-1/2 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/co.png" class="absolute top-[22%] right-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/pe.png" class="absolute bottom-0 right-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/ar.png" class="absolute bottom-0 left-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/mx.png" class="absolute top-[22%] left-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"></div>`;
         };
 
-        // Generador del icono Holding: no tiene bandera real, se usa un emblema redondo a juego.
+        // Generador del icono Holding: no tiene bandera real, así que se usa un
+        // icono (sin círculo ni fondo, solo la silueta en azul) en vez de una
+        // bandera, manteniendo el mismo tamaño que el resto de banderas.
         window.getHoldingIconHtml = function(customClass = "w-5 h-5") {
-            return `<span class="nextgen-round-flag ${customClass}" title="Holding"><svg viewBox="0 0 24 24" width="62%" height="62%" fill="none" stroke="#004481" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg></span>`;
+            return `<span class="${customClass}" style="display:inline-grid;place-items:center;vertical-align:middle;flex-shrink:0" title="Holding"><svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="#004481" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg></span>`;
         };
 
         // ==========================================
@@ -11777,10 +11779,12 @@ window.EDCNps = (() => {
       return `<span class="${sizeClass}" style="position:relative;display:inline-block;flex-shrink:0;vertical-align:middle" title="Global">${dots}</span>`;
     }
 
-    // Icono "Holding": no tiene bandera real, se representa con un emblema redondo a juego.
+    // Icono "Holding": no tiene bandera real, así que se usa un icono (sin
+    // círculo ni fondo, solo la silueta en azul) del mismo tamaño que el
+    // resto de banderas, en vez de forzarlo dentro del círculo de bandera.
     function getHoldingIconHtmlFtes(sizeClass) {
-      return `<span class="nextgen-round-flag ${sizeClass}" title="Holding">` +
-        `<svg viewBox="0 0 24 24" width="62%" height="62%" fill="none" stroke="#004481" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
+      return `<span class="${sizeClass}" style="display:inline-grid;place-items:center;vertical-align:middle;flex-shrink:0" title="Holding">` +
+        `<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="#004481" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
         `<rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/>` +
         `<path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>` +
         `</svg></span>`;
@@ -12568,7 +12572,7 @@ window.EDCNps = (() => {
         loading: false,
         rows: [],
         loadPromise: null,
-        selectedQuarter: '26Q2'
+        selectedQuarter: '26Q3'
     };
 
     function catalogoApi(action) {
@@ -12760,7 +12764,7 @@ window.EDCNps = (() => {
 
     function getCatalogoSelectedQuarter() {
         const select = document.getElementById('catalogoQuarterFilter');
-        const value = select?.value || catalogoState.selectedQuarter || '26Q2';
+        const value = select?.value || catalogoState.selectedQuarter || '26Q3';
         catalogoState.selectedQuarter = value;
         return value;
     }
@@ -12934,13 +12938,21 @@ window.EDCNps = (() => {
     }
 
     function getRowStatus(row) {
-    if (isCatalogoDeliveredByQuarter(row)) return 'Entregada';
+    // El Estado no depende del "Corte de avance" seleccionado (eso solo mueve
+    // el badge de Avance de entrega del catálogo): se basa únicamente en si
+    // Entrega está informada y, si lo está, en si llegó dentro de plazo.
+    if (hasQReal(row)) {
+        const deliveryRank = getCatalogoQuarterRank(row.qRealRaw !== undefined ? row.qRealRaw : row.qReal);
+        const targetRank = getCatalogoQuarterRank(getCellValue(row, 'qTarget'));
+        if (deliveryRank !== null && targetRank !== null && deliveryRank > targetRank) return 'Retrasada';
+        return 'Entregada';
+    }
     if (isCatalogoOverdue(row)) return 'Retrasada';
     return 'Pendiente';
 }
 
     function isCatalogoOverdue(row) {
-    if (isCatalogoDeliveredByQuarter(row)) return false;
+    if (hasQReal(row)) return false;
 
     const target = String(getCellValue(row, 'qTarget') || '').trim();
     const match = target.match(/(?:^|\D)(20\d{2}|\d{2})\s*Q\s*([1-4])\b/i);
@@ -13491,7 +13503,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
 
         if (!select || !loading || !content) return;
 
-        if (quarterSelect) catalogoState.selectedQuarter = quarterSelect.value || '26Q2';
+        if (quarterSelect) catalogoState.selectedQuarter = quarterSelect.value || '26Q3';
         const selectedCountry = normCountry(select.value || 'ESPANA');
         const meta = CATALOGO_COUNTRY_META[selectedCountry] || CATALOGO_COUNTRY_META.GLOBAL;
         const rows = selectedCountry === 'GLOBAL'
@@ -13527,7 +13539,7 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     };
 
     window.handleCatalogoQuarterChange = function (element) {
-        const selectedQuarter = element?.value || '26Q2';
+        const selectedQuarter = element?.value || '26Q3';
         catalogoState.selectedQuarter = selectedQuarter;
 
         ['fTri', 'fTri_ep'].forEach(id => {

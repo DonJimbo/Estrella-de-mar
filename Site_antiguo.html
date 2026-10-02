@@ -12913,13 +12913,15 @@ window.EDCNps = (() => {
     }
 
     function getRowClasificacionValue(row) {
-        // Se mira primero si la columna Entrega está informada en la base de
-        // datos (11_CATALOGO_KPIs), con independencia del trimestre de corte
-        // seleccionado en el filtro: si lo está, solo puede ser Con Robot 5 o
-        // Sin Robot 5 según la columna Uso de Robot 5. Si no está informada,
+        // Se mira primero si la funcionalidad ya está entregada a fecha del
+        // "Corte de avance" seleccionado (Entrega informada y dentro de ese
+        // trimestre): si lo está, solo puede ser Con Robot 5 o Sin Robot 5
+        // según la columna Uso de Robot 5. Si todavía no lo está a ese corte,
         // solo puede ser ETPB, On Going Akira (Uso de Robot 5 = TRUE) o
-        // Potencial (el resto).
-        if (hasQReal(row)) return rowUsesRobot5(row) ? 'Con Robot 5' : 'Sin Robot 5';
+        // Potencial (el resto). Por eso cambia al cambiar el trimestre de
+        // corte, igual que el resto de este bloque (tarjetas e indicador de
+        // Avance de entrega).
+        if (isCatalogoDeliveredByQuarter(row)) return rowUsesRobot5(row) ? 'Con Robot 5' : 'Sin Robot 5';
         if (rowEtpbFlag(row)) return 'ETPB';
         if (rowUsesRobot5(row)) return 'On Going Akira';
         return 'Potencial';
@@ -13401,13 +13403,16 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     }
 
     function renderCatalogoKpisSummary(rows) {
-        // Entregadas/Pendientes ya no dependen del trimestre de corte seleccionado
-        // (eso solo afecta al badge de "Avance de entrega del catálogo"): aquí se
-        // basan únicamente en si la columna Entrega está informada en la base de
-        // datos, igual que la clasificación de Uso de Robot 5.
+        // Entregadas/Pendientes (y su desglose de Uso de Robot 5 / ETPB / On
+        // Going Akira / Potencial) sí dependen del trimestre de "Corte de
+        // avance" seleccionado, igual que el indicador de Avance de entrega
+        // del catálogo y la columna Uso de Robot 5: reflejan cómo estaba el
+        // catálogo a fecha de ese corte. Lo único que es independiente del
+        // corte es la columna "Estado" (Entregada/Retrasada/Pendiente), que
+        // refleja la situación real actual.
         const total = rows.length;
-        const deliveredRows = rows.filter(row => hasQReal(row));
-        const pendingRows = rows.filter(row => !hasQReal(row));
+        const deliveredRows = rows.filter(row => isCatalogoDeliveredByQuarter(row));
+        const pendingRows = rows.filter(row => !isCatalogoDeliveredByQuarter(row));
         const delivered = deliveredRows.length;
         const pending = pendingRows.length;
         const deliveredRobot5 = deliveredRows.filter(row => rowUsesRobot5(row)).length;

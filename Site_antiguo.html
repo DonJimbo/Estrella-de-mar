@@ -5504,24 +5504,36 @@ window.EDCNps = (() => {
             };
             window.toggleEmptyState('canvas-container-features', false);
             const lastClosedFeatureQuarter = getLastClosedFeatureQuarter();
-            // La leyenda debe reflejar el trimestre realmente filtrado arriba
-            // (sin pasarse del último trimestre cerrado en el calendario real,
-            // que es lo que getFeatureActualQuarter usa por país para los puntos).
-            const lastClosedIndexForLabel = FEATURE_PROGRESS_PERIODS.indexOf(lastClosedFeatureQuarter);
-            const selectedIndexForLabel = FEATURE_PROGRESS_PERIODS.indexOf(currentQ);
-            const legendQuarter = selectedIndexForLabel >= 0 && lastClosedIndexForLabel >= 0
-                ? FEATURE_PROGRESS_PERIODS[Math.min(selectedIndexForLabel, lastClosedIndexForLabel)]
-                : (currentQ || lastClosedFeatureQuarter);
+            // El % de avance real sale del mismo catálogo que Layout KPIs (11_CATALOGO_KPIs),
+            // calculado al trimestre seleccionado, para que coincida con esa página.
+            // Si el catálogo todavía no se ha cargado (p.ej. no se ha visitado Layout
+            // KPIs en esta sesión), se usan los datos antiguos de PPT Status como reserva,
+            // que sí dependen de no pasarse del último trimestre cerrado en el calendario.
+            const catalogoCoverageByCountry = typeof window.getCatalogoCoverageByCountry === 'function'
+                ? window.getCatalogoCoverageByCountry(currentQ)
+                : null;
+            let legendQuarter = currentQ;
+            if (!catalogoCoverageByCountry) {
+                const lastClosedIndexForLabel = FEATURE_PROGRESS_PERIODS.indexOf(lastClosedFeatureQuarter);
+                const selectedIndexForLabel = FEATURE_PROGRESS_PERIODS.indexOf(currentQ);
+                legendQuarter = selectedIndexForLabel >= 0 && lastClosedIndexForLabel >= 0
+                    ? FEATURE_PROGRESS_PERIODS[Math.min(selectedIndexForLabel, lastClosedIndexForLabel)]
+                    : (currentQ || lastClosedFeatureQuarter);
+            }
             container.innerHTML = `<div class="flex flex-col items-center justify-center mb-5 gap-2"><div class="flex flex-wrap items-center justify-center gap-4 text-[10px] font-bold text-gray-500 uppercase"><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#5BBEFF] rounded-full"></div> Cierre 2025</span><span class="flex items-center gap-1.5"><div class="w-3.5 h-3.5 bg-[#004481] rounded-full border border-gray-200"></div> % de Avance Actual · hasta ${legendQuarter}</span><span class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 bg-[#FB923C] rotate-45 rounded-[1px]"></div> Target 2026</span><span class="flex items-center gap-1.5"><div class="w-3 h-3 bg-[#4b5563] rotate-45 rounded-[2px]"></div> FIN</span></div><div class="flex flex-wrap items-center justify-center gap-3 text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100"><span class="mr-1">Color del % Avance vs Target Trimestre:</span><span class="flex items-center gap-1"><span class="text-[#48AE64] text-xs leading-none">■</span> Igual o mayor al target</span><span class="flex items-center gap-1"><span class="text-[#EF4444] text-xs leading-none">■</span> Menor al target</span></div></div>`;
 
-            const config = [{n:'España',k:'espana',f:'es',ep:'España'},{n:'México',k:'mexico',f:'mx',ep:'México'},{n:'Perú',k:'peru',f:'pe',ep:'Perú'},{n:'Colombia',k:'colombia',f:'co',ep:'Colombia'},{n:'Argentina',k:'argentina',f:'ar',ep:'Argentina'},{n:'Global',k:'global',f:'global',ep:'TOTAL'}];
+            const config = [{n:'España',k:'espana',f:'es',ep:'España',cat:'ESPANA'},{n:'México',k:'mexico',f:'mx',ep:'México',cat:'MEXICO'},{n:'Perú',k:'peru',f:'pe',ep:'Perú',cat:'PERU'},{n:'Colombia',k:'colombia',f:'co',ep:'Colombia',cat:'COLOMBIA'},{n:'Argentina',k:'argentina',f:'ar',ep:'Argentina',cat:'ARGENTINA'},{n:'Global',k:'global',f:'global',ep:'TOTAL',cat:'TOTAL'}];
             config.filter(c => geo==='ALL'||c.n===geo).forEach(c => {
                 // Datos de Features Transformadas desde PPT Status.
                 const c25 = featuresData.cierre2025?.[c.k] ?? null;
                 const tar = featuresData.target2026?.[c.k] ?? null;
-                const actualQ = getFeatureActualQuarter(currentQ, c.k);
+
+                const catalogRp = catalogoCoverageByCountry ? catalogoCoverageByCountry[c.cat] : null;
+                const hasCatalogRp = catalogRp !== null && catalogRp !== undefined;
+
+                const actualQ = hasCatalogRp ? currentQ : getFeatureActualQuarter(currentQ, c.k);
                 const currentProgressPos = quarterMarkerPositions[actualQ] ?? 25;
-                const rp = actualQ ? featuresData.realByQuarter?.[actualQ]?.[c.k] ?? null : null;
+                const rp = hasCatalogRp ? catalogRp : (actualQ ? featuresData.realByQuarter?.[actualQ]?.[c.k] ?? null : null);
                 const ct = actualQ ? featuresData.targetByQuarter?.[actualQ]?.[c.k] ?? null : null;
                 
                 const hasD = !!actualQ && hasFeatureProgressValue(rp);
@@ -12839,6 +12851,32 @@ window.EDCNps = (() => {
             });
             return [country, refreshedItems];
         }));
+    };
+
+    // Avance (%) por país a fecha de un trimestre, calculado exactamente igual
+    // que el badge "Avance de entrega del catálogo" de Layout KPIs, para que
+    // otras vistas (como Features Transformadas Web Empresas en la página de
+    // KPIs) puedan mostrar el mismo porcentaje sin duplicar la lógica.
+    window.getCatalogoCoverageByCountry = function (selectedQuarter) {
+        if (!catalogoState.loaded || !Array.isArray(catalogoState.rows) || !catalogoState.rows.length) {
+            return null;
+        }
+
+        const countries = ['ESPANA', 'MEXICO', 'PERU', 'COLOMBIA', 'ARGENTINA'];
+        const result = {};
+        let totalDelivered = 0;
+        let totalRows = 0;
+
+        countries.forEach(country => {
+            const rows = catalogoState.rows.filter(row => normCountry(row.pais || row.paisOriginal) === country);
+            const delivered = rows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter)).length;
+            result[country] = rows.length ? (delivered / rows.length) * 100 : null;
+            totalDelivered += delivered;
+            totalRows += rows.length;
+        });
+
+        result.TOTAL = totalRows ? (totalDelivered / totalRows) * 100 : null;
+        return result;
     };
 
     function pct(part, total) {

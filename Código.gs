@@ -38,6 +38,7 @@ const SHEET_RAW_FTE = '03_RAW_FTE';
 const SHEET_KPIS = '07_KPIS_SITES';
 const SHEET_CATALOGO_KPIS = '11_CATALOGO_KPIs';
 const SHEET_OPCIONES_MENU_SITES = '15_OPCIONES_MENU_SITES';
+const SHEET_NEXTGEN_SITES = '17_NEXTGEN_SITES';
 
 function getWebAppUrl_() {
   try {
@@ -1019,6 +1020,94 @@ function getCatalogoKpisData() {
       };
     })
     .filter(row => row.id || row.solucionFuncional || row.bloqueFuncional);
+}
+
+/* =========================================================
+   USO DE NEXTGEN POR BLOQUE FUNCIONAL
+   Pestaña: 17_NEXTGEN_SITES
+   Columnas: País | Bloque Funcional | Tipo (Legacy/Next gen) | Fecha |
+             Avance Total | Uso de NextGen
+   Cada país+bloque tiene dos filas (Legacy y Next gen); se conserva solo
+   la fila "Next gen", cuya columna "Uso de NextGen" es el % que se pinta
+   por bloque y cuya "Avance Total" alimenta el dato secundario "Av.".
+   Los países se repiten uno debajo de otro en el orden habitual:
+   España, México, Perú, Colombia, Argentina y Global (mapeado a TOTAL).
+   ========================================================= */
+function getNextGenSitesData() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NEXTGEN_SITES);
+
+  if (!sheet) {
+    throw new Error('No existe la pestaña: ' + SHEET_NEXTGEN_SITES);
+  }
+
+  const values = sheet.getDataRange().getValues();
+  const norm = gthNormalizeLabel_;
+
+  let headerRowIndex = -1, colPais = -1, colBloque = -1, colTipo = -1, colAvance = -1, colUso = -1;
+  for (let r = 0; r < Math.min(values.length, 10); r++) {
+    const row = values[r].map(norm);
+    const iPais = row.findIndex(c => c === 'PAIS' || c.indexOf('PAIS') === 0);
+    const iBloque = row.findIndex(c => c.indexOf('BLOQUE') >= 0);
+    const iTipo = row.findIndex(c => c === 'TIPO');
+    const iAvance = row.findIndex(c => c.indexOf('AVANCE') >= 0);
+    const iUso = row.findIndex(c => c.indexOf('NEXTGEN') >= 0 || c.indexOf('NEXT GEN') >= 0);
+    if (iPais >= 0 && iBloque >= 0 && iTipo >= 0 && iAvance >= 0 && iUso >= 0) {
+      headerRowIndex = r;
+      colPais = iPais; colBloque = iBloque; colTipo = iTipo; colAvance = iAvance; colUso = iUso;
+      break;
+    }
+  }
+
+  if (headerRowIndex < 0) {
+    throw new Error('No se pudo localizar la cabecera (País / Bloque Funcional / Tipo / Avance Total / Uso de NextGen) en ' + SHEET_NEXTGEN_SITES);
+  }
+
+  const countryMap = {
+    'ESPANA': 'España', 'SPAIN': 'España',
+    'MEXICO': 'México',
+    'PERU': 'Perú',
+    'COLOMBIA': 'Colombia',
+    'ARGENTINA': 'Argentina',
+    'GLOBAL': 'TOTAL', 'TOTAL': 'TOTAL', 'CONSOLIDADO': 'TOTAL'
+  };
+
+  const result = {};
+  for (let r = headerRowIndex + 1; r < values.length; r++) {
+    const row = values[r];
+    const paisRaw = row[colPais];
+    const bloqueRaw = row[colBloque];
+    if (!paisRaw && !bloqueRaw) continue;
+
+    const country = countryMap[norm(paisRaw)];
+    const tipo = norm(row[colTipo]);
+    if (!country || tipo.indexOf('NEXT') < 0) continue; // solo la fila "Next gen"
+
+    const bloque = String(bloqueRaw || '').trim();
+    if (!bloque) continue;
+
+    if (!result[country]) result[country] = [];
+    result[country].push({
+      bloque: bloque,
+      avance: gthPercentOrNull_(row[colAvance]),
+      nextGen: gthPercentOrNull_(row[colUso])
+    });
+  }
+
+  return result;
+}
+
+function gthNormalizeLabel_(value) {
+  return String(value || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toUpperCase();
+}
+
+function gthPercentOrNull_(value) {
+  if (value === null || value === undefined || value === '') return null;
+  return Math.round(toPercentDecimal_(value) * 10000) / 100;
 }
 
 /** Identifica la fila de cabeceras de 11_CATALOGO_KPIs de forma tolerante. */

@@ -31,6 +31,7 @@ const GTH_DATASETS = {
   ftesKpis:      function () { return getFtesKpisData(); },
   kpis:          function () { return getKpisData(); },
   catalogo:      function () { return getCatalogoKpisData(); },
+  nextgenSites:  function () { return getNextGenSitesData(); },
   adopcion:      function () { return gthBuildAdopcion_(); }
 };
 
@@ -114,11 +115,13 @@ function gthResolveDataset_(action) {
     getKpisData: 'kpis',
     getCatalogoKpisData: 'catalogo',
     getCatalogoData: 'catalogo',
+    getNextGenSitesData: 'nextgenSites',
     getAdopcionSnapshot: 'adopcion',
     refreshAdopcion: 'adopcion',
     refreshCatalogo: 'catalogo',
     refreshPresupuesto: 'presupuesto',
-    refreshFtes: 'ftes'
+    refreshFtes: 'ftes',
+    refreshNextgenSites: 'nextgenSites'
   };
   return map[action] || (GTH_DATASETS[action] ? action : null);
 }

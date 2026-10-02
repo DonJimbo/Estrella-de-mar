@@ -4711,7 +4711,6 @@ window.EDCNps = (() => {
                     const pptSheet = findSheet('PPT Status');
                     const ftSheet = findSheet('Roadmap FT', 'Roadmap_FT', 'RoadmapFT');
                     const backlogFtSheet = findSheet('Backlog FT', 'Backlog_FT', 'BacklogFT');
-                    const slideBfSheet = findSheet('Slide BF', 'Slide_BF', 'SlideBF');
                     const consSheet = findSheet('Consolidado KPIs EDC 2026');
                     const getV = (s, c) => (s && s[c]) ? s[c].v : null;
                     const getRaw = (s, c) => (s && s[c]) ? (s[c].w || s[c].v) : null;
@@ -5053,12 +5052,9 @@ window.EDCNps = (() => {
                         }
                     });
 
-                    // USO DE NEXTGEN POR BLOQUE FUNCIONAL: pestaña "Slide BF", filas 31–90.
-                    // Se conserva como una vista independiente del roadmap para no alterar sus cálculos.
-                    nextGenByBlockDataGlobal = parseSlideBfData(slideBfSheet);
-                    if (!nextGenByBlockDataGlobal) {
-                        console.warn('No se han encontrado datos válidos en la pestaña Slide BF.');
-                    }
+                    // USO DE NEXTGEN POR BLOQUE FUNCIONAL: se carga aparte desde 17_NEXTGEN_SITES
+                    // (vía API, no desde este xlsx) para no alterar el resto de cálculos.
+                    loadNextGenByBlockData();
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -5813,6 +5809,34 @@ window.EDCNps = (() => {
             const el = document.getElementById('fTri_ep');
             return (!el || el.value === 'ALL' || !el.value) ? '26Q2' : el.value;
         }
+
+        let nextGenByBlockLoadPromise = null;
+        function loadNextGenByBlockData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar 17_NEXTGEN_SITES.');
+                return nextGenByBlockLoadPromise || Promise.resolve(null);
+            }
+            nextGenByBlockLoadPromise = window.catalogoApi('getNextGenSitesData')
+                .then(data => {
+                    nextGenByBlockDataGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!nextGenByBlockDataGlobal) console.warn('No se han encontrado datos válidos en 17_NEXTGEN_SITES.');
+                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
+                    return nextGenByBlockDataGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudieron cargar los datos de Uso de NextGen por bloque funcional (17_NEXTGEN_SITES).', error);
+                    return null;
+                });
+            return nextGenByBlockLoadPromise;
+        }
+
+        window.addEventListener('load', () => {
+            window.setTimeout(() => {
+                const preload = () => { if (!nextGenByBlockDataGlobal) loadNextGenByBlockData(); };
+                if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
+                else preload();
+            }, 1200);
+        }, { once: true });
 
         function ngMatchesSearch(label) {
             if (!ngState.search) return true;
@@ -12670,6 +12694,7 @@ window.EDCNps = (() => {
     }
 
     window.getCatalogoKpisRows = loadCatalogoKpisRows;
+    window.catalogoApi = catalogoApi;
 
     // Precarga discreta: acelera la primera entrada a Layout KPIs sin bloquear Inicio.
     window.addEventListener('load', () => {

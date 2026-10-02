@@ -32,6 +32,7 @@ const SHEET_PRESUPUESTOS = '05_PRESUPUESTO_SITES';
 const SHEET_FTES = '06_FTES_SITES';
 const SHEET_FTES_PERSONAS = '07_FTSs_SITES_2';
 const SHEET_FTES_KPIS = '08_FTSs_SITES_3';
+const SHEET_RAW_FTE = '03_RAW_FTE';
 
 // KPIs
 const SHEET_KPIS = '07_KPIS_SITES';
@@ -147,11 +148,68 @@ function getPresupuestoData() {
 }
 
 /* =========================================================
+   REFRESCO DE IMPORTRANGE
+   ========================================================= */
+
+/**
+ * Un IMPORTRANGE no se recalcula solo en cada lectura: Sheets solo lo
+ * refresca cuando alguien tiene abierta la hoja de origen o de destino en
+ * el navegador. Una llamada de Apps Script (tanto si viene del editor como
+ * de la web pública) puede leer un valor "congelado" desde la última vez
+ * que alguien abrió la hoja.
+ *
+ * Para servir datos realmente en vivo, antes de leer la pestaña de origen
+ * borramos y volvemos a escribir cada fórmula IMPORTRANGE que encontremos
+ * (solo las celdas ancla, que son las únicas que devuelven el texto de la
+ * fórmula; las celdas donde se "derrama" el array no lo hacen). Eso obliga
+ * a Sheets a reevaluarlas en el momento.
+ *
+ * Si algo falla aquí (cuota, permisos, etc.) no debe tirar abajo la carga
+ * de datos: se registra el aviso y se sigue con lo que ya hubiera.
+ */
+function refreshImportRangesInSheet_(sheetName) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return;
+
+    const range = sheet.getDataRange();
+    const formulas = range.getFormulas();
+    const anchors = [];
+
+    for (let r = 0; r < formulas.length; r++) {
+      for (let c = 0; c < formulas[r].length; c++) {
+        const formula = formulas[r][c];
+        if (formula && formula.toUpperCase().indexOf('IMPORTRANGE') >= 0) {
+          anchors.push({ row: r + 1, col: c + 1, formula: formula });
+        }
+      }
+    }
+
+    if (!anchors.length) return;
+
+    anchors.forEach(function (anchor) {
+      sheet.getRange(anchor.row, anchor.col).clearContent();
+    });
+    SpreadsheetApp.flush();
+
+    anchors.forEach(function (anchor) {
+      sheet.getRange(anchor.row, anchor.col).setFormula(anchor.formula);
+    });
+    SpreadsheetApp.flush();
+  } catch (error) {
+    Logger.log('No se pudo refrescar IMPORTRANGE en "' + sheetName + '": ' + error);
+  }
+}
+
+/* =========================================================
    FTES PRINCIPAL
    Pestaña: 06_FTES_SITES
    ========================================================= */
 
 function getFtesData() {
+  refreshImportRangesInSheet_(SHEET_RAW_FTE);
+
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_FTES);
 
@@ -637,6 +695,11 @@ function getKpisData() {
 function testPresupuestoData() {
   const data = getPresupuestoData();
   Logger.log(JSON.stringify(data.slice(0, 15), null, 2));
+}
+
+function testRefreshFtesImportRange() {
+  refreshImportRangesInSheet_(SHEET_RAW_FTE);
+  Logger.log('Refresco de IMPORTRANGE en "' + SHEET_RAW_FTE + '" lanzado. Revisa 06_FTES_SITES para confirmar que ya no hay #DIV/0! ni celdas desactualizadas.');
 }
 
 function testFtesData() {

@@ -970,11 +970,11 @@
             box-shadow: 0 4px 20px rgba(0,0,0,.035);
             border: 1px solid #e2e8f0;
             border-top: 4px solid #FDE466;
-            padding: .95rem;
-            min-height: 166px;
+            padding: 1.1rem;
+            min-height: 194px;
             display: flex;
             flex-direction: column;
-            gap: .65rem;
+            gap: .85rem;
             transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
         .support-session-card:hover {
@@ -1009,18 +1009,18 @@
         .support-session-list {
             display: flex;
             flex-direction: column;
-            gap: .4rem;
+            gap: .55rem;
         }
         .support-session-item {
             width: 100%;
-            min-height: 32px;
+            min-height: 36px;
             border-radius: 12px;
             border: 1px solid transparent;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: .6rem;
-            padding: .42rem .6rem;
+            padding: .55rem .65rem;
             font-size: .74rem;
             font-weight: 900;
             text-align: left;
@@ -1868,57 +1868,57 @@
     
     <main class="w-full">
         <div id="page-inicio" class="page-section w-full bg-white min-h-screen">
-            <div class="bg-[#F8FAFC] flex flex-col justify-start items-center pt-6 md:pt-8 border-b border-gray-200 pb-6 relative">
+            <div class="bg-[#F8FAFC] min-h-[calc(100vh-72px)] flex flex-col justify-start items-center pt-8 md:pt-12 border-b border-gray-200 pb-8 relative">
                 
-                <div class="px-4 max-w-5xl mx-auto text-center relative z-10 w-full mb-4">
-                    <h1 class="text-6xl md:text-[80px] font-black text-[#004481] mb-4 tracking-tighter leading-none">HUB <span class="text-[#5BBEFF]">EDC</span></h1>
-                    <p class="text-lg md:text-[20px] text-[#004481] font-bold max-w-3xl mx-auto leading-relaxed mt-4">Espacio centralizado para el seguimiento, control y análisis estratégico del programa.</p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto mt-6 w-full px-4">
-                        <button onclick="switchPage('page-kpis', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-kpis'))"
-                                class="relative overflow-hidden w-full h-24 rounded-3xl bg-gradient-to-r from-[#3ba8f5] to-[#004481] text-white flex items-center justify-between p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
+                <div class="px-4 max-w-5xl mx-auto text-center relative z-10 w-full mb-6">
+                    <h1 class="text-6xl md:text-[80px] font-black text-[#004481] mb-6 tracking-tighter leading-none">HUB <span class="text-[#5BBEFF]">EDC</span></h1>
+                    <p class="text-lg md:text-[20px] text-[#004481] font-bold max-w-3xl mx-auto leading-relaxed mt-6">Espacio centralizado para el seguimiento, control y análisis estratégico del programa.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-8 w-full px-4">
+                        <button onclick="switchPage('page-kpis', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-kpis'))" 
+                                class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#3ba8f5] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
-                                <div class="bg-white/20 p-3 rounded-2xl">
-                                    <i data-lucide="trending-up" class="w-7 h-7 text-white"></i>
+                                <div class="bg-white/20 p-3.5 rounded-2xl">
+                                    <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
                                 </div>
                                 <div>
                                     <span class="block text-2xl font-black tracking-tight uppercase leading-none">KPIs</span>
                                 </div>
                             </div>
-                            <div class="absolute right-4 bottom-2 opacity-10 flex gap-1 items-end h-12 pointer-events-none group-hover:scale-110 transition-transform duration-300">
-                                <div class="w-3 h-6 bg-white rounded-t-sm"></div>
-                                <div class="w-3 h-9 bg-white rounded-t-sm"></div>
+                            <div class="absolute right-4 bottom-2 opacity-10 flex gap-1 items-end h-16 pointer-events-none group-hover:scale-110 transition-transform duration-300">
+                                <div class="w-3 h-8 bg-white rounded-t-sm"></div>
                                 <div class="w-3 h-12 bg-white rounded-t-sm"></div>
+                                <div class="w-3 h-16 bg-white rounded-t-sm"></div>
                             </div>
                         </button>
 
-                        <button onclick="switchPage('page-endproduct', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-endproduct'))"
-                                class="relative overflow-hidden w-full h-24 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
+                        <button onclick="switchPage('page-endproduct', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-endproduct'))" 
+                                class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
-                                <div class="bg-white/15 p-3 rounded-2xl">
-                                    <i data-lucide="box" class="w-7 h-7 text-white"></i>
+                                <div class="bg-white/15 p-3.5 rounded-2xl">
+                                    <i data-lucide="box" class="w-8 h-8 text-white"></i>
                                 </div>
                                 <div>
                                     <span class="block text-xl font-black tracking-tight uppercase leading-none">Bloques Funcionales</span>
                                 </div>
                             </div>
-                            <div class="absolute right-4 bottom-3 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-300">
-                                <i data-lucide="layers" class="w-12 h-12 text-white"></i>
+                            <div class="absolute right-4 bottom-4 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="layers" class="w-16 h-16 text-white"></i>
                             </div>
                         </button>
 
                         <button onclick="switchPage('page-ftes', window.getSiteNavButtonForPage && window.getSiteNavButtonForPage('page-ftes'))"
-                                class="relative overflow-hidden w-full h-24 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
+                                class="relative overflow-hidden w-full h-32 rounded-3xl bg-gradient-to-r from-[#004481] to-[#004481] text-white flex items-center justify-between p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
                             <div class="flex items-center gap-4 relative z-10">
-                                <div class="bg-white/10 p-3 rounded-2xl">
-                                    <i data-lucide="calculator" class="w-7 h-7 text-white"></i>
+                                <div class="bg-white/10 p-3.5 rounded-2xl">
+                                    <i data-lucide="calculator" class="w-8 h-8 text-white"></i>
                                 </div>
                                 <div>
                                     <span class="block text-xl font-black tracking-tight uppercase leading-none">FTEs y Presupuesto</span>
                                 </div>
                             </div>
-                            <div class="absolute right-4 bottom-3 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-300">
-                                <i data-lucide="calendar" class="w-12 h-12 text-white"></i>
+                            <div class="absolute right-4 bottom-4 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="calendar" class="w-16 h-16 text-white"></i>
                             </div>
                         </button>
                     </div>
@@ -1927,14 +1927,14 @@
 
                 </div>
 
-                <div id="section-docs" class="w-full max-w-[1500px] mx-auto px-4 md:px-6 relative z-10 mt-4 scroll-offset">
-                    <div class="flex flex-col items-center justify-center gap-2 mb-4">
+                <div id="section-docs" class="w-full max-w-[1500px] mx-auto px-4 md:px-6 relative z-10 mt-6 scroll-offset">
+                    <div class="flex flex-col items-center justify-center gap-2 mb-6">
                         <h2 class="text-xs font-black text-[#004481] uppercase tracking-widest flex items-center gap-2 bg-white px-6 py-2.5 rounded-full shadow-sm border border-gray-200">
                             <i data-lucide="folder-kanban" class="w-4 h-4 text-[#5BBEFF]"></i> DOCUMENTACIÓN DE SOPORTE
                         </h2>
                     </div>
                     
-                    <div class="support-docs-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
+                    <div class="support-docs-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5">
                         <div class="support-session-card support-hub-card">
                             <div class="support-session-head">
                                 <div class="support-session-icon">
@@ -1970,44 +1970,44 @@
                             </div>
                         </div>
 
-                        <button onclick="window.openModal('modal-calendario')" class="support-hub-card text-left outline-none executive-card p-5 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#FB923C]">
-                            <div class="bg-orange-50 w-10 h-10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#FB923C] transition-colors">
-                                <i data-lucide="calendar-days" class="w-5 h-5 text-[#FB923C] group-hover:text-white transition-colors"></i>
+                        <button onclick="window.openModal('modal-calendario')" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#FB923C]">
+                            <div class="bg-orange-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#FB923C] transition-colors">
+                                <i data-lucide="calendar-days" class="w-6 h-6 text-[#FB923C] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#FB923C] transition-colors">Calendario de Actualización de KPIs</h3>
-                            <p class="support-hub-detail text-xs text-gray-500 leading-relaxed">Fechas clave, closures de sprint y sesiones SteerCo del programa.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Fechas clave, closures de sprint y sesiones SteerCo del programa.</p>
                         </button>
 
-                        <button onclick="switchPage('page-catalogo-kpis', document.getElementById('nav-catalogo-kpis')); setTimeout(() => { if (window.initCatalogoKpis) window.initCatalogoKpis(); }, 80);" class="support-hub-card text-left outline-none executive-card p-5 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#001391]">
-                            <div class="bg-blue-50 w-10 h-10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#001391] transition-colors">
-                                <i data-lucide="book-open" class="w-5 h-5 text-[#001391] group-hover:text-white transition-colors"></i>
+                        <button onclick="switchPage('page-catalogo-kpis', document.getElementById('nav-catalogo-kpis')); setTimeout(() => { if (window.initCatalogoKpis) window.initCatalogoKpis(); }, 80);" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#001391]">
+                            <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#001391] transition-colors">
+                                <i data-lucide="book-open" class="w-6 h-6 text-[#001391] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#001391] transition-colors">Layout KPIs</h3>
-                            <p class="support-hub-detail text-xs text-gray-500 leading-relaxed">Listado detallado de indicadores, bloques y soluciones funcionales.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Listado detallado de indicadores, bloques y soluciones funcionales.</p>
                         </button>
 
-                        <button onclick="window.openModal('modal-procedimiento')" class="support-hub-card text-left outline-none executive-card p-5 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#5BBEFF]">
-                            <div class="bg-blue-50 w-10 h-10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#5BBEFF] transition-colors">
-                                <i data-lucide="file-check-2" class="w-5 h-5 text-[#004481] group-hover:text-white transition-colors"></i>
+                        <button onclick="window.openModal('modal-procedimiento')" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#5BBEFF]">
+                            <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#5BBEFF] transition-colors">
+                                <i data-lucide="file-check-2" class="w-6 h-6 text-[#004481] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#5BBEFF] transition-colors">Solicitud de Cambios de KPIs</h3>
-                            <p class="support-hub-detail text-xs text-gray-500 leading-relaxed">Normativas y procesos para la modificación y actualización de KPIs.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Normativas y procesos para la modificación y actualización de KPIs.</p>
                         </button>
 
-                        <a href="https://docs.google.com/spreadsheets/d/1Id49v5fUc8CJbjIEgWByl2xQzLKYSOw0Fjc9aChxU7M/edit?usp=sharing" target="_blank" class="support-hub-card executive-card p-5 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#48AE64]">
-                            <div class="bg-green-50 w-10 h-10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#48AE64] transition-colors">
-                                <i data-lucide="users" class="w-5 h-5 text-[#48AE64] group-hover:text-white transition-colors"></i>
+                        <a href="https://docs.google.com/spreadsheets/d/1Id49v5fUc8CJbjIEgWByl2xQzLKYSOw0Fjc9aChxU7M/edit?usp=sharing" target="_blank" class="support-hub-card executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#48AE64]">
+                            <div class="bg-green-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#48AE64] transition-colors">
+                                <i data-lucide="users" class="w-6 h-6 text-[#48AE64] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#48AE64] transition-colors">Equipos EDC</h3>
-                            <p class="support-hub-detail text-xs text-gray-500 leading-relaxed">Directorio de contactos, roles y organigrama de los equipos.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Directorio de contactos, roles y organigrama de los equipos.</p>
                         </a>
 
-                        <button type="button" onclick="window.openGovernancePresentation()" class="support-hub-card text-left outline-none executive-card p-5 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
-                            <div class="bg-purple-50 w-10 h-10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#8B5CF6] transition-colors">
-                                <i data-lucide="network" class="w-5 h-5 text-[#8B5CF6] group-hover:text-white transition-colors"></i>
+                        <button type="button" onclick="window.openGovernancePresentation()" class="support-hub-card text-left outline-none executive-card p-6 hover:-translate-y-1 transition-all group flex flex-col h-full border-t-4 border-t-[#8B5CF6]">
+                            <div class="bg-purple-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#8B5CF6] transition-colors">
+                                <i data-lucide="network" class="w-6 h-6 text-[#8B5CF6] group-hover:text-white transition-colors"></i>
                             </div>
                             <h3 class="font-black text-sm uppercase tracking-wider text-[#004481] mb-2 leading-snug group-hover:text-[#8B5CF6] transition-colors">Modelo de Gobierno</h3>
-                            <p class="support-hub-detail text-xs text-gray-500 leading-relaxed">Comités, escalado de decisiones y flujos de comunicación.</p>
+                            <p class="support-hub-detail text-xs text-gray-500 mt-auto leading-relaxed">Comités, escalado de decisiones y flujos de comunicación.</p>
                         </button>
                     </div>
                 </div>

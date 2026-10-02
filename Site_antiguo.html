@@ -2189,7 +2189,7 @@
                                         <th><button type="button" id="catalogo-th-qtarget" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('qTarget')">Target <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                         <th><button type="button" id="catalogo-th-qreal" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('qReal')">Entrega <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                         <th><button type="button" id="catalogo-th-estado" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('estado')">Estado <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
-                                        <th><button type="button" id="catalogo-th-clasificacion" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('clasificacion')">Clasificación <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
+                                        <th><button type="button" id="catalogo-th-clasificacion" class="catalogo-th-filter-btn" onclick="window.toggleCatalogoColumnFilter && window.toggleCatalogoColumnFilter('clasificacion')">Uso de Robot 5 <i data-lucide="filter" class="w-3.5 h-3.5"></i><span class="catalogo-filter-dot"></span></button></th>
                                     </tr>
                                 </thead>
                                 <tbody id="catalogoTableBody">
@@ -12802,7 +12802,7 @@ window.EDCNps = (() => {
         qTarget: { label: 'Target' },
         qReal: { label: 'Entrega' },
         estado: { label: 'Estado' },
-        clasificacion: { label: 'Clasificación' }
+        clasificacion: { label: 'Uso de Robot 5' }
     };
 
     catalogoState.columnFilters = catalogoState.columnFilters || {};
@@ -13395,6 +13395,17 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         renderCatalogoCoverage(selectedRows);
         renderCatalogoKpisSummary(rows);
         updateCatalogoHeaderFilterStates();
+
+        // Si hay un filtro de columna abierto (p.ej. Uso de Robot 5), sus opciones
+        // dependen del trimestre de corte: si se cambia el trimestre sin cerrar el
+        // panel, hay que recalcularlas o se quedan desactualizadas.
+        if (catalogoState.activeColumnFilter) {
+            const openPanel = document.getElementById('catalogoColumnFilterPanel');
+            const scrollTop = openPanel?.querySelector('.catalogo-column-filter-options')?.scrollTop;
+            renderCatalogoColumnFilterPanel(catalogoState.activeColumnFilter, scrollTop);
+            positionCatalogoColumnFilterPanel(catalogoState.activeColumnFilter);
+        }
+
         if (window.lucide) window.lucide.createIcons();
     };
 

@@ -9,8 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
     <script>
-        tailwind.config={theme:{extend:{colors:{bbva:{NAVY:'#004481',BLUE:'#004481',EXECUTIVE:'#004481',LIGHT:'#5BBEFF',greyText:'#9ca3af',bgLight:'#f4f4f4',Green:'#48AE64',Orange:'#FB923C'}},fontFamily:{sans:['Benton Sans','system-ui','-apple-system','sans-serif']},borderRadius:{'bento':'1.5rem'},boxShadow:{'floating':'0 8px 30px -10px rgba(0,0,0,0.08)','inner-glow':'inset 0 2px 4px 0 rgba(0,0,0,0.03)','dot':'0 2px 4px rgba(0,0,0,0.1)'}}}};  
+        tailwind.config={theme:{extend:{colors:{bbva:{NAVY:'#004481',BLUE:'#004481',EXECUTIVE:'#004481',LIGHT:'#5BBEFF',greyText:'#9ca3af',bgLight:'#f4f4f4',Green:'#48AE64',Orange:'#FB923C'}},fontFamily:{sans:['Lato','system-ui','-apple-system','sans-serif']},borderRadius:{'bento':'1.5rem'},boxShadow:{'floating':'0 8px 30px -10px rgba(0,0,0,0.08)','inner-glow':'inset 0 2px 4px 0 rgba(0,0,0,0.03)','dot':'0 2px 4px rgba(0,0,0,0.1)'}}}};
    </script>
     <style>
         html {
@@ -24,7 +27,7 @@
             background-color: #F1F5F9;
             color: #1e293b;
             -webkit-font-smoothing: antialiased;
-            font-family: 'Benton Sans', sans-serif;
+            font-family: 'Lato', sans-serif;
             overflow-x: hidden;
             overflow-y: auto !important;
             height: auto !important;
@@ -172,7 +175,7 @@
 
         /* ESTILOS FTEs */
         #ftes-root * { box-sizing: border-box; }
-        #ftes-root { font-family: 'Benton Sans', system-ui, -apple-system, sans-serif; color:#043263; }
+        #ftes-root { font-family: 'Lato', system-ui, -apple-system, sans-serif; color:#043263; }
         #ftes-root .flag-btn { transition: all .2s ease; }
         #ftes-root .flag-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,68,129,.08); }
         #ftes-root canvas { max-width:100%; }
@@ -507,7 +510,7 @@
             margin-bottom: clamp(24px, 3vw, 42px);
         }
         .steerco-cover-kicker {
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Lato', sans-serif;
             font-size: clamp(34px, 3.8vw, 62px);
             font-weight: 800;
             line-height: .88;
@@ -523,7 +526,7 @@
             opacity: .85;
         }
         .steerco-cover-title {
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Lato', sans-serif;
             font-size: clamp(42px, 4.7vw, 74px);
             line-height: .9;
             font-weight: 900;
@@ -533,7 +536,7 @@
             white-space: nowrap;
         }
         .steerco-cover-country {
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Lato', sans-serif;
             font-size: clamp(34px, 4vw, 66px);
             line-height: 1.02;
             font-style: italic;
@@ -1578,7 +1581,7 @@
 .catalogo-kpis-page input,
 .catalogo-kpis-page select,
 .catalogo-kpis-page table {
-    font-family: 'Benton Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Lato', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .catalogo-kpis-detail-title {
@@ -1636,7 +1639,7 @@
         .site-nav-btn.is-active{color:#004481!important;font-weight:700!important}
 
         /* Layout KPIs: jerarquía clara, pesos más suaves y lectura más cómoda */
-        .catalogo-kpis-page{color:#284A70;font-family:'Benton Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+        .catalogo-kpis-page{color:#284A70;font-family:'Lato',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
         .catalogo-kpis-page .catalogo-kpis-badge{font-weight:700;letter-spacing:.08em}
         .catalogo-kpis-page .catalogo-kpis-hero-title{font-weight:800;letter-spacing:-.028em}
         .catalogo-kpis-page .catalogo-kpis-hero-subtitle{font-weight:500;font-size:.92rem;line-height:1.45}
@@ -2303,30 +2306,30 @@
                                     <!-- Triángulo Superior (Gobierno) -->
                                     <div class="absolute top-0 left-[160px] w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-3 transition-all duration-300 cursor-pointer z-10 group" onclick="window.showToast('Sección de Gobierno próximamente', 'info')">
                                         <div class="w-full h-full bg-[#001391] text-white flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[22px] mb-1 text-center tracking-wide leading-none font-serif group-hover:scale-105 transition-transform">Gobierno</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight font-serif text-blue-100">Ceremonias &<br>Metodología</span>
+                                            <span class="font-bold text-[22px] mb-1 text-center tracking-wide leading-none group-hover:scale-105 transition-transform">Gobierno</span>
+                                            <span class="text-[14px] text-center px-4 leading-tight text-blue-100">Ceremonias &<br>Metodología</span>
                                         </div>
                                     </div>
                                     
                                     <!-- Triángulo Inferior Izquierdo (Gestión) -->
                                     <div class="absolute top-[270px] left-0 w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-2 hover:-translate-x-2 transition-all duration-300 cursor-pointer z-10 group" onclick="const btn = document.querySelector('button[onclick*=\'m-inversion\']'); if(btn) window.switchMonthlyTab('m-inversion', btn);">
                                         <div class="w-full h-full bg-[#75B8FF] text-[#001391] flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide font-serif group-hover:scale-105 transition-transform">Gestión de la<br>inversión</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight font-serif mt-1 opacity-80">Presupuesto &<br>FTEs</span>
+                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide group-hover:scale-105 transition-transform">Gestión de la<br>inversión</span>
+                                            <span class="text-[14px] text-center px-4 leading-tight mt-1 opacity-80">Presupuesto &<br>FTEs</span>
                                         </div>
                                     </div>
 
                                     <!-- Triángulo Inferior Derecho (Impacto) -->
                                     <div class="absolute top-[270px] left-[320px] w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-2 hover:translate-x-2 transition-all duration-300 cursor-pointer z-10 group" onclick="const btn = document.querySelector('button[onclick*=\'m-cierre\']'); if(btn) window.switchMonthlyTab('m-cierre', btn);">
                                         <div class="w-full h-full bg-[#92E38A] text-[#001391] flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide font-serif group-hover:scale-105 transition-transform">Impacto y<br>entrega de valor</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight font-serif mt-1 opacity-80">KPIs & Entregables</span>
+                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide group-hover:scale-105 transition-transform">Impacto y<br>entrega de valor</span>
+                                            <span class="text-[14px] text-center px-4 leading-tight mt-1 opacity-80">KPIs & Entregables</span>
                                         </div>
                                     </div>
 
                                     <!-- Texto Invertido Central -->
                                     <div class="absolute top-[270px] left-[160px] w-[300px] h-[260px] flex flex-col items-center justify-start pt-8 z-0 pointer-events-none">
-                                        <span class="font-bold text-[26px] text-[#001391] text-center leading-snug tracking-wide font-serif">Oficina de<br>Transformación<br>EDC</span>
+                                        <span class="font-bold text-[26px] text-[#001391] text-center leading-snug tracking-wide">Oficina de<br>Transformación<br>EDC</span>
                                     </div>
                                     
                                 </div>
@@ -3197,7 +3200,7 @@
             return v.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + '%';
         };
         const fmtPosPct = v => v > 0 ? fmtPct(v) : '';
-        const chartLegendOpts = { display: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { weight: 'bold', size: 10, family: "'Benton Sans', sans-serif" }, color: '#475569', padding: 15 } };
+        const chartLegendOpts = { display: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { weight: 'bold', size: 10, family: "'Lato', sans-serif" }, color: '#475569', padding: 15 } };
         const chartLegendTopOpts = { ...chartLegendOpts, position: 'top', align: 'end', labels: {...chartLegendOpts.labels, size: 11, padding: 8} };
 
         const toggleTT = (id, show, html) => {
@@ -5233,10 +5236,10 @@ window.EDCNps = (() => {
                         let fontSize = Math.min(20, Math.max(11, Math.round((bottom - top) / 5)));
                         if (realText.length > 5) fontSize = Math.max(10, fontSize - 1);
                         draw.save();
-                        draw.font = `900 ${fontSize}px 'Benton Sans', sans-serif`;
+                        draw.font = `900 ${fontSize}px 'Lato', sans-serif`;
                         while (fontSize > 10 && draw.measureText(realText).width > maxTextWidth) {
                             fontSize -= 1;
-                            draw.font = `900 ${fontSize}px 'Benton Sans', sans-serif`;
+                            draw.font = `900 ${fontSize}px 'Lato', sans-serif`;
                         }
                         draw.textAlign = 'center';
                         draw.textBaseline = 'middle';
@@ -5439,10 +5442,10 @@ window.EDCNps = (() => {
                     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                     periods.forEach((_, index) => {
                         const position = x.getPixelForValue(index);
-                        ctx.font = "900 12px 'Benton Sans', sans-serif";
+                        ctx.font = "900 12px 'Lato', sans-serif";
                         ctx.fillStyle = '#004481';
                         ctx.fillText(index <= deliveryVisibleThrough ? featureProgressPct(series.delivered[periodIndexes[index]], series.total) : '—', position, firstLineY);
-                        ctx.font = "800 11px 'Benton Sans', sans-serif";
+                        ctx.font = "800 11px 'Lato', sans-serif";
                         ctx.fillStyle = '#82b8ff';
                         ctx.fillText(featureProgressPct(series.forecast[periodIndexes[index]], series.total), position, secondLineY);
                     });
@@ -5581,7 +5584,7 @@ window.EDCNps = (() => {
                         ctx.beginPath();ctx.moveTo(x+radius,y);ctx.lineTo(x+width-radius,y);ctx.quadraticCurveTo(x+width,y,x+width,y+radius);ctx.lineTo(x+width,y+height-radius);ctx.quadraticCurveTo(x+width,y+height,x+width-radius,y+height);ctx.lineTo(x+radius,y+height);ctx.quadraticCurveTo(x,y+height,x,y+height-radius);ctx.lineTo(x,y+radius);ctx.quadraticCurveTo(x,y,x+radius,y);ctx.closePath();
                     };
                     const draw=(items,side)=>{
-                        ctx.save();ctx.font="900 11px 'Benton Sans', sans-serif";ctx.textBaseline='middle';
+                        ctx.save();ctx.font="900 11px 'Lato', sans-serif";ctx.textBaseline='middle';
                         items.forEach(item=>{
                             const label=fmtPosPct(item.value),textWidth=ctx.measureText(label).width,boxWidth=textWidth+8,boxHeight=18;
                             const textX=side==='start'?Math.min(chartArea.right-textWidth-5,item.x+6):Math.max(chartArea.left+textWidth+5,item.x-6);
@@ -5598,7 +5601,7 @@ window.EDCNps = (() => {
                 id:'trafficEmptySeries',
                 afterDraw(chart){
                     if(chart.data.datasets.length) return;
-                    const {ctx,chartArea}=chart;ctx.save();ctx.fillStyle='#94a3b8';ctx.font="800 13px 'Benton Sans', sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Selecciona un país para ver su evolución', (chartArea.left+chartArea.right)/2, (chartArea.top+chartArea.bottom)/2);ctx.restore();
+                    const {ctx,chartArea}=chart;ctx.save();ctx.fillStyle='#94a3b8';ctx.font="800 13px 'Lato', sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Selecciona un país para ver su evolución', (chartArea.left+chartArea.right)/2, (chartArea.top+chartArea.bottom)/2);ctx.restore();
                 }
             };
             chartEvolInstance = new Chart(ctxE, {
@@ -5619,7 +5622,7 @@ window.EDCNps = (() => {
             if(geo==='ALL'){
                 chartSnapGroupedInstance = new Chart(ctxS, {
                     type:'bar', data:{labels:cArr,datasets:[{label:'Next Gen',data:ngD,backgroundColor:'#004481',borderRadius:4,barPercentage:0.95,categoryPercentage:0.95,datalabels:{align:'center',color:'white',font:{weight:'900',size:14},formatter:fmtPosPct}},{label:'Legacy',data:lgD,backgroundColor:'#e2e8f0',borderRadius:4,barPercentage:0.95,categoryPercentage:0.95,datalabels:{align:'center',color:'#64748b',font:{weight:'900',size:11},formatter:fmtPosPct}}]},
-                    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{left:35,right:20}},plugins:{legend:{display:true, position:'top', align:'end', labels:{usePointStyle:true, boxWidth:8, font:{weight:'bold', size:10, family:"'Benton Sans', sans-serif"}, color:'#475569', padding:8}}},scales:{x:{display:false,max:110,stacked:true},y:{display:true,stacked:true,grid:{display:false},border:{display:false},ticks:{display:false}}},
+                    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{left:35,right:20}},plugins:{legend:{display:true, position:'top', align:'end', labels:{usePointStyle:true, boxWidth:8, font:{weight:'bold', size:10, family:"'Lato', sans-serif"}, color:'#475569', padding:8}}},scales:{x:{display:false,max:110,stacked:true},y:{display:true,stacked:true,grid:{display:false},border:{display:false},ticks:{display:false}}},
                     onClick:(e,el)=>{if(el.length>0){const c=cArr[el[0].index];let lH=vQs.filter(k=>snapshotDataGlobal[k][c].nextgen!==null); window.openInCardOverlay('overlay-traffic', `Histórico (NG vs Legacy) - ${c} <img src="https://flagcdn.com/w20/${flagsMap[c]}.png" class="inline w-4 ml-1 rounded-sm shadow-sm">`); setTimeout(()=>{if(window.modalTrafChart)window.modalTrafChart.destroy();window.modalTrafChart=new Chart(document.getElementById('canvas-overlay-traffic'),{type:'line',data:{labels:lH,datasets:[{label:'Next Gen',data:lH.map(k=>snapshotDataGlobal[k][c].nextgen),borderColor:'#004481',backgroundColor:'#004481',borderWidth:3,pointRadius:5,datalabels:{align:'top',color:'#004481',font:{weight:'black',size:12},formatter:v=>fmtPct(v)}},{label:'Legacy',data:lH.map(k=>snapshotDataGlobal[k][c].legacy),borderColor:'#94a3b8',backgroundColor:'#94a3b8',borderWidth:3,borderDash:[4,4],pointRadius:5,datalabels:{align:'bottom',color:'#64748b',font:{weight:'bold',size:11},formatter:v=>fmtPct(v)}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...chartLegendOpts, position:'top', align:'end', labels:{...chartLegendOpts.labels, padding:8}}},scales:{y:{max:100,display:false},x:{grid:{display:false}}}}});},300);}}
                     }, plugins:[{id:'yAxisFlags',afterDraw:(ch)=>{const cx=ch.ctx, yA=ch.scales.y; ch.data.labels.forEach((l,i)=>{const im=loadedFlags[l];if(im&&im.complete){const y=yA.getPixelForTick(i),x=ch.chartArea.left-28; cx.drawImage(im,x,y-8,22,15); cx.strokeStyle='#e2e8f0'; cx.lineWidth=1; cx.strokeRect(x,y-8,22,15);}});}}]
                 });
@@ -6361,7 +6364,7 @@ window.EDCNps = (() => {
     html, body {
       width: 100%;
       min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       background: var(--bbva-bg);
       color: var(--bbva-text);
       overflow-x: hidden;
@@ -8426,30 +8429,30 @@ window.EDCNps = (() => {
       font-weight: 700;
     }
     .ftes-kpi-main-label {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       font-weight: 900;
       fill: var(--bbva-dark);
       letter-spacing: 0.2px;
     }
     .ftes-kpi-unit-label {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       font-style: normal;
       font-weight: 800;
       fill: var(--bbva-dark);
       letter-spacing: 0;
     }
     .ftes-kpi-legend-text {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       font-size: 13px;
       font-weight: 800;
     }
     .ftes-kpi-value-primary {
-      font-family: var(--font-heading);
+      font-family: 'Lato', sans-serif;
       font-size: 20px;
       font-weight: 900;
     }
     .ftes-kpi-value-target {
-      font-family: var(--font-heading);
+      font-family: 'Lato', sans-serif;
       font-size: 15px;
       font-weight: 800;
       fill: #BDBDBD;
@@ -8486,7 +8489,7 @@ window.EDCNps = (() => {
       opacity: 1;
     }
     .ftes-kpi-country-tooltip .tooltip-country {
-      font-family: var(--font-heading);
+      font-family: 'Lato', sans-serif;
       font-weight: 900;
       font-size: 18px;
       margin-bottom: 8px;
@@ -8593,14 +8596,14 @@ window.EDCNps = (() => {
     }
 
     .ftes-kpi-quarter-axis-label {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       font-size: 18px;
       font-weight: 900;
       fill: var(--bbva-dark);
     }
 
     .ftes-kpi-coming-soon {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Lato', sans-serif;
       font-size: 11px;
       font-weight: 900;
       fill: #8A98B3;
@@ -8973,7 +8976,7 @@ window.EDCNps = (() => {
         ctx.lineCap = 'round';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.font = '900 13px Arial, Helvetica, sans-serif';
+        ctx.font = "900 13px 'Lato', sans-serif";
 
         values.forEach((value, index) => {
           const refValue = Number(value || 0);
@@ -9020,15 +9023,15 @@ window.EDCNps = (() => {
         ctx.textBaseline = 'middle';
 
         ctx.fillStyle = '#8A98B3';
-        ctx.font = '900 12px Arial, Helvetica, sans-serif';
+        ctx.font = "900 12px 'Lato', sans-serif";
         ctx.fillText(opts.topText || 'TOTAL', centerX, centerY - 22);
 
         ctx.fillStyle = '#004481';
-        ctx.font = '900 35px Arial, Helvetica, sans-serif';
+        ctx.font = "900 35px 'Lato', sans-serif";
         ctx.fillText(opts.mainText || '', centerX, centerY + 2);
 
         ctx.fillStyle = '#8A98B3';
-        ctx.font = '900 12px Arial, Helvetica, sans-serif';
+        ctx.font = "900 12px 'Lato', sans-serif";
         ctx.fillText(opts.bottomText || '2026', centerX, centerY + 27);
         ctx.restore();
       }

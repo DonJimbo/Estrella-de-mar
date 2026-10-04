@@ -3221,8 +3221,9 @@
         };
 
         // Generador del Icono Global
-        window.getGlobalIconHtml = function(customClass = "w-5 h-5") {
-            return `<div class="${customClass} relative inline-block shrink-0 rounded-full" title="Global"><div class="absolute inset-[15%] rounded-full border-[1.5px] border-[#004481]"></div><img src="https://flagcdn.com/w40/es.png" class="absolute top-0 left-1/2 -translate-x-1/2 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/co.png" class="absolute top-[22%] right-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/pe.png" class="absolute bottom-0 right-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/ar.png" class="absolute bottom-0 left-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/mx.png" class="absolute top-[22%] left-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"></div>`;
+        window.getGlobalIconHtml = function(customClass = "w-5 h-5", options = {}) {
+            const ringHtml = options.ring === false ? '' : '<div class="absolute inset-[15%] rounded-full border-[1.5px] border-[#004481]"></div>';
+            return `<div class="${customClass} relative inline-block shrink-0 rounded-full" title="Global">${ringHtml}<img src="https://flagcdn.com/w40/es.png" class="absolute top-0 left-1/2 -translate-x-1/2 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/co.png" class="absolute top-[22%] right-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/pe.png" class="absolute bottom-0 right-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/ar.png" class="absolute bottom-0 left-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/mx.png" class="absolute top-[22%] left-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"></div>`;
         };
 
         // Generador del icono Holding: no tiene bandera real, así que se usa un
@@ -5790,7 +5791,7 @@ window.EDCNps = (() => {
         function nextGenCountryLabel(country) { return country === 'TOTAL' ? 'Global' : country; }
         function nextGenCountryIcon(country, classes = 'w-5 h-5') {
             return country === 'TOTAL'
-                ? window.getGlobalIconHtml(classes)
+                ? window.getGlobalIconHtml(classes, { ring: false })
                 : `<span class="nextgen-round-flag ${classes}"><img src="https://flagcdn.com/w80/${flagsMap[country]}.png" alt=""></span>`;
         }
 

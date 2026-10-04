@@ -3220,10 +3220,24 @@
             tt.style.left = x + 'px'; tt.style.top = y + 'px';
         };
 
-        // Generador del Icono Global
+        // Generador del Icono Global: mosaico de las 5 banderas del programa.
+        // Usa estilos inline (no clases Tailwind con valores arbitrarios como w-[38%])
+        // porque, inyectado dinámicamente vía innerHTML, Tailwind no siempre las aplica
+        // a tiempo y el icono se ve como banderas sueltas sin redondear ni posicionar.
         window.getGlobalIconHtml = function(customClass = "w-5 h-5", options = {}) {
-            const ringHtml = options.ring === false ? '' : '<div class="absolute inset-[15%] rounded-full border-[1.5px] border-[#004481]"></div>';
-            return `<div class="${customClass} relative inline-block shrink-0 rounded-full" title="Global">${ringHtml}<img src="https://flagcdn.com/w40/es.png" class="absolute top-0 left-1/2 -translate-x-1/2 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/co.png" class="absolute top-[22%] right-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/pe.png" class="absolute bottom-0 right-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/ar.png" class="absolute bottom-0 left-[10%] w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"><img src="https://flagcdn.com/w40/mx.png" class="absolute top-[22%] left-0 w-[38%] h-[38%] rounded-full object-cover shadow-sm border border-white z-10"></div>`;
+            const ring = options.ring !== false;
+            const ringHtml = ring ? '<div style="position:absolute;inset:15%;border-radius:50%;border:1.5px solid #004481"></div>' : '';
+            const layout = [
+                ['es', 'top:0;left:50%;transform:translateX(-50%)'],
+                ['co', 'top:22%;right:0'],
+                ['pe', 'bottom:0;right:10%'],
+                ['ar', 'bottom:0;left:10%'],
+                ['mx', 'top:22%;left:0']
+            ];
+            const dots = layout.map(([code, pos]) =>
+                `<img src="https://flagcdn.com/w40/${code}.png" style="position:absolute;${pos};width:38%;height:38%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px #fff;z-index:1">`
+            ).join('');
+            return `<div class="${customClass}" style="position:relative;display:inline-block;flex-shrink:0;border-radius:50%" title="Global">${ringHtml}${dots}</div>`;
         };
 
         // Generador del icono Holding: no tiene bandera real, así que se usa un

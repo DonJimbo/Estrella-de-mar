@@ -6052,13 +6052,21 @@ window.EDCNps = (() => {
         function ngRenderBloque(countries, allBlocks) {
             if (!allBlocks.length) return ngPanel('Uso de NextGen por bloque funcional', '', '<div class="ng-empty">Ningún bloque coincide con la búsqueda.</div>');
 
+            // Global no es un país más: es el agregado de los demás. No debe
+            // entrar en la media del % total (eso lo infla) ni aparecer como
+            // fila en el desplegable (ya se ve, más grande, en el % total).
+            const realCountries = countries.filter(country => country !== 'TOTAL');
+
             const rows = allBlocks.map(block => {
-                const entries = countries.map(country => ({ country, row: getNextGenRecord(country, block.key) })).filter(e => e.row);
+                const entries = realCountries.map(country => ({ country, row: getNextGenRecord(country, block.key) })).filter(e => e.row);
+                const totalRow = getNextGenRecord('TOTAL', block.key);
                 const values = entries.map(e => Number(e.row.nextGen)).filter(v => Number.isFinite(v));
-                const avgNextGen = values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : null;
+                const globalNextGen = totalRow && Number.isFinite(Number(totalRow.nextGen))
+                    ? Number(totalRow.nextGen)
+                    : (values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : null);
                 const open = ngState.open.has('bloque:' + block.key);
 
-                const present = countries.map(country => {
+                const present = realCountries.map(country => {
                     const has = !!getNextGenRecord(country, block.key);
                     return `<span style="display:inline-flex;opacity:${has ? 1 : .32};filter:${has ? 'none' : 'grayscale(1)'}">${nextGenCountryIcon(country, 'w-6 h-6')}</span>`;
                 }).join('');
@@ -6081,8 +6089,8 @@ window.EDCNps = (() => {
                     `<span class="ng-row-label">${nextGenEscape(block.label)}</span>` +
                     `<span class="ng-row-note">presente en ${entries.length} países</span></span>` +
                     `<span style="display:flex;gap:4px;margin-left:6px">${present}</span></span>` +
-                    ngBar(avgNextGen) +
-                    `<span class="ng-row-pct">${nextGenPercent(avgNextGen)}</span>` +
+                    ngBar(globalNextGen) +
+                    `<span class="ng-row-pct">${nextGenPercent(globalNextGen)}</span>` +
                     `</button><div class="ng-drawer">${drawer}</div></div>`;
             }).join('');
 

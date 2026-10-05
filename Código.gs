@@ -1119,7 +1119,63 @@ function gthPercentOrNull_(value) {
    Funcionalities" y BU = TOTAL/SPA/MEX/PER/COL/ARG), se toma el último
    valor mensual informado (de derecha a izquierda, ignorando "-" y
    celdas vacías).
+   El mes a usar no es "el último informado": es el mismo mes al que está
+   fechado 17_NEXTGEN_SITES (columna Fecha, p.ej. "sept 26"), para que el
+   Avance Total de país y el de bloque funcional hablen del mismo corte.
    ========================================================= */
+const GTH_MONTH_NUMBER_ = {
+  ENE: 1, ENERO: 1, JAN: 1, JANUARY: 1,
+  FEB: 2, FEBRERO: 2, FEBRUARY: 2,
+  MAR: 3, MARZO: 3, MARCH: 3,
+  ABR: 4, ABRIL: 4, APR: 4, APRIL: 4,
+  MAY: 5, MAYO: 5,
+  JUN: 6, JUNIO: 6, JUNE: 6,
+  JUL: 7, JULIO: 7, JULY: 7,
+  AGO: 8, AGOSTO: 8, AUG: 8, AUGUST: 8,
+  SEP: 9, SEPT: 9, SEPTIEMBRE: 9, SEPTEMBER: 9,
+  OCT: 10, OCTUBRE: 10, OCTOBER: 10,
+  NOV: 11, NOVIEMBRE: 11, NOVEMBER: 11,
+  DIC: 12, DICIEMBRE: 12, DEC: 12, DECEMBER: 12
+};
+
+/** "sept 26", "Sep 2026", "SEPTIEMBRE DE 2026" -> {month:9, year:2026}. Null si no se reconoce. */
+function gthParseMonthYear_(value) {
+  const text = gthNormalizeLabel_(value).replace(/\./g, '').replace(/\bDE\b/g, ' ').replace(/\s+/g, ' ').trim();
+  const match = text.match(/^([A-Z]+)\s*(\d{2,4})$/);
+  if (!match) return null;
+  const monthNumber = GTH_MONTH_NUMBER_[match[1]];
+  if (!monthNumber) return null;
+  let year = parseInt(match[2], 10);
+  if (year < 100) year += 2000;
+  return { month: monthNumber, year: year };
+}
+
+/** Mes/año al que está fechada la pestaña 17_NEXTGEN_SITES (columna Fecha). */
+function getNextGenSitesReferenceMonth_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NEXTGEN_SITES);
+  if (!sheet) return null;
+
+  const values = sheet.getDataRange().getValues();
+  const norm = gthNormalizeLabel_;
+
+  let headerRowIndex = -1, colFecha = -1;
+  for (let r = 0; r < Math.min(values.length, 10); r++) {
+    const row = values[r].map(norm);
+    const iFecha = row.indexOf('FECHA');
+    if (iFecha >= 0) { headerRowIndex = r; colFecha = iFecha; break; }
+  }
+  if (headerRowIndex < 0) return null;
+
+  for (let r = headerRowIndex + 1; r < values.length; r++) {
+    const raw = values[r][colFecha];
+    if (raw === '' || raw === null || raw === undefined) continue;
+    const parsed = gthParseMonthYear_(raw);
+    if (parsed) return parsed;
+  }
+  return null;
+}
+
 function getFeatureTransformedTotalsByCountry_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_RAW_KPIS);
@@ -1146,18 +1202,24 @@ function getFeatureTransformedTotalsByCountry_() {
   }
 
   // Columnas de datos mensuales: todas las que, tras Metric/BU, tienen una
-  // cabecera con pinta de mes ("MAR 2026", "SEP 2026"...). Se toman solo
-  // estas (no "hasta el final de la fila") para no pisar el último valor
-  // real con alguna columna de Target/objetivo que pueda venir después.
-  const headerRow = values[headerRowIndex].map(norm);
-  const monthPattern = /^[A-Z]{3,9}\.?\s*\d{4}$/;
-  const monthCols = [];
+  // cabecera con pinta de mes ("MAR 2026", "SEP 2026"...), en orden.
+  const headerRow = values[headerRowIndex];
+  const monthCols = []; // [{col, month, year}]
   for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) {
-    if (monthPattern.test(headerRow[c])) monthCols.push(c);
+    const parsed = gthParseMonthYear_(headerRow[c]);
+    if (parsed) monthCols.push({ col: c, month: parsed.month, year: parsed.year });
   }
-  if (!monthCols.length) {
-    for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) monthCols.push(c);
-  }
+
+  const targetMonth = getNextGenSitesReferenceMonth_();
+  const targetColIndex = targetMonth
+    ? monthCols.findIndex(m => m.month === targetMonth.month && m.year === targetMonth.year)
+    : -1;
+  // Columnas candidatas a usar, de la más adecuada a la menos: el mes de
+  // 17_NEXTGEN_SITES primero y, si falta, las anteriores a él hacia atrás
+  // (nunca columnas posteriores, que podrían ser proyecciones/target).
+  const candidateCols = targetColIndex >= 0
+    ? monthCols.slice(0, targetColIndex + 1).reverse().map(m => m.col)
+    : monthCols.slice().reverse().map(m => m.col);
 
   const countryMap = { 'TOTAL': 'TOTAL', 'SPA': 'España', 'MEX': 'México', 'PER': 'Perú', 'COL': 'Colombia', 'ARG': 'Argentina' };
 
@@ -1171,15 +1233,15 @@ function getFeatureTransformedTotalsByCountry_() {
     const country = countryMap[norm(row[colBU])];
     if (!country) continue;
 
-    let lastValue = null;
-    for (let i = monthCols.length - 1; i >= 0; i--) {
-      const raw = row[monthCols[i]];
+    let value = null;
+    for (let i = 0; i < candidateCols.length; i++) {
+      const raw = row[candidateCols[i]];
       if (raw === '' || raw === null || raw === undefined || raw === '-') continue;
       if (typeof raw !== 'number' && isNaN(Number(String(raw).replace(',', '.').replace('%', '')))) continue;
-      lastValue = Math.round(toPercentDecimal_(raw) * 10000) / 100;
+      value = Math.round(toPercentDecimal_(raw) * 10000) / 100;
       break;
     }
-    result[country] = lastValue;
+    result[country] = value;
   }
 
   return result;

@@ -1145,15 +1145,19 @@ function getFeatureTransformedTotalsByCountry_() {
     throw new Error('No se pudo localizar la cabecera (Metric / BU) en ' + SHEET_RAW_KPIS);
   }
 
-  // Primera columna de datos mensuales: la primera, tras Metric/BU, cuya
-  // cabecera parece un mes ("MAR 2026", "SEP 2026"...).
+  // Columnas de datos mensuales: todas las que, tras Metric/BU, tienen una
+  // cabecera con pinta de mes ("MAR 2026", "SEP 2026"...). Se toman solo
+  // estas (no "hasta el final de la fila") para no pisar el último valor
+  // real con alguna columna de Target/objetivo que pueda venir después.
   const headerRow = values[headerRowIndex].map(norm);
   const monthPattern = /^[A-Z]{3,9}\.?\s*\d{4}$/;
-  let dataStartCol = -1;
+  const monthCols = [];
   for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) {
-    if (monthPattern.test(headerRow[c])) { dataStartCol = c; break; }
+    if (monthPattern.test(headerRow[c])) monthCols.push(c);
   }
-  if (dataStartCol < 0) dataStartCol = Math.max(colMetric, colBU) + 1;
+  if (!monthCols.length) {
+    for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) monthCols.push(c);
+  }
 
   const countryMap = { 'TOTAL': 'TOTAL', 'SPA': 'España', 'MEX': 'México', 'PER': 'Perú', 'COL': 'Colombia', 'ARG': 'Argentina' };
 
@@ -1168,8 +1172,8 @@ function getFeatureTransformedTotalsByCountry_() {
     if (!country) continue;
 
     let lastValue = null;
-    for (let c = row.length - 1; c >= dataStartCol; c--) {
-      const raw = row[c];
+    for (let i = monthCols.length - 1; i >= 0; i--) {
+      const raw = row[monthCols[i]];
       if (raw === '' || raw === null || raw === undefined || raw === '-') continue;
       if (typeof raw !== 'number' && isNaN(Number(String(raw).replace(',', '.').replace('%', '')))) continue;
       lastValue = Math.round(toPercentDecimal_(raw) * 10000) / 100;

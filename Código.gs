@@ -1184,8 +1184,14 @@ const GTH_MONTH_NUMBER_ = {
   DIC: 12, DICIEMBRE: 12, DEC: 12, DECEMBER: 12
 };
 
-/** "sept 26", "Sep 2026", "SEPTIEMBRE DE 2026" -> {month:9, year:2026}. Null si no se reconoce. */
+/** "sept 26", "Sep 2026", "SEPTIEMBRE DE 2026" o una fecha real de la hoja
+ *  (Google Sheets guarda "jun 26" con formato de fecha, no como texto) ->
+ *  {month:9, year:2026}. Null si no se reconoce. */
 function gthParseMonthYear_(value) {
+  if (value instanceof Date) {
+    return { month: value.getMonth() + 1, year: value.getFullYear() };
+  }
+
   const text = gthNormalizeLabel_(value).replace(/\./g, '').replace(/\bDE\b/g, ' ').replace(/\s+/g, ' ').trim();
   const match = text.match(/^([A-Z]+)\s*(\d{2,4})$/);
   if (!match) return null;

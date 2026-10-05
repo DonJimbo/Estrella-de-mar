@@ -1026,12 +1026,12 @@ function getCatalogoKpisData() {
 /* =========================================================
    USO DE NEXTGEN POR BLOQUE FUNCIONAL
    Pestaña: 17_NEXTGEN_SITES
-   Columnas: País | Bloque Funcional | Tipo (Legacy/Next gen) | luego, por
-   cada corte temporal que se vaya añadiendo, un grupo repetido de
-   Fecha | Avance Total | Uso de NextGen (hoy hay dos: uno fechado
-   "jun 26" y otro "sept 26"). Cada país+bloque tiene dos filas (Legacy y
-   Next gen); se conserva solo la fila "Next gen". El resultado se agrupa
-   por trimestre ("26Q2", "26Q3"...), deducido de la fecha de cada grupo,
+   Columnas: País | Bloque Funcional | Tipo (Legacy/Next gen) | Fecha |
+   Avance Total | Uso de NextGen. Todas las fechas están unificadas en
+   esa única columna Fecha: cada país+bloque tiene varias filas, una por
+   cada corte temporal (hoy jun 26 y sept 26) × Tipo (Legacy/Next gen); se
+   conserva solo la fila "Next gen" de cada corte. El resultado se agrupa
+   por trimestre ("26Q2", "26Q3"...), deducido de la fecha de cada fila,
    para que el site pueda mostrar el corte que corresponda al "Corte de
    avance" seleccionado. Los países se repiten uno debajo de otro en el
    orden habitual: España, México, Perú, Colombia, Argentina y Global
@@ -1048,27 +1048,25 @@ function getNextGenSitesData() {
   const values = sheet.getDataRange().getValues();
   const norm = gthNormalizeLabel_;
 
-  let headerRowIndex = -1, colPais = -1, colBloque = -1, colTipo = -1;
+  let headerRowIndex = -1, colPais = -1, colBloque = -1, colTipo = -1, colFecha = -1, colAvance = -1, colUso = -1;
   for (let r = 0; r < Math.min(values.length, 10); r++) {
     const row = values[r].map(norm);
     const iPais = row.findIndex(c => c === 'PAIS' || c.indexOf('PAIS') === 0);
     const iBloque = row.findIndex(c => c.indexOf('BLOQUE') >= 0);
     const iTipo = row.findIndex(c => c === 'TIPO');
     const iFecha = row.indexOf('FECHA');
-    if (iPais >= 0 && iBloque >= 0 && iTipo >= 0 && iFecha >= 0) {
+    const iAvance = row.findIndex(c => c.indexOf('AVANCE') >= 0);
+    const iUso = row.findIndex(c => c.indexOf('NEXTGEN') >= 0 || c.indexOf('NEXT GEN') >= 0);
+    if (iPais >= 0 && iBloque >= 0 && iTipo >= 0 && iFecha >= 0 && iAvance >= 0 && iUso >= 0) {
       headerRowIndex = r;
       colPais = iPais; colBloque = iBloque; colTipo = iTipo;
+      colFecha = iFecha; colAvance = iAvance; colUso = iUso;
       break;
     }
   }
 
   if (headerRowIndex < 0) {
-    throw new Error('No se pudo localizar la cabecera (País / Bloque Funcional / Tipo / Fecha) en ' + SHEET_NEXTGEN_SITES);
-  }
-
-  const groups = gthFindNextGenSitesGroups_(values[headerRowIndex].map(norm), Math.max(colPais, colBloque, colTipo));
-  if (!groups.length) {
-    throw new Error('No se pudo localizar ninguna columna de Fecha / Avance Total / Uso de NextGen en ' + SHEET_NEXTGEN_SITES);
+    throw new Error('No se pudo localizar la cabecera (País / Bloque Funcional / Tipo / Fecha / Avance Total / Uso de NextGen) en ' + SHEET_NEXTGEN_SITES);
   }
 
   const countryMap = {
@@ -1094,41 +1092,20 @@ function getNextGenSitesData() {
     const bloque = String(bloqueRaw || '').trim();
     if (!bloque) continue;
 
-    groups.forEach(group => {
-      const parsed = gthParseMonthYear_(row[group.colFecha]);
-      if (!parsed) return;
-      const quarterLabel = gthMonthToQuarterLabel_(parsed);
-      if (!result[quarterLabel]) result[quarterLabel] = {};
-      if (!result[quarterLabel][country]) result[quarterLabel][country] = [];
-      result[quarterLabel][country].push({
-        bloque: bloque,
-        avance: gthPercentOrNull_(row[group.colAvance]),
-        nextGen: gthPercentOrNull_(row[group.colUso])
-      });
+    const parsed = gthParseMonthYear_(row[colFecha]);
+    if (!parsed) continue;
+    const quarterLabel = gthMonthToQuarterLabel_(parsed);
+
+    if (!result[quarterLabel]) result[quarterLabel] = {};
+    if (!result[quarterLabel][country]) result[quarterLabel][country] = [];
+    result[quarterLabel][country].push({
+      bloque: bloque,
+      avance: gthPercentOrNull_(row[colAvance]),
+      nextGen: gthPercentOrNull_(row[colUso])
     });
   }
 
   return result;
-}
-
-/**
- * Localiza, a partir de una fila de cabecera ya normalizada, todos los
- * grupos repetidos "Fecha" / columna con "Avance" / columna con "NextGen"
- * que aparezcan después de metaCol. Cada "Fecha" abre un grupo nuevo.
- */
-function gthFindNextGenSitesGroups_(headerRow, metaCol) {
-  const groups = [];
-  for (let c = metaCol + 1; c < headerRow.length; c++) {
-    if (headerRow[c] !== 'FECHA') continue;
-    let colAvance = -1, colUso = -1;
-    for (let c2 = c + 1; c2 < headerRow.length; c2++) {
-      if (headerRow[c2] === 'FECHA') break; // empieza el siguiente grupo
-      if (colAvance < 0 && headerRow[c2].indexOf('AVANCE') >= 0) { colAvance = c2; continue; }
-      if (colAvance >= 0 && colUso < 0 && (headerRow[c2].indexOf('NEXTGEN') >= 0 || headerRow[c2].indexOf('NEXT GEN') >= 0)) { colUso = c2; break; }
-    }
-    if (colAvance >= 0 && colUso >= 0) groups.push({ colFecha: c, colAvance: colAvance, colUso: colUso });
-  }
-  return groups;
 }
 
 function gthNormalizeLabel_(value) {
@@ -1202,9 +1179,9 @@ function gthParseMonthYear_(value) {
   return { month: monthNumber, year: year };
 }
 
-/** Trimestres ("26Q2", "26Q3"...) para los que 17_NEXTGEN_SITES tiene un
- *  grupo Fecha/Avance Total/Uso de NextGen propio (uno por cada fecha de
- *  corte que se haya añadido en esa pestaña). */
+/** Trimestres ("26Q2", "26Q3"...) presentes en la columna Fecha de
+ *  17_NEXTGEN_SITES (uno por cada fecha de corte distinta que tenga esa
+ *  pestaña, ya estén todas en una sola columna o repartidas). */
 function getNextGenSitesQuarterLabels_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_NEXTGEN_SITES);
@@ -1213,31 +1190,20 @@ function getNextGenSitesQuarterLabels_() {
   const values = sheet.getDataRange().getValues();
   const norm = gthNormalizeLabel_;
 
-  let headerRowIndex = -1, colPais = -1, colBloque = -1, colTipo = -1;
+  let headerRowIndex = -1, colFecha = -1;
   for (let r = 0; r < Math.min(values.length, 10); r++) {
     const row = values[r].map(norm);
-    const iPais = row.findIndex(c => c === 'PAIS' || c.indexOf('PAIS') === 0);
-    const iBloque = row.findIndex(c => c.indexOf('BLOQUE') >= 0);
-    const iTipo = row.findIndex(c => c === 'TIPO');
     const iFecha = row.indexOf('FECHA');
-    if (iPais >= 0 && iBloque >= 0 && iTipo >= 0 && iFecha >= 0) {
-      headerRowIndex = r; colPais = iPais; colBloque = iBloque; colTipo = iTipo;
-      break;
-    }
+    if (iFecha >= 0) { headerRowIndex = r; colFecha = iFecha; break; }
   }
   if (headerRowIndex < 0) return [];
 
-  const groups = gthFindNextGenSitesGroups_(values[headerRowIndex].map(norm), Math.max(colPais, colBloque, colTipo));
-  const labels = [];
-  groups.forEach(group => {
-    for (let r = headerRowIndex + 1; r < values.length; r++) {
-      const raw = values[r][group.colFecha];
-      if (raw === '' || raw === null || raw === undefined) continue;
-      const parsed = gthParseMonthYear_(raw);
-      if (parsed) { labels.push(gthMonthToQuarterLabel_(parsed)); break; }
-    }
-  });
-  return labels;
+  const labelSet = {};
+  for (let r = headerRowIndex + 1; r < values.length; r++) {
+    const parsed = gthParseMonthYear_(values[r][colFecha]);
+    if (parsed) labelSet[gthMonthToQuarterLabel_(parsed)] = true;
+  }
+  return Object.keys(labelSet);
 }
 
 function getFeatureTransformedTotalsByCountry_() {

@@ -1349,6 +1349,198 @@ function getTrafficToNextGenTotalsByCountry_() {
   return result;
 }
 
+/* =========================================================
+   DIGITAL PENETRATION 3X3
+   Pestañas: 19_DIGITALPEN_SITES (cajitas con cifra + variación YoY, a
+   cierre del último mes informado) y 20_DIGITALPEN_HISTORICO_RAW
+   (histórico mensual, para la variación YoY por trimestre que acompaña
+   a la gráfica "Penetración Digital 3x3 por País").
+   ========================================================= */
+const SHEET_DIGITALPEN_SITES = '19_DIGITALPEN_SITES';
+const SHEET_DIGITALPEN_HISTORICO = '20_DIGITALPEN_HISTORICO_RAW';
+
+// Mapa combinado para los dos formatos de "país" que usan estas dos
+// pestañas: 19_DIGITALPEN_SITES ya trae una fila "Global" consolidada,
+// mientras que 20_DIGITALPEN_HISTORICO_RAW solo trae el agregado sin
+// Turquía ni Uruguay bajo "Grupo EXTK y EXUR" (los únicos dos valores que
+// no se usan en este site). Ambos mapean a 'TOTAL', como el resto de la app.
+const GTH_DIGITALPEN_COUNTRY_MAP_ = {
+  'ESPANA': 'España', 'SPAIN': 'España',
+  'MEXICO': 'México',
+  'PERU': 'Perú',
+  'COLOMBIA': 'Colombia',
+  'ARGENTINA': 'Argentina',
+  'GLOBAL': 'TOTAL',
+  'GRUPO EXTK Y EXUR': 'TOTAL'
+};
+
+/** Número con coma decimal ("290", "-28", "2,5") sin la conversión a
+ *  porcentaje de toPercentDecimal_ (que divide por 100 solo si es > 1 y
+ *  por tanto rompe con negativos): aquí el valor ya es el que hay que
+ *  mostrar tal cual, points de YoY incluidos. */
+function gthParseSignedNumber_(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number') return value;
+  let text = String(value).trim();
+  if (!text || text === '-' || /^#/.test(text)) return null;
+  text = text.replace(/\s/g, '');
+  if (text.includes(',') && text.includes('.')) {
+    if (text.lastIndexOf(',') > text.lastIndexOf('.')) text = text.replace(/\./g, '').replace(',', '.');
+    else text = text.replace(/,/g, '');
+  } else if (text.includes(',')) {
+    text = text.replace(',', '.');
+  }
+  const number = Number(text);
+  return isNaN(number) ? null : number;
+}
+
+/** Primer valor numérico informado entre las columnas candidatas, usando
+ *  gthParseSignedNumber_ en vez de la conversión a porcentaje (para series
+ *  como "DP 3x3 YoY (pb)", que son puntos y pueden ser negativas). */
+function gthFirstReportedNumber_(row, candidateCols) {
+  for (let i = 0; i < candidateCols.length; i++) {
+    const value = gthParseSignedNumber_(row[candidateCols[i]]);
+    if (value === null) continue;
+    return Math.round(value * 100) / 100;
+  }
+  return null;
+}
+
+/** Cajitas de Digital Penetration 3x3: por país, un objeto por segmento
+ *  (Total / Commercial (CIB NO incluido) / SMEs...) con la cifra y la
+ *  variación YoY de cada fila (Porcentaje, Digital Clients, Total
+ *  Clients...). Los "Digital/Total Clients" se devuelven tal cual están
+ *  en la hoja (p.ej. "338,8k") porque son solo para mostrar, no para
+ *  calcular con ellos. */
+function getDigitalPenSitesData_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_DIGITALPEN_SITES);
+  if (!sheet) throw new Error('No existe la pestaña: ' + SHEET_DIGITALPEN_SITES);
+
+  const values = sheet.getDataRange().getValues();
+  const norm = gthNormalizeLabel_;
+
+  let headerRowIndex = -1, colPais = -1, colMes = -1, colSegmento = -1, colAgrupacion = -1, colCifra = -1, colVariacion = -1;
+  for (let r = 0; r < Math.min(values.length, 10); r++) {
+    const row = values[r].map(norm);
+    const iPais = row.indexOf('PAIS');
+    const iMes = row.indexOf('MES');
+    const iSeg = row.indexOf('CLIENTES');
+    const iAgr = row.indexOf('AGRUPACION');
+    const iCifra = row.indexOf('CIFRA');
+    const iVar = row.findIndex(c => c.indexOf('VARIACION') >= 0);
+    if (iPais >= 0 && iMes >= 0 && iSeg >= 0 && iAgr >= 0 && iCifra >= 0 && iVar >= 0) {
+      headerRowIndex = r; colPais = iPais; colMes = iMes; colSegmento = iSeg; colAgrupacion = iAgr; colCifra = iCifra; colVariacion = iVar;
+      break;
+    }
+  }
+  if (headerRowIndex < 0) {
+    throw new Error('No se pudo localizar la cabecera (País / Mes / Clientes / Agrupación / Cifra / Variación) en ' + SHEET_DIGITALPEN_SITES);
+  }
+
+  const result = {};
+  for (let r = headerRowIndex + 1; r < values.length; r++) {
+    const row = values[r];
+    const country = GTH_DIGITALPEN_COUNTRY_MAP_[norm(row[colPais])];
+    if (!country) continue;
+    const segmento = String(row[colSegmento] || '').trim();
+    if (!segmento) continue;
+    const agrupacion = norm(row[colAgrupacion]);
+
+    if (!result[country]) result[country] = { mes: String(row[colMes] || '').trim(), segments: {} };
+    if (!result[country].segments[segmento]) result[country].segments[segmento] = {};
+    const target = result[country].segments[segmento];
+
+    if (agrupacion === 'PORCENTAJE') {
+      target.porcentaje = gthPercentOrNull_(row[colCifra]);
+      target.porcentajeYoy = gthParseSignedNumber_(row[colVariacion]);
+    } else if (agrupacion.indexOf('TARGET DIGITAL CLIENTS') >= 0) {
+      target.targetDigitalClients = String(row[colCifra] || '').trim();
+      target.targetDigitalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+    } else if (agrupacion.indexOf('TARGET TOTAL CLIENTS') >= 0) {
+      target.targetTotalClients = String(row[colCifra] || '').trim();
+      target.targetTotalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+    } else if (agrupacion.indexOf('DIGITAL CLIENTS') >= 0) {
+      target.digitalClients = String(row[colCifra] || '').trim();
+      target.digitalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+    } else if (agrupacion.indexOf('TOTAL CLIENTS') >= 0) {
+      target.totalClients = String(row[colCifra] || '').trim();
+      target.totalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+    }
+  }
+  return result;
+}
+
+/** Localiza en 20_DIGITALPEN_HISTORICO_RAW la cabecera (Region/Segments/
+ *  Metric) y la lista de columnas mensuales, igual que gthRawKpisHeader_
+ *  para 04_RAW_KPIS. */
+function gthDigitalPenHeader_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_DIGITALPEN_HISTORICO);
+  if (!sheet) throw new Error('No existe la pestaña: ' + SHEET_DIGITALPEN_HISTORICO);
+
+  const values = sheet.getDataRange().getValues();
+  const norm = gthNormalizeLabel_;
+
+  let headerRowIndex = -1, colRegion = -1, colSegments = -1, colMetric = -1;
+  for (let r = 0; r < Math.min(values.length, 10); r++) {
+    const row = values[r].map(norm);
+    const iRegion = row.indexOf('REGION');
+    const iSegments = row.indexOf('SEGMENTS');
+    const iMetric = row.indexOf('METRIC');
+    if (iRegion >= 0 && iSegments >= 0 && iMetric >= 0) {
+      headerRowIndex = r; colRegion = iRegion; colSegments = iSegments; colMetric = iMetric;
+      break;
+    }
+  }
+  if (headerRowIndex < 0) {
+    throw new Error('No se pudo localizar la cabecera (Region / Segments / Metric) en ' + SHEET_DIGITALPEN_HISTORICO);
+  }
+
+  const headerRow = values[headerRowIndex];
+  const monthCols = [];
+  for (let c = Math.max(colRegion, colSegments, colMetric) + 1; c < headerRow.length; c++) {
+    const parsed = gthParseMonthYear_(headerRow[c]);
+    if (parsed) monthCols.push({ col: c, month: parsed.month, year: parsed.year });
+  }
+
+  return { values: values, headerRowIndex: headerRowIndex, colRegion: colRegion, colSegments: colSegments, colMetric: colMetric, monthCols: monthCols };
+}
+
+/** Variación YoY (en puntos) del Digital Penetration 3x3 total ("TOTAL
+ *  PJs" · "DP 3x3 YoY (pb)"), un valor por trimestre y país, para
+ *  acompañar la gráfica de barras de Penetración Digital 3x3 por País.
+ *  Se calcula para todos los trimestres con columna mensual en la hoja,
+ *  igual que getTrafficToNextGenTotalsByCountry_. */
+function getDigitalPenYoyByCountry_() {
+  const header = gthDigitalPenHeader_();
+  const norm = gthNormalizeLabel_;
+
+  const quarterLabelSet = {};
+  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
+
+  const result = {};
+  quarterLabels.forEach(function (quarterLabel) {
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
+    const quarterResult = {};
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const segment = norm(row[header.colSegments]);
+      if (segment.indexOf('TOTAL') < 0) continue; // solo el agregado, no Commercial/SMEs sueltos
+      const metric = norm(row[header.colMetric]);
+      if (metric.indexOf('DP 3X3 YOY') < 0) continue;
+
+      const country = GTH_DIGITALPEN_COUNTRY_MAP_[norm(row[header.colRegion])];
+      if (!country) continue;
+      quarterResult[country] = gthFirstReportedNumber_(row, candidateCols);
+    }
+    result[quarterLabel] = quarterResult;
+  });
+
+  return result;
+}
+
 /** Identifica la fila de cabeceras de 11_CATALOGO_KPIs de forma tolerante. */
 function findCatalogoHeaderRow_(values) {
   let bestIndex = 0;

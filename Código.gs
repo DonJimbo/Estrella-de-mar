@@ -23,15 +23,7 @@ if (params.vista) {
     return handleDashboardEDCApi_(e);
   }
 
-  // Mientras se deja en pausa la separación en varias páginas (Index_Site +
-  // Rutas_Site), la URL base del Web App sirve directamente el Site_antiguo
-  // monolítico tal cual se ve hoy en Sites. Para volver a las páginas
-  // separadas basta con pedir la URL con ?vista=inicio (o kpis/bloques/
-  // ftes/layout): ese camino sigue intacto, no se ha tocado nada de él.
-  return HtmlService.createHtmlOutputFromFile('Site_antiguo')
-    .setTitle('Global Transformation Hub')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+return renderUnifiedSitePage_('inicio');
 }
 
 const SPREADSHEET_ID = '1DuyYpJUbYOaVKuhfmUAia1M4pJNI5CErX-DZ7FBXuhU';

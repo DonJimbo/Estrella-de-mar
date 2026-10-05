@@ -32,6 +32,7 @@ const GTH_DATASETS = {
   kpis:          function () { return getKpisData(); },
   catalogo:      function () { return getCatalogoKpisData(); },
   nextgenSites:  function () { return getNextGenSitesData(); },
+  featureTransformedTotals: function () { return getFeatureTransformedTotalsByCountry_(); },
   adopcion:      function () { return gthBuildAdopcion_(); }
 };
 
@@ -116,12 +117,14 @@ function gthResolveDataset_(action) {
     getCatalogoKpisData: 'catalogo',
     getCatalogoData: 'catalogo',
     getNextGenSitesData: 'nextgenSites',
+    getFeatureTransformedTotalsByCountry: 'featureTransformedTotals',
     getAdopcionSnapshot: 'adopcion',
     refreshAdopcion: 'adopcion',
     refreshCatalogo: 'catalogo',
     refreshPresupuesto: 'presupuesto',
     refreshFtes: 'ftes',
-    refreshNextgenSites: 'nextgenSites'
+    refreshNextgenSites: 'nextgenSites',
+    refreshFeatureTransformedTotals: 'featureTransformedTotals'
   };
   return map[action] || (GTH_DATASETS[action] ? action : null);
 }

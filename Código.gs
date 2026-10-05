@@ -39,6 +39,7 @@ const SHEET_KPIS = '07_KPIS_SITES';
 const SHEET_CATALOGO_KPIS = '11_CATALOGO_KPIs';
 const SHEET_OPCIONES_MENU_SITES = '15_OPCIONES_MENU_SITES';
 const SHEET_NEXTGEN_SITES = '17_NEXTGEN_SITES';
+const SHEET_RAW_KPIS = '04_RAW_KPIS';
 
 function getWebAppUrl_() {
   try {
@@ -1108,6 +1109,76 @@ function gthNormalizeLabel_(value) {
 function gthPercentOrNull_(value) {
   if (value === null || value === undefined || value === '') return null;
   return Math.round(toPercentDecimal_(value) * 10000) / 100;
+}
+
+/* =========================================================
+   AVANCE TOTAL POR PAÍS (% EDC Transformed Funcionalities)
+   Pestaña: 04_RAW_KPIS
+   Son los mismos datos que alimentan "Features Transformadas Web
+   Empresas" en KPIs: para cada país (fila con Metric "% EDC Transformed
+   Funcionalities" y BU = TOTAL/SPA/MEX/PER/COL/ARG), se toma el último
+   valor mensual informado (de derecha a izquierda, ignorando "-" y
+   celdas vacías).
+   ========================================================= */
+function getFeatureTransformedTotalsByCountry_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_RAW_KPIS);
+
+  if (!sheet) {
+    throw new Error('No existe la pestaña: ' + SHEET_RAW_KPIS);
+  }
+
+  const values = sheet.getDataRange().getValues();
+  const norm = gthNormalizeLabel_;
+
+  let headerRowIndex = -1, colMetric = -1, colBU = -1;
+  for (let r = 0; r < Math.min(values.length, 10); r++) {
+    const row = values[r].map(norm);
+    const iMetric = row.indexOf('METRIC');
+    const iBU = row.indexOf('BU');
+    if (iMetric >= 0 && iBU >= 0) {
+      headerRowIndex = r; colMetric = iMetric; colBU = iBU;
+      break;
+    }
+  }
+  if (headerRowIndex < 0) {
+    throw new Error('No se pudo localizar la cabecera (Metric / BU) en ' + SHEET_RAW_KPIS);
+  }
+
+  // Primera columna de datos mensuales: la primera, tras Metric/BU, cuya
+  // cabecera parece un mes ("MAR 2026", "SEP 2026"...).
+  const headerRow = values[headerRowIndex].map(norm);
+  const monthPattern = /^[A-Z]{3,9}\.?\s*\d{4}$/;
+  let dataStartCol = -1;
+  for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) {
+    if (monthPattern.test(headerRow[c])) { dataStartCol = c; break; }
+  }
+  if (dataStartCol < 0) dataStartCol = Math.max(colMetric, colBU) + 1;
+
+  const countryMap = { 'TOTAL': 'TOTAL', 'SPA': 'España', 'MEX': 'México', 'PER': 'Perú', 'COL': 'Colombia', 'ARG': 'Argentina' };
+
+  const result = {};
+  for (let r = headerRowIndex + 1; r < values.length; r++) {
+    const row = values[r];
+    const metric = norm(row[colMetric]);
+    if (metric.indexOf('TRANSFORMED') < 0) continue;
+    if (metric.indexOf('FUNCIONALIT') < 0 && metric.indexOf('FUNCTIONALIT') < 0) continue;
+
+    const country = countryMap[norm(row[colBU])];
+    if (!country) continue;
+
+    let lastValue = null;
+    for (let c = row.length - 1; c >= dataStartCol; c--) {
+      const raw = row[c];
+      if (raw === '' || raw === null || raw === undefined || raw === '-') continue;
+      if (typeof raw !== 'number' && isNaN(Number(String(raw).replace(',', '.').replace('%', '')))) continue;
+      lastValue = Math.round(toPercentDecimal_(raw) * 10000) / 100;
+      break;
+    }
+    result[country] = lastValue;
+  }
+
+  return result;
 }
 
 /** Identifica la fila de cabeceras de 11_CATALOGO_KPIs de forma tolerante. */

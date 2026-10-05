@@ -33,6 +33,7 @@ const GTH_DATASETS = {
   catalogo:      function () { return getCatalogoKpisData(); },
   nextgenSites:  function () { return getNextGenSitesData(); },
   featureTransformedTotals: function () { return getFeatureTransformedTotalsByCountry_(); },
+  trafficToNextGenTotals: function () { return getTrafficToNextGenTotalsByCountry_(); },
   adopcion:      function () { return gthBuildAdopcion_(); }
 };
 
@@ -118,13 +119,15 @@ function gthResolveDataset_(action) {
     getCatalogoData: 'catalogo',
     getNextGenSitesData: 'nextgenSites',
     getFeatureTransformedTotalsByCountry: 'featureTransformedTotals',
+    getTrafficToNextGenTotalsByCountry: 'trafficToNextGenTotals',
     getAdopcionSnapshot: 'adopcion',
     refreshAdopcion: 'adopcion',
     refreshCatalogo: 'catalogo',
     refreshPresupuesto: 'presupuesto',
     refreshFtes: 'ftes',
     refreshNextgenSites: 'nextgenSites',
-    refreshFeatureTransformedTotals: 'featureTransformedTotals'
+    refreshFeatureTransformedTotals: 'featureTransformedTotals',
+    refreshTrafficToNextGenTotals: 'trafficToNextGenTotals'
   };
   return map[action] || (GTH_DATASETS[action] ? action : null);
 }

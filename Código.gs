@@ -1206,10 +1206,12 @@ function getNextGenSitesQuarterLabels_() {
   return Object.keys(labelSet);
 }
 
-function getFeatureTransformedTotalsByCountry_() {
+/** Localiza en 04_RAW_KPIS la cabecera (Metric/BU) y la lista de columnas
+ *  mensuales ("MAR 2026", "SEP 2026"...), para no repetir esta búsqueda en
+ *  cada función que lee esa pestaña. */
+function gthRawKpisHeader_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_RAW_KPIS);
-
   if (!sheet) {
     throw new Error('No existe la pestaña: ' + SHEET_RAW_KPIS);
   }
@@ -1231,8 +1233,6 @@ function getFeatureTransformedTotalsByCountry_() {
     throw new Error('No se pudo localizar la cabecera (Metric / BU) en ' + SHEET_RAW_KPIS);
   }
 
-  // Columnas de datos mensuales: todas las que, tras Metric/BU, tienen una
-  // cabecera con pinta de mes ("MAR 2026", "SEP 2026"...), en orden.
   const headerRow = values[headerRowIndex];
   const monthCols = []; // [{col, month, year}]
   for (let c = Math.max(colMetric, colBU) + 1; c < headerRow.length; c++) {
@@ -1240,42 +1240,100 @@ function getFeatureTransformedTotalsByCountry_() {
     if (parsed) monthCols.push({ col: c, month: parsed.month, year: parsed.year });
   }
 
-  const countryMap = { 'TOTAL': 'TOTAL', 'SPA': 'España', 'MEX': 'México', 'PER': 'Perú', 'COL': 'Colombia', 'ARG': 'Argentina' };
+  return { values: values, headerRowIndex: headerRowIndex, colMetric: colMetric, colBU: colBU, monthCols: monthCols };
+}
+
+/** Columnas candidatas para un trimestre dado, de la más adecuada a la
+ *  menos: su mes de cierre primero ("26Q2" -> junio) y, si falta, los
+ *  meses anteriores hacia atrás (nunca posteriores, que podrían ser
+ *  proyecciones/target). */
+function gthCandidateMonthCols_(monthCols, quarterLabel) {
+  const targetMonth = gthQuarterLabelToMonthYear_(quarterLabel);
+  const targetColIndex = targetMonth
+    ? monthCols.findIndex(m => m.month === targetMonth.month && m.year === targetMonth.year)
+    : -1;
+  return targetColIndex >= 0
+    ? monthCols.slice(0, targetColIndex + 1).reverse().map(m => m.col)
+    : monthCols.slice().reverse().map(m => m.col);
+}
+
+/** Primer valor numérico informado de una fila entre las columnas
+ *  candidatas (ignora "-" y celdas vacías/no numéricas). */
+function gthFirstReportedValue_(row, candidateCols) {
+  for (let i = 0; i < candidateCols.length; i++) {
+    const raw = row[candidateCols[i]];
+    if (raw === '' || raw === null || raw === undefined || raw === '-') continue;
+    if (typeof raw !== 'number' && isNaN(Number(String(raw).replace(',', '.').replace('%', '')))) continue;
+    return Math.round(toPercentDecimal_(raw) * 10000) / 100;
+  }
+  return null;
+}
+
+const GTH_RAW_KPIS_COUNTRY_MAP_ = { 'TOTAL': 'TOTAL', 'SPA': 'España', 'MEX': 'México', 'PER': 'Perú', 'COL': 'Colombia', 'ARG': 'Argentina' };
+
+function getFeatureTransformedTotalsByCountry_() {
+  const header = gthRawKpisHeader_();
+  const norm = gthNormalizeLabel_;
 
   // Un trimestre por cada corte que tenga 17_NEXTGEN_SITES (p.ej. 26Q2 y
-  // 26Q3): para cada uno, busca su mes de cierre ("26Q2" -> junio) entre
-  // las columnas mensuales y, si falta, cae hacia meses anteriores (nunca
-  // posteriores, que podrían ser proyecciones/target).
+  // 26Q3), para que hablen del mismo corte temporal.
   const quarterLabels = getNextGenSitesQuarterLabels_();
   const result = {};
   quarterLabels.forEach(quarterLabel => {
-    const targetMonth = gthQuarterLabelToMonthYear_(quarterLabel);
-    const targetColIndex = targetMonth
-      ? monthCols.findIndex(m => m.month === targetMonth.month && m.year === targetMonth.year)
-      : -1;
-    const candidateCols = targetColIndex >= 0
-      ? monthCols.slice(0, targetColIndex + 1).reverse().map(m => m.col)
-      : monthCols.slice().reverse().map(m => m.col);
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
 
     const quarterResult = {};
-    for (let r = headerRowIndex + 1; r < values.length; r++) {
-      const row = values[r];
-      const metric = norm(row[colMetric]);
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const metric = norm(row[header.colMetric]);
       if (metric.indexOf('TRANSFORMED') < 0) continue;
       if (metric.indexOf('FUNCIONALIT') < 0 && metric.indexOf('FUNCTIONALIT') < 0) continue;
 
-      const country = countryMap[norm(row[colBU])];
+      const country = GTH_RAW_KPIS_COUNTRY_MAP_[norm(row[header.colBU])];
       if (!country) continue;
 
-      let value = null;
-      for (let i = 0; i < candidateCols.length; i++) {
-        const raw = row[candidateCols[i]];
-        if (raw === '' || raw === null || raw === undefined || raw === '-') continue;
-        if (typeof raw !== 'number' && isNaN(Number(String(raw).replace(',', '.').replace('%', '')))) continue;
-        value = Math.round(toPercentDecimal_(raw) * 10000) / 100;
-        break;
+      quarterResult[country] = gthFirstReportedValue_(row, candidateCols);
+    }
+    result[quarterLabel] = quarterResult;
+  });
+
+  return result;
+}
+
+/* =========================================================
+   TRAFFIC TO NEXTGEN POR PAÍS (SENDA - Traffic to NextGen)
+   Pestaña: 04_RAW_KPIS
+   Son los mismos datos que alimentan la gráfica "Distribución (NextGen
+   vs Legacy)" en KPIs: el total consolidado está en la fila "SENDA -
+   Traffic to NextGen" (BU TOTAL) y el de cada país en su fila "... * -
+   Calls to NextGen" (BU SPA/MEX/PER/COL/ARG). Se agrupa por trimestre
+   igual que el Avance Total, usando el mismo corte que 17_NEXTGEN_SITES.
+   ========================================================= */
+function getTrafficToNextGenTotalsByCountry_() {
+  const header = gthRawKpisHeader_();
+  const norm = gthNormalizeLabel_;
+
+  const quarterLabels = getNextGenSitesQuarterLabels_();
+  const result = {};
+  quarterLabels.forEach(quarterLabel => {
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
+
+    const quarterResult = {};
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const metric = norm(row[header.colMetric]);
+      if (metric.indexOf('TRAFFIC TO NEXTGEN') < 0) continue;
+
+      const bu = norm(row[header.colBU]);
+      let country = null;
+      if (metric.indexOf('CALLS TO') < 0 && bu === 'TOTAL') {
+        country = 'TOTAL'; // fila consolidada "SENDA - Traffic to NextGen"
+      } else if (metric.indexOf('CALLS TO NEXTGEN') >= 0) {
+        country = GTH_RAW_KPIS_COUNTRY_MAP_[bu]; // fila "... Calls to NextGen" por país
       }
-      quarterResult[country] = value;
+      if (!country) continue;
+
+      quarterResult[country] = gthFirstReportedValue_(row, candidateCols);
     }
     result[quarterLabel] = quarterResult;
   });

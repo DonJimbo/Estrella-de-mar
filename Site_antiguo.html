@@ -4381,7 +4381,7 @@
         };
 
         // --- VARIABLES GLOBALES ---
-        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, featuresEvolution2025=null;
+        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, nextGenTrafficTotalsGlobal=null, featuresEvolution2025=null;
         let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, featureProgressLoading=false, featureProgressLoadError='', trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
         const chartColors = {'España':'#a855f7','México':'#22c55e','Perú':'#ef4444','Colombia':'#1e3a8a','Argentina':'#3b82f6','TOTAL':'#004481'};
         const flagsMap = { 'Holding':'Holding','España':'es','México':'mx','Perú':'pe','Colombia':'co','Argentina':'ar','TOTAL':'global','Global':'global','ALL':'global'};
@@ -5078,6 +5078,7 @@ window.EDCNps = (() => {
                     // y 04_RAW_KPIS (vía API, no desde este xlsx) para no alterar el resto de cálculos.
                     loadNextGenByBlockData();
                     loadNextGenCountryAvanceData();
+                    loadNextGenTrafficTotalsData();
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -5663,7 +5664,19 @@ window.EDCNps = (() => {
             });
             document.getElementById('trafficLegend').innerHTML=trafficCountrySeries.filter(ds=>geo==='ALL'||ds.label===geo).map(ds=>{const visible=trafficEvolutionVisible.has(ds.label);return `<button type="button" class="traffic-country-toggle" aria-pressed="${visible}" title="${visible?'Ocultar':'Mostrar'} ${ds.label}" onclick="window.toggleTrafficEvolutionCountry('${ds.label}')"><img src="https://flagcdn.com/w80/${flagsMap[ds.label]}.png" alt=""><i class="traffic-country-dot" style="background-color:${chartColors[ds.label]}"></i><span>${ds.label}</span></button>`;}).join('');
 
-            const cArr=geo==='ALL'?[...countryOrder,'Holding']:[geo], ngD=cArr.map(c=>snapshotDataGlobal[cQ]?.[c]?.nextgen??null), lgD=cArr.map(c=>snapshotDataGlobal[cQ]?.[c]?.legacy??null);
+            // "SENDA - Traffic to NextGen" en 04_RAW_KPIS: misma fuente que el
+            // Avance Total de "Uso de NextGen por bloque funcional", para que
+            // esta gráfica también hable del corte real por trimestre (p.ej. 26Q3).
+            const trafficTotalsForQuarter = resolveNextGenQuarterData(nextGenTrafficTotalsGlobal, cQ);
+            const cArr=geo==='ALL'?[...countryOrder,'Holding']:[geo];
+            const ngD=cArr.map(c=>{
+                const override = trafficTotalsForQuarter ? trafficTotalsForQuarter[c] : null;
+                return Number.isFinite(Number(override)) ? Number(override) : (snapshotDataGlobal[cQ]?.[c]?.nextgen??null);
+            });
+            const lgD=cArr.map(c=>{
+                const override = trafficTotalsForQuarter ? trafficTotalsForQuarter[c] : null;
+                return Number.isFinite(Number(override)) ? Math.round((100-Number(override))*100)/100 : (snapshotDataGlobal[cQ]?.[c]?.legacy??null);
+            });
             const aQ=Object.keys(snapshotDataGlobal); let iQ=aQ.indexOf(cQ); if(iQ===-1)iQ=aQ.length-1; const vQs=aQ.slice(0,iQ+1);
             window.toggleEmptyState('canvas-container-snapshot', !ngD.some(v=>v!==null)&&!lgD.some(v=>v!==null), `Sin datos para ${cQ}`);
 
@@ -5824,6 +5837,7 @@ window.EDCNps = (() => {
         // reciente anterior a él; si tampoco, el disponible más antiguo).
         let nextGenActiveByBlockData = null;
         let nextGenActiveCountryAvance = null;
+        let nextGenActiveTrafficTotals = null;
         function nextGenQuarterRank(label) {
             const match = String(label || '').match(/^(\d{2})Q([1-4])$/);
             return match ? Number(match[1]) * 4 + Number(match[2]) : -1;
@@ -5845,6 +5859,8 @@ window.EDCNps = (() => {
         }
 
         function getNextGenTotal(country, quarter) {
+            const trafficTotal = (nextGenActiveTrafficTotals || {})[country];
+            if (Number.isFinite(Number(trafficTotal))) return Number(trafficTotal);
             const trafficValue = snapshotDataGlobal?.[quarter]?.[country]?.nextgen;
             if (Number.isFinite(Number(trafficValue))) return Number(trafficValue);
             const totalRow = ((nextGenActiveByBlockData || {})[country] || []).find(row => /TOTAL|CONSOLIDADO/i.test(String(row.bloque || '')));
@@ -5898,11 +5914,37 @@ window.EDCNps = (() => {
             return nextGenCountryAvanceLoadPromise;
         }
 
+        // Total de uso de NextGen por país ("SENDA - Traffic to NextGen"),
+        // mismos datos que la gráfica "Distribución (NextGen vs Legacy)" en
+        // KPIs: 04_RAW_KPIS. Se usa tanto para esa gráfica como para la
+        // tarjeta de totales de "Uso de NextGen por bloque funcional".
+        let nextGenTrafficTotalsLoadPromise = null;
+        function loadNextGenTrafficTotalsData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar 04_RAW_KPIS.');
+                return nextGenTrafficTotalsLoadPromise || Promise.resolve(null);
+            }
+            nextGenTrafficTotalsLoadPromise = window.catalogoApi('getTrafficToNextGenTotalsByCountry')
+                .then(data => {
+                    nextGenTrafficTotalsGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!nextGenTrafficTotalsGlobal) console.warn('No se han encontrado datos válidos de Traffic to NextGen por país en 04_RAW_KPIS.');
+                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
+                    if (document.getElementById('evolutionChart') && typeof renderTrafficCharts === 'function') renderTrafficCharts();
+                    return nextGenTrafficTotalsGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el Traffic to NextGen por país (04_RAW_KPIS).', error);
+                    return null;
+                });
+            return nextGenTrafficTotalsLoadPromise;
+        }
+
         window.addEventListener('load', () => {
             window.setTimeout(() => {
                 const preload = () => {
                     if (!nextGenByBlockDataGlobal) loadNextGenByBlockData();
                     if (!nextGenCountryAvanceGlobal) loadNextGenCountryAvanceData();
+                    if (!nextGenTrafficTotalsGlobal) loadNextGenTrafficTotalsData();
                 };
                 if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
                 else preload();
@@ -5947,6 +5989,7 @@ window.EDCNps = (() => {
             const quarter = ngQuarter();
             nextGenActiveByBlockData = resolveNextGenQuarterData(nextGenByBlockDataGlobal, quarter);
             nextGenActiveCountryAvance = resolveNextGenQuarterData(nextGenCountryAvanceGlobal, quarter);
+            nextGenActiveTrafficTotals = resolveNextGenQuarterData(nextGenTrafficTotalsGlobal, quarter);
 
             const activeData = nextGenActiveByBlockData || {};
             const baseCountries = countryOrder.filter(country => Array.isArray(activeData[country]) && activeData[country].length);

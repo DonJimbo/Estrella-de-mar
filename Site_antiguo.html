@@ -3202,11 +3202,9 @@
         // --- HELPERS REUTILIZABLES ---
         const fmtPct = (v) => {
             if (v === null || v === undefined || isNaN(v)) return 'N/D';
-            if (v > 99 && v < 100) {
-                let trunc = Math.floor(v * 100) / 100;
-                return trunc.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + '%';
-            }
-            return v.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + '%';
+            const rounded = Math.round(v * 10) / 10;
+            if (rounded === 100) return '100%';
+            return rounded.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
         };
         const fmtPosPct = v => v > 0 ? fmtPct(v) : '';
         const chartLegendOpts = { display: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { weight: 'bold', size: 10, family: "'Lato', sans-serif" }, color: '#475569', padding: 15 } };
@@ -5296,7 +5294,11 @@ window.EDCNps = (() => {
                 ? `<span class="inline-flex w-7 h-7">${window.getGlobalIconHtml('w-7 h-7')}</span>`
                 : `<img src="https://flagcdn.com/w80/${flagsMap[countryName]}.png" class="feature-progress-flag" alt="Bandera de ${countryName}">`;
         };
-        const featureProgressPct = (value, total) => (value == null || !total) ? '—' : `${(value * 100 / total).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})}%`;
+        const featureProgressPct = (value, total) => {
+            if (value == null || !total) return '—';
+            const rounded = Math.round((value * 100 / total) * 10) / 10;
+            return (rounded === 100 ? '100' : rounded.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 })) + '%';
+        };
         const FEATURE_PROGRESS_PERIODS = ['24Q4','25Q1','25Q2','25Q3','25Q4','26Q1','26Q2','26Q3','26Q4'];
         const hasFeatureProgressValue = value => value !== null && value !== undefined && value !== '' && !Number.isNaN(Number(value));
 
@@ -5822,13 +5824,19 @@ window.EDCNps = (() => {
             return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
+        // Siempre a 1 decimal (aunque sea ,0), salvo el 100% exacto, que se
+        // muestra sin decimales.
+        function nextGenFormatNumber(number) {
+            const rounded = Math.round(number * 10) / 10;
+            return rounded === 100 ? '100' : rounded.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        }
         function nextGenPercent(value) {
             const number = Number(value);
-            return Number.isFinite(number) ? `${number.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 1 })}%` : '—';
+            return Number.isFinite(number) ? `${nextGenFormatNumber(number)}%` : '—';
         }
         function nextGenPercentValue(value) {
             const number = Number(value);
-            return Number.isFinite(number) ? number.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 1 }) : '—';
+            return Number.isFinite(number) ? nextGenFormatNumber(number) : '—';
         }
 
         function nextGenCountryLabel(country) { return country === 'TOTAL' ? 'Global' : country; }
@@ -5993,6 +6001,7 @@ window.EDCNps = (() => {
         }
 
         function ngHeat(value) {
+            if (!value) return { bg: '#F5F7F9', fg: '#A3ADBA' };
             const t = Math.max(0, Math.min(1, value / 100));
             const from = [226, 230, 234], to = [0, 68, 129];
             const mix = from.map((channel, i) => Math.round(channel + (to[i] - channel) * t));
@@ -6068,11 +6077,10 @@ window.EDCNps = (() => {
                     `<button type="button" class="ng-row-btn" data-toggle="pais:${nextGenEscape(country)}" aria-expanded="${open}">` +
                     `<span class="ng-caret">${ngCaret}</span>` +
                     `<span class="ng-row-name">${nextGenCountryIcon(country, 'w-8 h-8')}` +
-                    `<span><span class="ng-row-label">${nextGenEscape(nextGenCountryLabel(country))}</span>` +
-                    `<span class="ng-row-note">${blocksForCountry.length} bloques funcionales</span></span></span>` +
+                    `<span><span class="ng-row-label">${nextGenEscape(nextGenCountryLabel(country))}</span></span></span>` +
                     `<span class="ng-row-avance">${nextGenPercent(countryAvance)}<small>Avance total</small></span>` +
                     ngBar(total) +
-                    `<span class="ng-row-pct">${nextGenPercent(total)}</span>` +
+                    `<span class="ng-row-pct">${nextGenPercent(total)}<small>Uso NextGen</small></span>` +
                     `</button><div class="ng-drawer">${drawer}</div></div>`;
             }).join('');
 
@@ -6096,18 +6104,13 @@ window.EDCNps = (() => {
                     : (values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : null);
                 const open = ngState.open.has('bloque:' + block.key);
 
-                const present = realCountries.map(country => {
-                    const has = !!getNextGenRecord(country, block.key);
-                    return `<span style="display:inline-flex;opacity:${has ? 1 : .32};filter:${has ? 'none' : 'grayscale(1)'}">${nextGenCountryIcon(country, 'w-6 h-6')}</span>`;
-                }).join('');
-
                 const drawer = entries.length
                     ? entries.map(entry => {
                         const attrs = `data-nextgen-country="${nextGenEscape(entry.country)}" data-nextgen-block="${nextGenEscape(entry.row.bloque)}"`;
                         return `<div class="ng-subrow" ${attrs} title="Abrir el bloque en la gráfica de progreso">` +
                             `<div class="ng-subname">${nextGenCountryIcon(entry.country, 'w-6 h-6')}<span>${nextGenEscape(nextGenCountryLabel(entry.country))}</span></div>` +
                             ngBar(entry.row.nextGen, true) +
-                            `<div class="ng-subpct">${nextGenPercent(entry.row.nextGen)}<small>Av. ${nextGenPercent(entry.row.avance)}</small></div>` +
+                            `<div class="ng-subpct">${nextGenPercent(entry.row.nextGen)}</div>` +
                             `<div></div></div>`;
                     }).join('')
                     : '';
@@ -6116,9 +6119,7 @@ window.EDCNps = (() => {
                     `<button type="button" class="ng-row-btn" data-toggle="bloque:${nextGenEscape(block.key)}" aria-expanded="${open}">` +
                     `<span class="ng-caret">${ngCaret}</span>` +
                     `<span class="ng-row-name"><span style="min-width:0">` +
-                    `<span class="ng-row-label">${nextGenEscape(block.label)}</span>` +
-                    `<span class="ng-row-note">presente en ${entries.length} países</span></span>` +
-                    `<span style="display:flex;gap:4px;margin-left:6px">${present}</span></span>` +
+                    `<span class="ng-row-label">${nextGenEscape(block.label)}</span></span></span>` +
                     ngBar(globalNextGen) +
                     `<span class="ng-row-pct">${nextGenPercent(globalNextGen)}</span>` +
                     `</button><div class="ng-drawer">${drawer}</div></div>`;
@@ -6146,12 +6147,12 @@ window.EDCNps = (() => {
                 return `<tr><th class="ng-matrix-row-head" title="${nextGenEscape(block.label)}">${nextGenEscape(block.label)}</th>${cells}</tr>`;
             }).join('');
 
-            const footer = `<div class="ng-legend">Menos uso<i style="background:linear-gradient(90deg,#E2E6EA,#5B8FD0,#004481)"></i>Más uso` +
-                `<span style="margin-left:auto;color:#ADB8C2">El punto gris indica que el bloque no existe en ese país.</span></div>`;
-
             return `<div class="ng-panel"><div class="ng-panel-head"><h3 class="ng-panel-title">Matriz de uso de NextGen</h3>` +
-                `<span class="ng-panel-meta">${allBlocks.length} bloques</span></div>` +
-                `<div class="ng-matrix-wrap"><table class="ng-matrix"><thead>${head}</thead><tbody>${body}</tbody></table></div>${footer}</div>`;
+                `<div style="display:flex;align-items:center;gap:1rem">` +
+                `<div class="ng-legend" style="padding:0;border-top:none">Menos uso<i style="background:linear-gradient(90deg,#E2E6EA,#5B8FD0,#004481)"></i>Más uso</div>` +
+                `<span class="ng-panel-meta">${allBlocks.length} bloques</span>` +
+                `</div></div>` +
+                `<div class="ng-matrix-wrap"><table class="ng-matrix"><thead>${head}</thead><tbody>${body}</tbody></table></div></div>`;
         }
 
         function renderNextGenByBlock() {
@@ -12582,7 +12583,7 @@ window.EDCNps = (() => {
     return n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' M€';
   };
   const fmtFte=v=>Number(v||0).toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
-  const fmtPct=v=>(Number.isFinite(v)?v:0).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+  const fmtPct=v=>{const n=Number.isFinite(v)?v:0;const rounded=Math.round(n*10)/10;return (rounded===100?'100':rounded.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1}))+'%';};
   const clamp=(n,min,max)=>Math.min(Math.max(Number(n)||0,min),max);
   const sortCountries=(a,b)=>{
     if (typeof window.sortCountries === 'function') return window.sortCountries(a,b);
@@ -13073,8 +13074,9 @@ window.EDCNps = (() => {
     };
 
     function pct(part, total) {
-        if (!total) return '0%';
-        return ((part / total) * 100).toFixed(1).replace('.', ',') + '%';
+        if (!total) return '0,0%';
+        const rounded = Math.round((part / total) * 1000) / 10;
+        return (rounded === 100 ? '100' : rounded.toFixed(1).replace('.', ',')) + '%';
     }
 
     function setText(id, value) {
@@ -13631,7 +13633,8 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         const selectedQuarter = getCatalogoSelectedQuarter();
         const delivered = selectedRows.filter(row => isCatalogoDeliveredByQuarter(row, selectedQuarter)).length;
         const coverageValue = total ? delivered / total : 0;
-        const coveragePct = (coverageValue * 100).toFixed(2).replace('.', ',') + '%';
+        const coverageRounded = Math.round(coverageValue * 1000) / 10;
+        const coveragePct = (coverageRounded === 100 ? '100' : coverageRounded.toFixed(1).replace('.', ',')) + '%';
 
         setText('catalogoCoveragePct', coveragePct);
 

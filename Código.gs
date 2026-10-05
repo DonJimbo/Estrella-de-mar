@@ -1306,14 +1306,22 @@ function getFeatureTransformedTotalsByCountry_() {
    Son los mismos datos que alimentan la gráfica "Distribución (NextGen
    vs Legacy)" en KPIs: el total consolidado está en la fila "SENDA -
    Traffic to NextGen" (BU TOTAL) y el de cada país en su fila "... * -
-   Calls to NextGen" (BU SPA/MEX/PER/COL/ARG). Se agrupa por trimestre
-   igual que el Avance Total, usando el mismo corte que 17_NEXTGEN_SITES.
+   Calls to NextGen" (BU SPA/MEX/PER/COL/ARG). Se agrupa por cada
+   trimestre que tenga columna mensual en 04_RAW_KPIS (no solo los que
+   existan en 17_NEXTGEN_SITES), para cubrir todo el histórico.
    ========================================================= */
 function getTrafficToNextGenTotalsByCountry_() {
   const header = gthRawKpisHeader_();
   const norm = gthNormalizeLabel_;
 
-  const quarterLabels = getNextGenSitesQuarterLabels_();
+  // A diferencia del Avance Total (ligado a los trimestres que existan en
+  // 17_NEXTGEN_SITES, que solo tiene detalle por bloque para 26Q2/26Q3), el
+  // Traffic to NextGen se calcula para TODOS los trimestres que tengan
+  // columna mensual en 04_RAW_KPIS, para que el histórico completo (25Q3,
+  // 25Q4, 26Q1...) tenga también el dato real, no solo los dos últimos.
+  const quarterLabelSet = {};
+  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
   const result = {};
   quarterLabels.forEach(quarterLabel => {
     const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);

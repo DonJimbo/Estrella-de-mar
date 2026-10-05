@@ -5202,7 +5202,7 @@ window.EDCNps = (() => {
             let ft_r = featuresData.realByQuarter?.[currentQ]?.[cKey] ?? null;
             let ft_t = featuresData.targetByQuarter?.[currentQ]?.[cKey] ?? null;
             
-            let tr_r=snapshotDataGlobal[currentQ]?.[cLabel]?.nextgen??null, dp_r=digitalPenDataGlobal[currentQ]?.[cLabel]?.real??null, dp_t=digitalPenDataGlobal[currentQ]?.[cLabel]?.target??null;
+            let tr_r=getTrafficNextGenValue(currentQ,cLabel), dp_r=digitalPenDataGlobal[currentQ]?.[cLabel]?.real??null, dp_t=digitalPenDataGlobal[currentQ]?.[cLabel]?.target??null;
             
             let iosR=null, iosT=null, andR=null, andT=null;
             if(ratingDataGlobal&&ratingDataGlobal[currentQ]){
@@ -5591,7 +5591,7 @@ window.EDCNps = (() => {
         function renderTrafficCharts() {
             if(!trafficData||!snapshotDataGlobal) return;
             const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value;
-            let qIdx=trafficData.labels.indexOf(cQ); if(qIdx===-1) qIdx=trafficData.labels.length-1;
+            let qIdx=trafficData.labels.indexOf(cQ); const hasExactEvolQ=qIdx!==-1; if(!hasExactEvolQ) qIdx=trafficData.labels.length-1;
             const trafficCountrySeries=trafficData.datasets.filter(ds=>ds.label!=='TOTAL'&&ds.label!=='Total');
             if(!trafficEvolutionSelectionInitialized){
                 trafficCountrySeries.forEach(ds=>trafficEvolutionVisible.add(ds.label));
@@ -5654,11 +5654,24 @@ window.EDCNps = (() => {
                     const {ctx,chartArea}=chart;ctx.save();ctx.fillStyle='#94a3b8';ctx.font="800 13px 'Lato', sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Selecciona un país para ver su evolución', (chartArea.left+chartArea.right)/2, (chartArea.top+chartArea.bottom)/2);ctx.restore();
                 }
             };
+            // Si cQ (p.ej. 26Q3) todavía no existe como columna en trafficData
+            // (fuente antigua, pptSheet), se añade como punto extra al final con
+            // el dato real de 04_RAW_KPIS; si ya existe, se sobrescribe ese punto
+            // con el dato exacto de ese trimestre cuando lo hay.
+            const evolLabels = trafficData.labels.slice(0,qIdx+1);
+            if(!hasExactEvolQ) evolLabels.push(cQ);
             chartEvolInstance = new Chart(ctxE, {
                 type:'line',
-                data:{labels:trafficData.labels.slice(0,qIdx+1),datasets:actEvol.map(ds=>({
-                    label:ds.label,data:ds.data.slice(0,qIdx+1),borderColor:chartColors[ds.label],backgroundColor:chartColors[ds.label]+'18',borderWidth:3,tension:.22,pointRadius:4,pointHoverRadius:7,pointHitRadius:16,pointBorderWidth:2,pointBorderColor:chartColors[ds.label],pointBackgroundColor:'#fff',fill:true,spanGaps:false,datalabels:{display:false}
-                }))},
+                data:{labels:evolLabels,datasets:actEvol.map(ds=>{
+                    const data=ds.data.slice(0,qIdx+1);
+                    if(!hasExactEvolQ){
+                        data.push(getTrafficNextGenValue(cQ,ds.label));
+                    }else{
+                        const override=getTrafficNextGenValue(cQ,ds.label);
+                        if(Number.isFinite(Number(override))) data[data.length-1]=Number(override);
+                    }
+                    return {label:ds.label,data,borderColor:chartColors[ds.label],backgroundColor:chartColors[ds.label]+'18',borderWidth:3,tension:.22,pointRadius:4,pointHoverRadius:7,pointHitRadius:16,pointBorderWidth:2,pointBorderColor:chartColors[ds.label],pointBackgroundColor:'#fff',fill:true,spanGaps:false,datalabels:{display:false}};
+                })},
                 options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false,axis:'x'},layout:{padding:{top:14,right:4,bottom:2,left:2}},plugins:{legend:{display:false},datalabels:{display:false},tooltip:{backgroundColor:'#043263',padding:13,titleFont:{size:13,weight:'800'},bodyFont:{size:13,weight:'700'},displayColors:true,boxWidth:10,boxHeight:10,callbacks:{label:context=>`${context.dataset.label}: ${fmtPosPct(context.parsed.y)}`}}},scales:{y:{display:true,min:0,max:100,border:{display:false},grid:{color:'#e8eef5',drawTicks:false},ticks:{stepSize:20,padding:8,color:'#64748b',font:{size:11,weight:'700'},callback:value=>`${value}%`}},x:{grid:{display:false},border:{color:'#dfe7f1'},ticks:{autoSkip:false,maxRotation:0,minRotation:0,padding:6,font:{size:11,weight:'800'},color:'#526176'}}}},
                 plugins:[trafficEndpointLabels,trafficEmptySeries]
             });
@@ -5667,17 +5680,12 @@ window.EDCNps = (() => {
             // "SENDA - Traffic to NextGen" en 04_RAW_KPIS: misma fuente que el
             // Avance Total de "Uso de NextGen por bloque funcional", para que
             // esta gráfica también hable del corte real por trimestre (p.ej. 26Q3).
-            const trafficTotalsForQuarter = resolveNextGenQuarterData(nextGenTrafficTotalsGlobal, cQ);
+            // Coincidencia exacta por trimestre (getTrafficNextGenValue/getTrafficLegacyValue):
+            // nunca se le asigna a cQ el dato de otro trimestre distinto.
             const cArr=geo==='ALL'?[...countryOrder,'Holding']:[geo];
-            const ngD=cArr.map(c=>{
-                const override = trafficTotalsForQuarter ? trafficTotalsForQuarter[c] : null;
-                return Number.isFinite(Number(override)) ? Number(override) : (snapshotDataGlobal[cQ]?.[c]?.nextgen??null);
-            });
-            const lgD=cArr.map(c=>{
-                const override = trafficTotalsForQuarter ? trafficTotalsForQuarter[c] : null;
-                return Number.isFinite(Number(override)) ? Math.round((100-Number(override))*100)/100 : (snapshotDataGlobal[cQ]?.[c]?.legacy??null);
-            });
-            const aQ=Object.keys(snapshotDataGlobal); let iQ=aQ.indexOf(cQ); if(iQ===-1)iQ=aQ.length-1; const vQs=aQ.slice(0,iQ+1);
+            const ngD=cArr.map(c=>getTrafficNextGenValue(cQ,c));
+            const lgD=cArr.map(c=>getTrafficLegacyValue(cQ,c));
+            const aQ=Object.keys(snapshotDataGlobal); let iQ=aQ.indexOf(cQ); const hasExactQ=iQ!==-1; if(!hasExactQ)iQ=aQ.length-1; const vQs=aQ.slice(0,iQ+1); if(!hasExactQ) vQs.push(cQ);
             window.toggleEmptyState('canvas-container-snapshot', !ngD.some(v=>v!==null)&&!lgD.some(v=>v!==null), `Sin datos para ${cQ}`);
 
             const ctxS=document.getElementById('trafficSnapshotGroupedChart').getContext('2d'); if(chartSnapGroupedInstance) chartSnapGroupedInstance.destroy();
@@ -5685,14 +5693,14 @@ window.EDCNps = (() => {
                 chartSnapGroupedInstance = new Chart(ctxS, {
                     type:'bar', data:{labels:cArr,datasets:[{label:'Next Gen',data:ngD,backgroundColor:'#004481',borderRadius:4,barPercentage:0.95,categoryPercentage:0.95,datalabels:{align:'center',color:'white',font:{weight:'900',size:14},formatter:fmtPosPct}},{label:'Legacy',data:lgD,backgroundColor:'#e2e8f0',borderRadius:4,barPercentage:0.95,categoryPercentage:0.95,datalabels:{align:'center',color:'#64748b',font:{weight:'900',size:11},formatter:fmtPosPct}}]},
                     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{left:35,right:20}},plugins:{legend:{display:true, position:'top', align:'end', labels:{usePointStyle:true, boxWidth:8, font:{weight:'bold', size:10, family:"'Lato', sans-serif"}, color:'#475569', padding:8}}},scales:{x:{display:false,max:110,stacked:true},y:{display:true,stacked:true,grid:{display:false},border:{display:false},ticks:{display:false}}},
-                    onClick:(e,el)=>{if(el.length>0){const c=cArr[el[0].index];let lH=vQs.filter(k=>snapshotDataGlobal[k][c].nextgen!==null); window.openInCardOverlay('overlay-traffic', `Histórico (NG vs Legacy) - ${c} <span class="nextgen-round-flag w-4 h-4 inline-block ml-1 align-text-bottom"><img src="https://flagcdn.com/w80/${flagsMap[c]}.png" alt=""></span>`); setTimeout(()=>{if(window.modalTrafChart)window.modalTrafChart.destroy();window.modalTrafChart=new Chart(document.getElementById('canvas-overlay-traffic'),{type:'line',data:{labels:lH,datasets:[{label:'Next Gen',data:lH.map(k=>snapshotDataGlobal[k][c].nextgen),borderColor:'#004481',backgroundColor:'#004481',borderWidth:3,pointRadius:5,datalabels:{align:'top',color:'#004481',font:{weight:'black',size:12},formatter:v=>fmtPct(v)}},{label:'Legacy',data:lH.map(k=>snapshotDataGlobal[k][c].legacy),borderColor:'#94a3b8',backgroundColor:'#94a3b8',borderWidth:3,borderDash:[4,4],pointRadius:5,datalabels:{align:'bottom',color:'#64748b',font:{weight:'bold',size:11},formatter:v=>fmtPct(v)}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...chartLegendOpts, position:'top', align:'end', labels:{...chartLegendOpts.labels, padding:8}}},scales:{y:{max:100,display:false},x:{grid:{display:false}}}}});},300);}}
+                    onClick:(e,el)=>{if(el.length>0){const c=cArr[el[0].index];let lH=vQs.filter(k=>getTrafficNextGenValue(k,c)!==null); window.openInCardOverlay('overlay-traffic', `Histórico (NG vs Legacy) - ${c} <span class="nextgen-round-flag w-4 h-4 inline-block ml-1 align-text-bottom"><img src="https://flagcdn.com/w80/${flagsMap[c]}.png" alt=""></span>`); setTimeout(()=>{if(window.modalTrafChart)window.modalTrafChart.destroy();window.modalTrafChart=new Chart(document.getElementById('canvas-overlay-traffic'),{type:'line',data:{labels:lH,datasets:[{label:'Next Gen',data:lH.map(k=>getTrafficNextGenValue(k,c)),borderColor:'#004481',backgroundColor:'#004481',borderWidth:3,pointRadius:5,datalabels:{align:'top',color:'#004481',font:{weight:'black',size:12},formatter:v=>fmtPct(v)}},{label:'Legacy',data:lH.map(k=>getTrafficLegacyValue(k,c)),borderColor:'#94a3b8',backgroundColor:'#94a3b8',borderWidth:3,borderDash:[4,4],pointRadius:5,datalabels:{align:'bottom',color:'#64748b',font:{weight:'bold',size:11},formatter:v=>fmtPct(v)}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...chartLegendOpts, position:'top', align:'end', labels:{...chartLegendOpts.labels, padding:8}}},scales:{y:{max:100,display:false},x:{grid:{display:false}}}}});},300);}}
                     }, plugins:[{id:'yAxisFlags',afterDraw:(ch)=>{const cx=ch.ctx, yA=ch.scales.y; ch.data.labels.forEach((l,i)=>{const im=loadedFlags[l];if(im&&im.complete){const y=yA.getPixelForTick(i),x=ch.chartArea.left-28; cx.drawImage(im,x,y-8,22,15); cx.strokeStyle='#e2e8f0'; cx.lineWidth=1; cx.strokeRect(x,y-8,22,15);}});}}]
                 });
                 document.getElementById('flagsXAxisTraf').className='hidden'; document.getElementById('flagsXAxisTraf').innerHTML='';
             }else{
-                let lH=vQs.filter(k=>snapshotDataGlobal[k]?.[geo]?.nextgen!=null);
+                let lH=vQs.filter(k=>getTrafficNextGenValue(k,geo)!==null);
                 chartSnapGroupedInstance = new Chart(ctxS, {
-                    type:'line', data:{labels:lH,datasets:[{label:'Next Gen',data:lH.map(k=>snapshotDataGlobal[k][geo].nextgen),borderColor:'#004481',backgroundColor:'#004481',borderWidth:3,pointRadius:5,datalabels:{align:'top',color:'#004481',font:{weight:'900',size:11},formatter:v=>fmtPct(v)}},{label:'Legacy',data:lH.map(k=>snapshotDataGlobal[k][geo].legacy),borderColor:'#94a3b8',backgroundColor:'#94a3b8',borderWidth:3,borderDash:[4,4],pointRadius:5,datalabels:{align:'bottom',color:'#64748b',font:{weight:'900',size:10},formatter:v=>fmtPct(v)}}]},
+                    type:'line', data:{labels:lH,datasets:[{label:'Next Gen',data:lH.map(k=>getTrafficNextGenValue(k,geo)),borderColor:'#004481',backgroundColor:'#004481',borderWidth:3,pointRadius:5,datalabels:{align:'top',color:'#004481',font:{weight:'900',size:11},formatter:v=>fmtPct(v)}},{label:'Legacy',data:lH.map(k=>getTrafficLegacyValue(k,geo)),borderColor:'#94a3b8',backgroundColor:'#94a3b8',borderWidth:3,borderDash:[4,4],pointRadius:5,datalabels:{align:'bottom',color:'#64748b',font:{weight:'900',size:10},formatter:v=>fmtPct(v)}}]},
                     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...chartLegendOpts, position:'top', align:'end', labels:{...chartLegendOpts.labels, padding:8}}},scales:{y:{max:100,display:false},x:{grid:{display:false}}}}
                 });
                 document.getElementById('flagsXAxisTraf').className='hidden'; document.getElementById('flagsXAxisTraf').innerHTML='';
@@ -5856,6 +5864,28 @@ window.EDCNps = (() => {
 
         function getNextGenRecord(country, blockKey) {
             return ((nextGenActiveByBlockData || {})[country] || []).find(row => getFunctionalBlockKey(row.bloque) === blockKey) || null;
+        }
+
+        // A diferencia de resolveNextGenQuarterData (que busca el trimestre más
+        // cercano porque no hay otra fuente para Bloques Funcionales), estos dos
+        // getters son de uso exclusivo en la página de KPIs, donde SÍ existe una
+        // fuente antigua (snapshotDataGlobal, de pptSheet) para trimestres sin
+        // datos nuevos. Por eso aquí la coincidencia debe ser EXACTA: si no hay
+        // dato de 04_RAW_KPIS para ese trimestre concreto, se cae al dato antiguo
+        // de ese MISMO trimestre, nunca al de un trimestre distinto.
+        function getTrafficNextGenValue(quarter, country) {
+            const exact = (nextGenTrafficTotalsGlobal || {})[quarter];
+            const override = exact ? exact[country] : null;
+            if (Number.isFinite(Number(override))) return Number(override);
+            const legacy = snapshotDataGlobal?.[quarter]?.[country]?.nextgen;
+            return Number.isFinite(Number(legacy)) ? Number(legacy) : null;
+        }
+        function getTrafficLegacyValue(quarter, country) {
+            const exact = (nextGenTrafficTotalsGlobal || {})[quarter];
+            const override = exact ? exact[country] : null;
+            if (Number.isFinite(Number(override))) return Math.round((100 - Number(override)) * 100) / 100;
+            const legacy = snapshotDataGlobal?.[quarter]?.[country]?.legacy;
+            return Number.isFinite(Number(legacy)) ? Number(legacy) : null;
         }
 
         function getNextGenTotal(country, quarter) {

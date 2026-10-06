@@ -1394,6 +1394,26 @@ function gthParseSignedNumber_(value) {
   return isNaN(number) ? null : number;
 }
 
+/** Como gthParseSignedNumber_, pero quitando antes un "%" si lo hay: para
+ *  columnas de variación YoY que vienen con signo Y con el símbolo de
+ *  porcentaje a la vez ("-2,4%", "+8,5%"), donde no hace falta ninguna
+ *  conversión de escala (el número ya es el porcentaje a mostrar). */
+function gthParsePercentSigned_(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number') return value;
+  let text = String(value).trim();
+  if (!text || text === '-' || /^#/.test(text)) return null;
+  text = text.replace('%', '').replace(/\s/g, '');
+  if (text.includes(',') && text.includes('.')) {
+    if (text.lastIndexOf(',') > text.lastIndexOf('.')) text = text.replace(/\./g, '').replace(',', '.');
+    else text = text.replace(/,/g, '');
+  } else if (text.includes(',')) {
+    text = text.replace(',', '.');
+  }
+  const number = Number(text);
+  return isNaN(number) ? null : number;
+}
+
 /** Primer valor numérico informado entre las columnas candidatas, usando
  *  gthParseSignedNumber_ en vez de la conversión a porcentaje (para series
  *  como "DP 3x3 YoY (pb)", que son puntos y pueden ser negativas). */
@@ -1456,16 +1476,16 @@ function getDigitalPenSitesData_() {
       target.porcentajeYoy = gthParseSignedNumber_(row[colVariacion]);
     } else if (agrupacion.indexOf('TARGET DIGITAL CLIENTS') >= 0) {
       target.targetDigitalClients = String(row[colCifra] || '').trim();
-      target.targetDigitalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+      target.targetDigitalClientsYoy = gthParsePercentSigned_(row[colVariacion]);
     } else if (agrupacion.indexOf('TARGET TOTAL CLIENTS') >= 0) {
       target.targetTotalClients = String(row[colCifra] || '').trim();
-      target.targetTotalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+      target.targetTotalClientsYoy = gthParsePercentSigned_(row[colVariacion]);
     } else if (agrupacion.indexOf('DIGITAL CLIENTS') >= 0) {
       target.digitalClients = String(row[colCifra] || '').trim();
-      target.digitalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+      target.digitalClientsYoy = gthParsePercentSigned_(row[colVariacion]);
     } else if (agrupacion.indexOf('TOTAL CLIENTS') >= 0) {
       target.totalClients = String(row[colCifra] || '').trim();
-      target.totalClientsYoy = gthPercentOrNull_(row[colVariacion]);
+      target.totalClientsYoy = gthParsePercentSigned_(row[colVariacion]);
     }
   }
   return result;
@@ -1536,6 +1556,50 @@ function getDigitalPenYoyByCountry_() {
       quarterResult[country] = gthFirstReportedNumber_(row, candidateCols);
     }
     result[quarterLabel] = quarterResult;
+  });
+
+  return result;
+}
+
+/** % de Digital Penetration 3x3 por trimestre, país y segmento (Total /
+ *  Commercial (CIB NO incluido) / SMEs), para comparar año actual vs año
+ *  anterior en la gráfica de histórico. A diferencia de
+ *  getDigitalPenYoyByCountry_ (solo el agregado TOTAL PJs y la fila de
+ *  variación), aquí se guarda la fila "Digital Penetration" (el % en sí,
+ *  nunca negativo) de los tres segmentos. */
+function getDigitalPenHistoricoByCountry_() {
+  const header = gthDigitalPenHeader_();
+  const norm = gthNormalizeLabel_;
+
+  const quarterLabelSet = {};
+  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
+
+  const result = {}; // result[country][segmento][quarterLabel] = valor
+  quarterLabels.forEach(function (quarterLabel) {
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const metric = norm(row[header.colMetric]);
+      if (metric.indexOf('DIGITAL PENETRATION') < 0 || metric.indexOf('YOY') >= 0) continue;
+
+      const segmentRaw = norm(row[header.colSegments]);
+      let segmento = null;
+      if (segmentRaw.indexOf('TOTAL') >= 0) segmento = 'Total';
+      else if (segmentRaw.indexOf('COMMERCIAL') >= 0) segmento = 'Commercial (CIB NO incluido)';
+      else if (segmentRaw.indexOf('SMES') >= 0) segmento = 'SMEs';
+      if (!segmento) continue;
+
+      const country = GTH_DIGITALPEN_COUNTRY_MAP_[norm(row[header.colRegion])];
+      if (!country) continue;
+
+      const value = gthFirstReportedValue_(row, candidateCols);
+      if (value === null) continue;
+
+      if (!result[country]) result[country] = {};
+      if (!result[country][segmento]) result[country][segmento] = {};
+      result[country][segmento][quarterLabel] = value;
+    }
   });
 
   return result;

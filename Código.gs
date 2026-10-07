@@ -1611,6 +1611,50 @@ function getDigitalPenHistoricoByCountry_() {
   return result;
 }
 
+/** % real y target del Digital Penetration 3x3 total (segmento "Total"),
+ *  por trimestre y país: misma pestaña 20_DIGITALPEN_HISTORICO_RAW que ya
+ *  alimenta el histórico 3x3, en vez de la pestaña "Consolidado KPIs EDC
+ *  2026" del fichero Layout KPIs EDC. Usado por la tarjeta/gauge "Digital
+ *  Pen. 3x3" del resumen de KPIs y por la gráfica "Digital Penetration
+ *  3x3 por País". Distingue real de target por el texto "TARGET" en la
+ *  columna Metric; si esa fila no existe tal cual en la hoja, el target
+ *  saldrá vacío y habrá que ajustar este filtro al texto real. */
+function getDigitalPenRealTargetByCountry_() {
+  const header = gthDigitalPenHeader_();
+  const norm = gthNormalizeLabel_;
+
+  const quarterLabelSet = {};
+  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
+
+  const result = {};
+  quarterLabels.forEach(function (quarterLabel) {
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
+    const quarterResult = {};
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const metric = norm(row[header.colMetric]);
+      if (metric.indexOf('DIGITAL PENETRATION') < 0 || metric.indexOf('YOY') >= 0) continue;
+
+      const segmentRaw = norm(row[header.colSegments]);
+      if (segmentRaw.indexOf('TOTAL') < 0) continue; // solo el segmento "Total", no Commercial/SMEs
+
+      const country = GTH_DIGITALPEN_COUNTRY_MAP_[norm(row[header.colRegion])];
+      if (!country) continue;
+
+      const value = gthFirstReportedValue_(row, candidateCols);
+      if (value === null) continue;
+
+      if (!quarterResult[country]) quarterResult[country] = {};
+      if (metric.indexOf('TARGET') >= 0) quarterResult[country].target = value;
+      else quarterResult[country].real = value;
+    }
+    result[quarterLabel] = quarterResult;
+  });
+
+  return result;
+}
+
 /** Identifica la fila de cabeceras de 11_CATALOGO_KPIs de forma tolerante. */
 function findCatalogoHeaderRow_(values) {
   let bestIndex = 0;

@@ -37,6 +37,7 @@ const GTH_DATASETS = {
   digitalPenSites: function () { return getDigitalPenSitesData_(); },
   digitalPenYoy: function () { return getDigitalPenYoyByCountry_(); },
   digitalPenHistorico: function () { return getDigitalPenHistoricoByCountry_(); },
+  digitalPenRealTarget: function () { return getDigitalPenRealTargetByCountry_(); },
   adopcion:      function () { return gthBuildAdopcion_(); }
 };
 
@@ -126,6 +127,7 @@ function gthResolveDataset_(action) {
     getDigitalPenSitesData: 'digitalPenSites',
     getDigitalPenYoyByCountry: 'digitalPenYoy',
     getDigitalPenHistoricoByCountry: 'digitalPenHistorico',
+    getDigitalPenRealTargetByCountry: 'digitalPenRealTarget',
     getAdopcionSnapshot: 'adopcion',
     refreshAdopcion: 'adopcion',
     refreshCatalogo: 'catalogo',
@@ -136,7 +138,8 @@ function gthResolveDataset_(action) {
     refreshTrafficToNextGenTotals: 'trafficToNextGenTotals',
     refreshDigitalPenSites: 'digitalPenSites',
     refreshDigitalPenYoy: 'digitalPenYoy',
-    refreshDigitalPenHistorico: 'digitalPenHistorico'
+    refreshDigitalPenHistorico: 'digitalPenHistorico',
+    refreshDigitalPenRealTarget: 'digitalPenRealTarget'
   };
   return map[action] || (GTH_DATASETS[action] ? action : null);
 }

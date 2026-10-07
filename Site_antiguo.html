@@ -5225,7 +5225,7 @@
         };
 
         // --- VARIABLES GLOBALES ---
-        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, nextGenTrafficTotalsGlobal=null, featuresEvolution2025=null, digitalPenSitesGlobal=null, digitalPenYoyGlobal=null, digitalPenHistoricoGlobal=null;
+        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, nextGenTrafficTotalsGlobal=null, featuresEvolution2025=null, digitalPenSitesGlobal=null, digitalPenYoyGlobal=null, digitalPenHistoricoGlobal=null, digitalPenRealTargetGlobal=null;
         let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, featureProgressLoading=false, featureProgressLoadError='', trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
         const chartColors = {'España':'#a855f7','México':'#22c55e','Perú':'#ef4444','Colombia':'#1e3a8a','Argentina':'#3b82f6','TOTAL':'#004481'};
         const flagsMap = { 'Holding':'Holding','España':'es','México':'mx','Perú':'pe','Colombia':'co','Argentina':'ar','TOTAL':'global','Global':'global','ALL':'global'};
@@ -5750,128 +5750,9 @@ window.EDCNps = (() => {
                         };
                     });
 
-                    // PENETRACIÓN DIGITAL 3x3 (única vista): pestaña "Consolidado KPIs EDC 2026".
-                    // Columnas de respaldo únicamente para cuando no se localiza la fila/cabecera
-                    // por texto (ver buildDigitalPenetration3x3 más abajo, que es el método principal).
-                    // Es la misma matriz que 1x3, usando sus filas equivalentes 59–66.
-                    // Total 59 · España 60 · México 61 · Perú 62 · Colombia 63 · Argentina 64 · Uruguay 65 · Turquía 66.
-                    const digitalPenQuarterCols = {
-                        '24Q4':{real:'AI',target:null,fallback:null},
-                        '25Q1':{real:'AL',target:'AY',fallback:'AV'}, '25Q2':{real:'AO',target:'BB',fallback:'AV'},
-                        '25Q3':{real:'AR',target:'BE',fallback:'AV'}, '25Q4':{real:'AU',target:'BH',fallback:'AV'},
-                        '26Q1':{real:'BK',target:'BX',fallback:'BU'}, '26Q2':{real:'BN',target:'CA',fallback:'BU'},
-                        '26Q3':{real:'BQ',target:'CD',fallback:'BU'}, '26Q4':{real:'BT',target:'CG',fallback:'BU'},
-                        '27Q1':{real:'BW',target:'CJ',fallback:'BX'}, '27Q2':{real:'BZ',target:'CM',fallback:'CA'},
-                        '27Q3':{real:'CC',target:'CP',fallback:'CD'}, '27Q4':{real:'CF',target:'CS',fallback:'CG'}
-                    };
-                    const digitalPenRows = {'TOTAL':59,'España':60,'México':61,'Perú':62,'Colombia':63,'Argentina':64,'Uruguay':65,'Turquía':66};
-
-                    // PENETRACIÓN DIGITAL 3x3. Se lee de "Consolidado KPIs EDC 2026":
-                    // las columnas mensuales son Real y las columnas "Tar" son Target.
-                    // Los nombres de columnas se detectan por cabecera para no depender de letras fijas.
-                    const buildDigitalPenetration3x3 = sheet => {
-                        if (!sheet || !sheet['!ref']) return null;
-                        const range = XLSX.utils.decode_range(sheet['!ref']);
-                        const cellText = (col, row) => {
-                            const cell = sheet[XLSX.utils.encode_cell({c:col, r:row})];
-                            return cell ? String(cell.w ?? cell.v ?? '').replace(/\s+/g, ' ').trim() : '';
-                        };
-                        const normalizeText = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
-                        const geoFromBU = {SPA:'España', MEX:'México', PER:'Perú', COL:'Colombia', ARG:'Argentina', TOTAL:'TOTAL'};
-
-                        // La etiqueta de la métrica y el código de país (BU) pueden estar en
-                        // columnas distintas según la hoja: se buscan en las primeras columnas
-                        // en vez de asumir letras fijas (B/C/D...).
-                        const scanWidth = Math.min(10, range.e.c - range.s.c + 1);
-                        const labelMatches = [];
-                        for (let row = range.s.r; row <= range.e.r; row++) {
-                            let labelCol = -1;
-                            for (let col = range.s.c; col < range.s.c + scanWidth; col++) {
-                                if (normalizeText(cellText(col, row)).includes('ENTERPRISE CHANNELS DIGITAL PENETRATION 3X3')) { labelCol = col; break; }
-                            }
-                            if (labelCol === -1) continue;
-                            for (let col = labelCol + 1; col < labelCol + 5 && col <= range.e.c; col++) {
-                                const bu = normalizeText(cellText(col, row)).replace(/[^A-Z]/g, '');
-                                if (geoFromBU[bu]) { labelMatches.push({ row, geo: geoFromBU[bu] }); break; }
-                            }
-                        }
-                        if (!labelMatches.length) {
-                            console.warn('Digital Penetration 3x3: no se ha encontrado ninguna fila con el texto "Enterprise Channels Digital Penetration 3x3".');
-                            return null;
-                        }
-
-                        const monthByText = {ENE:1,JAN:1,FEB:2,MAR:3,ABR:4,APR:4,MAY:5,JUN:6,JUL:7,AGO:8,AUG:8,SEP:9,SET:9,OCT:10,NOV:11,DIC:12,DEC:12};
-                        const realCols = {}, targetCols = {}, annualTargetCols = {};
-                        const headerRowCount = Math.min(10, range.e.r + 1);
-                        for (let col = range.s.c; col <= range.e.c; col++) {
-                            const header = Array.from({length:headerRowCount}, (_, row) => cellText(col, row)).filter(Boolean).join(' ');
-                            const cleanHeader = normalizeText(header).replace(/[.,/\\-]/g, ' ');
-                            const yearMatch = cleanHeader.match(/\b(20\d{2})\b/);
-                            const isTarget = /(?:^|\s)(?:TAR|TARGET|OBJETIVO)(?:\s|$)/.test(cleanHeader);
-                            if (!yearMatch || !isTarget && !Object.keys(monthByText).some(month => new RegExp(`(?:^|\\s)${month}(?:\\s|$)`).test(cleanHeader))) continue;
-                            const year = Number(yearMatch[1]);
-                            const monthName = Object.keys(monthByText).find(month => new RegExp(`(?:^|\\s)${month}(?:\\s|$)`).test(cleanHeader));
-                            const colLetter = XLSX.utils.encode_col(col);
-                            if (!monthName) {
-                                if (isTarget) annualTargetCols[year] = colLetter;
-                                continue;
-                            }
-                            const key = `${year}-${String(monthByText[monthName]).padStart(2, '0')}`;
-                            if (isTarget) targetCols[key] = colLetter;
-                            else realCols[key] = colLetter;
-                        }
-
-                        // La etiqueta, el código de país y el propio dato están todos en la
-                        // misma fila (confirmado sobre la hoja real): no hay que adivinar entre
-                        // la fila de la etiqueta y la siguiente.
-                        const rowsByGeo = {};
-                        labelMatches.forEach(({ row, geo }) => {
-                            if (rowsByGeo[geo]) return; // se queda con la primera coincidencia
-                            rowsByGeo[geo] = row + 1;
-                        });
-
-                        const endMonthByQuarter = {1:3,2:6,3:9,4:12};
-                        const series = {};
-                        Object.keys(colMapTraf).forEach(qKey => {
-                            const year = 2000 + Number(qKey.slice(0, 2));
-                            const month = endMonthByQuarter[Number(qKey.slice(-1))];
-                            const dateKey = `${year}-${String(month).padStart(2, '0')}`;
-                            const realCol = realCols[dateKey];
-                            const targetCol = targetCols[dateKey];
-                            series[qKey] = {};
-                            ['España','México','Perú','Colombia','Argentina','TOTAL'].forEach(geo => {
-                                const row = rowsByGeo[geo];
-                                const real = row && realCol ? normalizePercent(getV(sheet, realCol + row)) : null;
-                                let target = row && targetCol ? normalizePercent(getV(sheet, targetCol + row)) : null;
-                                // Si falta un target mensual, se conserva el target anual disponible para ese año.
-                                if (target === null && row && annualTargetCols[year]) target = normalizePercent(getV(sheet, annualTargetCols[year] + row));
-                                series[qKey][geo] = {real, target};
-                            });
-                        });
-                        console.log('Digital Penetration 3x3 · diagnóstico:', { filasEncontradas: rowsByGeo, columnasReal: realCols, columnasTarget: targetCols, columnasTargetAnual: annualTargetCols });
-                        window.gthDigPenDebug = { rowsByGeo, realCols, targetCols, annualTargetCols, series };
-                        return series;
-                    };
-
-                    // Localiza la fila y las columnas por su texto real en la hoja, en vez de
-                    // letras fijas: así no se rompe si el Excel desplaza filas o columnas.
-                    if (!consSheet) console.warn('Digital Penetration 3x3: no se ha encontrado la pestaña "Consolidado KPIs EDC 2026" en el Excel sincronizado.');
-                    digitalPenDataGlobal = buildDigitalPenetration3x3(consSheet);
-                    if (!digitalPenDataGlobal) {
-                        console.warn('Digital Penetration 3x3: usando columnas de respaldo (AI/AL/AY...) porque no se ha podido localizar por cabecera.');
-                        digitalPenDataGlobal = {};
-                        Object.entries(digitalPenQuarterCols).forEach(([qKey, cols]) => {
-                            digitalPenDataGlobal[qKey] = {};
-                            Object.entries(digitalPenRows).forEach(([country, row]) => {
-                                const real = cols.real ? normalizePercent(getV(consSheet, cols.real + row)) : null;
-                                let target = cols.target ? normalizePercent(getV(consSheet, cols.target + row)) : null;
-                                if (target === null && cols.fallback) target = normalizePercent(getV(consSheet, cols.fallback + row));
-                                digitalPenDataGlobal[qKey][country] = {real, target};
-                            });
-                        });
-                        window.gthDigPenDebug = { usedFallback: true, data: digitalPenDataGlobal };
-                    }
-                    console.log('Digital Penetration 3x3 · resultado final (window.gthDigPenDebug para más detalle):', digitalPenDataGlobal);
+                    // Digital Penetration 3x3 (real y target): se carga aparte desde
+                    // 20_DIGITALPEN_HISTORICO_RAW (vía API, no desde este xlsx) más abajo,
+                    // junto con loadDigitalPenSitesData/loadDigitalPenYoyData/loadDigitalPenHistoricoData.
 
                     const ratingColsMap = {'25Q1':{real:'AL',target:'AY',fallback:'AV'},'25Q2':{real:'AO',target:'BB',fallback:'AV'},'25Q3':{real:'AR',target:'BE',fallback:'AV'},'25Q4':{real:'AU',target:'BH',fallback:'AV'},'26Q1':{real:'BK',target:'BX',fallback:'BU'},'26Q2':{real:'BN',target:'CA',fallback:'BU'},'26Q3':{real:'BQ',target:'CD',fallback:'BU'},'26Q4':{real:'BT',target:'CG',fallback:'BU'},'27Q1':{real:'BW',target:'CJ',fallback:'BX'},'27Q2':{real:'BZ',target:'CM',fallback:'CA'},'27Q3':{real:'CC',target:'CP',fallback:'CD'},'27Q4':{real:'CF',target:'CS',fallback:'CG'}};
                     const iosRows = [42,43,44,45,46], androidRows = [48,49,50,51,52];
@@ -5933,6 +5814,7 @@ window.EDCNps = (() => {
                     loadDigitalPenSitesData();
                     loadDigitalPenYoyData();
                     loadDigitalPenHistoricoData();
+                    loadDigitalPenRealTargetData();
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -7052,6 +6934,34 @@ window.EDCNps = (() => {
             return digitalPenHistoricoLoadPromise;
         }
 
+        // Real y target del Digital Penetration 3x3 total, por trimestre y país:
+        // 20_DIGITALPEN_HISTORICO_RAW (antes se leía de "Consolidado KPIs EDC
+        // 2026" en Layout KPIs EDC). Alimenta digitalPenDataGlobal, que usan la
+        // tarjeta "Digital Pen. 3x3" del resumen de KPIs y la gráfica
+        // "Digital Penetration 3x3 por País".
+        let digitalPenRealTargetLoadPromise = null;
+        function loadDigitalPenRealTargetData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar el real/target de Digital Penetration 3x3.');
+                return digitalPenRealTargetLoadPromise || Promise.resolve(null);
+            }
+            digitalPenRealTargetLoadPromise = window.catalogoApi('getDigitalPenRealTargetByCountry')
+                .then(data => {
+                    digitalPenRealTargetGlobal = (data && typeof data === 'object') ? data : null;
+                    digitalPenDataGlobal = digitalPenRealTargetGlobal || {};
+                    if (!digitalPenRealTargetGlobal) console.warn('No se han encontrado datos válidos de real/target de Digital Penetration 3x3 en 20_DIGITALPEN_HISTORICO_RAW.');
+                    if (typeof renderOverview === 'function') renderOverview();
+                    if (typeof renderDigitalPenBarChart === 'function') renderDigitalPenBarChart();
+                    return digitalPenRealTargetGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el real/target de Digital Penetration 3x3 (20_DIGITALPEN_HISTORICO_RAW).', error);
+                    digitalPenDataGlobal = digitalPenDataGlobal || {};
+                    return null;
+                });
+            return digitalPenRealTargetLoadPromise;
+        }
+
         window.addEventListener('load', () => {
             window.setTimeout(() => {
                 const preload = () => {
@@ -7061,6 +6971,7 @@ window.EDCNps = (() => {
                     if (!digitalPenSitesGlobal) loadDigitalPenSitesData();
                     if (!digitalPenYoyGlobal) loadDigitalPenYoyData();
                     if (!digitalPenHistoricoGlobal) loadDigitalPenHistoricoData();
+                    if (!digitalPenRealTargetGlobal) loadDigitalPenRealTargetData();
                 };
                 if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
                 else preload();

@@ -1690,8 +1690,12 @@
         .ng-hero-caption{font-size:.72rem;color:#5BBEFF;font-weight:700;letter-spacing:.02em;margin-top:.5rem}
         .ng-hero-caption b{color:#fff}
         .ng-hero-countries{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:.6rem}
-        .ng-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:.9rem;padding:.65rem .7rem;text-align:left;transition:background .16s,transform .16s}
+        .ng-chip{position:relative;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:.9rem;padding:.65rem .7rem;text-align:left;transition:background .16s,transform .16s;cursor:pointer}
         .ng-chip:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+        .ng-chip.active{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.6)}
+        .ng-chip-badge{position:absolute;top:-9px;right:-7px;font-size:.5rem;font-weight:900;letter-spacing:.03em;text-transform:uppercase;padding:.22rem .4rem;border-radius:999px;display:flex;align-items:center;gap:.2rem;box-shadow:0 2px 6px rgba(0,0,0,.25);white-space:nowrap}
+        .ng-chip-badge.up{background:#1FA85A;color:#fff}
+        .ng-chip-badge.down{background:#E2443B;color:#fff}
         .ng-chip-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.5rem}
         .ng-chip-head img{width:1.1rem;height:.76rem;object-fit:cover;border-radius:2px;flex:none}
         .ng-chip-head .nextgen-round-flag img{width:100%;height:100%;object-fit:cover;border-radius:0;border:0}
@@ -1832,6 +1836,644 @@
 
         @media (prefers-reduced-motion:reduce){#siteLoadingScreen,.page-section.site-page-enter,.site-loading-line,.site-loading-status::before,#siteNavActiveIndicator,.site-nav-btn,.catalogo-kpis-loader::before,.catalogo-kpis-loader::after,.catalogo-kpis-loader-emblem::before,.catalogo-kpis-loader-emblem::after,.catalogo-kpis-loader-bars span,.catalogo-kpis-loader-status b,#ep-roadmap .ep-roadmap-highlight,#ep-nextgen .nextgen-block-highlight{animation:none!important;transition:none!important}}
     </style>
+
+<style>
+/* =========================================================
+   FOLLOW UP HOLDING · LAYOUT FULL PAGE (referencia Engineering)
+   ========================================================= */
+#page-monthly {
+  height: calc(100vh - 76px) !important;
+  min-height: calc(100vh - 76px) !important;
+  overflow: hidden !important;
+  background: #eef3f8 !important;
+}
+#page-monthly > .monthly-full-shell {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  gap: 10px !important;
+  padding: 8px 10px 0 !important;
+}
+#page-monthly .monthly-full-sidebar {
+  width: 300px !important;
+  min-width: 300px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-radius: 18px 18px 0 0 !important;
+  background: linear-gradient(180deg,#2d006c 0%,#42009a 42%,#6500d8 100%) !important;
+  box-shadow: 0 14px 38px rgba(31,5,84,.22) !important;
+  color: #fff !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn span {
+  color: rgba(255,255,255,.94) !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn {
+  border-radius: 12px !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn:hover {
+  background: rgba(255,255,255,.09) !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn.active-monthly-tab {
+  background: rgba(255,255,255,.13) !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn.active-monthly-tab span {
+  color: #fff !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-quarter-btn {
+  outline: none !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-quarter-btn.is-quarter-active {
+  background: #64C9FF !important;
+  color: #2E0B70 !important;
+  border-color: #64C9FF !important;
+  box-shadow: 0 8px 18px rgba(100,201,255,.18) !important;
+}
+#page-monthly .monthly-full-sidebar .monthly-quarter-btn:not(.is-quarter-active) {
+  background: rgba(255,255,255,.055) !important;
+  color: rgba(255,255,255,.55) !important;
+}
+#page-monthly .monthly-full-sidebar nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.45) transparent;
+}
+#page-monthly .monthly-full-sidebar nav::-webkit-scrollbar { width: 5px; }
+#page-monthly .monthly-full-sidebar nav::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.42);
+  border-radius: 999px;
+}
+#page-monthly .monthly-full-main {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  flex: 1 1 auto !important;
+  padding: 0 !important;
+  overflow: auto !important;
+  border-radius: 18px 18px 0 0 !important;
+}
+#page-monthly #m-agenda { height: 100% !important; }
+#page-monthly .monthly-hero-cover {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  border-radius: 18px 18px 0 0 !important;
+}
+#page-monthly .monthly-tab-content:not(#m-agenda) {
+  min-height: 100% !important;
+}
+@media (max-width: 1023px) {
+  #page-monthly { height: auto !important; min-height: calc(100vh - 76px) !important; overflow: visible !important; }
+  #page-monthly > .monthly-full-shell { flex-direction: column !important; height: auto !important; padding: 8px !important; }
+  #page-monthly .monthly-full-sidebar { width: 100% !important; min-width: 0 !important; height: auto !important; border-radius: 18px !important; }
+  #page-monthly .monthly-full-main { height: auto !important; min-height: 70vh !important; border-radius: 18px !important; }
+  #page-monthly .monthly-hero-cover { min-height: 70vh !important; border-radius: 18px !important; }
+}
+</style>
+
+<style>
+/* =========================================================
+   FOLLOW UP HOLDING EDC · AJUSTE VISUAL SEGÚN REFERENCIA
+   - Aurora animada en portada
+   - Tipografía/colores de índice tipo Engineering Programs
+   - Sin numeración 01/02/03
+   ========================================================= */
+#page-monthly .monthly-full-sidebar{
+  background:linear-gradient(180deg,#2C0067 0%,#3B008D 35%,#4D00B0 66%,#6500D4 100%)!important;
+  color:#fff!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-index-label{
+  color:#70D2FF!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.22em!important;
+  text-transform:uppercase!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-section-main{
+  color:#fff!important;
+  font-size:15.5px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  letter-spacing:-.01em!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-section-icon{
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:#BEEBFF!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-section-icon svg{
+  width:20px!important;
+  height:20px!important;
+  stroke-width:2.15!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn{
+  min-height:42px!important;
+  border-radius:11px!important;
+  color:#fff!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn span{
+  color:#fff!important;
+  font-size:15px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:-.01em!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-subnav-btn{
+  padding-top:9px!important;
+  padding-bottom:9px!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-subnav-btn span{
+  font-size:14px!important;
+  font-weight:800!important;
+  color:rgba(255,255,255,.96)!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-subnav-btn > div:not(.tab-indicator){
+  background:rgba(112,210,255,.11)!important;
+  border-color:rgba(112,210,255,.08)!important;
+  color:#8BDEFF!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-primary-nav{
+  padding-top:11px!important;
+  padding-bottom:11px!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-primary-nav > div:not(.tab-indicator){
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:#BEEBFF!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-primary-nav > div:not(.tab-indicator) svg{
+  width:20px!important;
+  height:20px!important;
+  stroke-width:2.15!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn:hover{
+  background:rgba(255,255,255,.075)!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn.active-monthly-tab{
+  background:rgba(255,255,255,.10)!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-nav-btn.active-monthly-tab .tab-indicator{
+  transform:translateX(0)!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-quarter-btn{
+  font-size:13px!important;
+  font-weight:900!important;
+  letter-spacing:-.01em!important;
+}
+#page-monthly .monthly-full-sidebar .monthly-quarter-btn.is-quarter-active{
+  background:#68C9FB!important;
+  color:#260A67!important;
+  border-color:#68C9FB!important;
+}
+
+/* Portada EDC · mismo lenguaje visual/efecto de luz que Engineering Programs */
+#page-monthly .monthly-hero-cover{
+  isolation:isolate!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(116deg,#0D1B56 0%,#111B56 42%,#2F006F 100%)!important;
+}
+#page-monthly .monthly-hero-cover .monthly-hero-motion{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  overflow:hidden;
+}
+#page-monthly .monthly-hero-cover .monthly-hero-motion::before,
+#page-monthly .monthly-hero-cover .monthly-hero-motion::after{
+  content:"";
+  position:absolute;
+  inset:auto;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+#page-monthly .monthly-hero-cover .monthly-hero-motion::before{
+  width:72%;
+  height:180%;
+  top:-38%;
+  left:8%;
+  background:linear-gradient(112deg,rgba(255,255,255,0) 18%,rgba(120,196,255,.05) 30%,rgba(141,114,255,.28) 44%,rgba(121,219,255,.10) 53%,rgba(255,255,255,0) 66%);
+  filter:blur(18px);
+  opacity:.95;
+  transform:translate3d(-18%,0,0) rotate(-12deg);
+  animation:monthlyAuroraBeam 9s ease-in-out infinite alternate;
+}
+#page-monthly .monthly-hero-cover .monthly-hero-motion::after{
+  width:44%;
+  height:150%;
+  top:-26%;
+  right:-4%;
+  background:radial-gradient(circle at 38% 24%,rgba(155,120,255,.46) 0 12%,rgba(124,64,255,.2) 24%,rgba(74,31,186,0) 58%),linear-gradient(180deg,rgba(102,196,255,.18),rgba(133,61,255,0));
+  filter:blur(20px);
+  opacity:.88;
+  transform:translate3d(6%,-2%,0) scale(1);
+  animation:monthlyAuroraPulse 11s ease-in-out infinite alternate;
+}
+#page-monthly .monthly-hero-cover::before{
+  content:"";
+  position:absolute;
+  inset:-22%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 78% 20%,rgba(106,82,229,.48) 0 7%,rgba(88,57,205,.24) 15%,transparent 31%),
+    radial-gradient(circle at 91% 74%,rgba(123,26,236,.35) 0 9%,rgba(94,14,195,.17) 20%,transparent 34%),
+    radial-gradient(circle at 20% 84%,rgba(40,123,239,.18) 0 10%,transparent 30%);
+  filter:blur(24px);
+  opacity:.9;
+  transform:translate3d(0,0,0) scale(1.03);
+  animation:monthlyAuroraFloat 12s ease-in-out infinite alternate;
+}
+#page-monthly .monthly-hero-cover::after{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(113deg,transparent 34%,rgba(102,75,220,.04) 41%,rgba(132,99,255,.18) 49%,rgba(76,47,190,.08) 56%,transparent 63%);
+  filter:blur(18px);
+  opacity:.85;
+  transform:translateX(-16%) rotate(-3deg);
+  animation:monthlyAuroraSweep 10s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+}
+#page-monthly .monthly-hero-cover > .absolute.inset-0{
+  z-index:1!important;
+}
+#page-monthly .monthly-hero-cover > .relative.z-10{
+  z-index:3!important;
+}
+#page-monthly .monthly-hero-subtitle{
+  color:#fff!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.18);
+}
+@keyframes monthlyAuroraFloat{
+  0%{transform:translate3d(-2%,-2%,0) scale(1.02);opacity:.74}
+  35%{transform:translate3d(3%,1%,0) scale(1.08);opacity:.95}
+  70%{transform:translate3d(-1%,4%,0) scale(1.04);opacity:.84}
+  100%{transform:translate3d(4%,-1%,0) scale(1.10);opacity:.98}
+}
+@keyframes monthlyAuroraSweep{
+  0%{transform:translateX(-22%) translateY(-2%) rotate(-4deg);opacity:.45}
+  45%{transform:translateX(2%) translateY(2%) rotate(-1deg);opacity:.88}
+  100%{transform:translateX(20%) translateY(-1%) rotate(3deg);opacity:.58}
+}
+@keyframes monthlyAuroraBeam{
+  0%{transform:translate3d(-18%,-2%,0) rotate(-12deg);opacity:.38}
+  40%{transform:translate3d(-2%,1%,0) rotate(-7deg);opacity:.92}
+  100%{transform:translate3d(18%,3%,0) rotate(-1deg);opacity:.56}
+}
+@keyframes monthlyAuroraPulse{
+  0%{transform:translate3d(8%,-4%,0) scale(.96);opacity:.42}
+  45%{transform:translate3d(-1%,1%,0) scale(1.04);opacity:.9}
+  100%{transform:translate3d(-8%,4%,0) scale(1.12);opacity:.58}
+}
+@media (prefers-reduced-motion:reduce){
+  #page-monthly .monthly-hero-cover::before,
+  #page-monthly .monthly-hero-cover::after,
+  #page-monthly .monthly-hero-cover .monthly-hero-motion::before,
+  #page-monthly .monthly-hero-cover .monthly-hero-motion::after{animation:none!important}
+}
+</style>
+
+
+<style>
+/* =========================================================
+   STEERCO · MISMA LÓGICA VISUAL QUE FOLLOW UP HOLDING
+   País → Periodo/Q → Índice
+   ========================================================= */
+#page-steerco{
+  height:calc(100vh - 76px)!important;
+  min-height:calc(100vh - 76px)!important;
+  overflow:hidden!important;
+  background:#eef3f8!important;
+}
+#page-steerco > section{
+  height:100%!important;
+  min-height:0!important;
+  padding:8px 10px 0!important;
+}
+#page-steerco > section > div{
+  height:100%!important;
+  min-height:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+#page-steerco .steerco-country-selector-area{
+  display:none!important;
+}
+#page-steerco .steerco-workspace{
+  height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  background:transparent!important;
+}
+#page-steerco .steerco-flex{
+  height:100%!important;
+  min-height:0!important;
+  gap:10px!important;
+  overflow:hidden!important;
+}
+#page-steerco .steerco-sidebar{
+  width:300px!important;
+  min-width:300px!important;
+  height:100%!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-gutter:stable!important;
+  border:0!important;
+  border-radius:18px 18px 0 0!important;
+  color:#fff!important;
+  background:linear-gradient(180deg,#2C0067 0%,#3B008D 35%,#4D00B0 66%,#6500D4 100%)!important;
+  box-shadow:0 14px 38px rgba(31,5,84,.22)!important;
+}
+#page-steerco .steerco-sidebar{
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(232,220,255,.58) transparent!important;
+}
+#page-steerco .steerco-sidebar::-webkit-scrollbar{
+  width:5px!important;
+}
+#page-steerco .steerco-sidebar::-webkit-scrollbar-track{
+  background:transparent!important;
+}
+#page-steerco .steerco-sidebar::-webkit-scrollbar-thumb{
+  background:rgba(232,220,255,.58)!important;
+  border-radius:999px!important;
+}
+#page-steerco .steerco-sidebar::-webkit-scrollbar-thumb:hover{
+  background:rgba(244,238,255,.78)!important;
+}
+#page-steerco .steerco-sidebar nav{
+  flex:0 0 auto!important;
+  overflow:visible!important;
+  min-height:max-content!important;
+}
+#page-steerco .steerco-main{
+  height:100%!important;
+  min-height:0!important;
+  flex:1 1 auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border-radius:18px 18px 0 0!important;
+}
+#page-steerco .steerco-content-panel{
+  height:100%!important;
+  min-height:0!important;
+  border-radius:18px 18px 0 0!important;
+}
+#page-steerco .steerco-content-scroll{
+  min-height:0!important;
+  padding:14px!important;
+}
+#page-steerco .steerco-sidebar-label{
+  color:#70D2FF!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.22em!important;
+  text-transform:uppercase!important;
+}
+#page-steerco .steerco-country-sidebar-btn{
+  height:48px!important;
+  min-height:48px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:5px!important;
+  font-size:0!important;
+  line-height:1!important;
+  font-weight:900!important;
+  transition:all .18s ease!important;
+}
+#page-steerco .steerco-country-sidebar-btn:hover{
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+}
+#page-steerco .steerco-country-sidebar-btn.is-selected{
+  background:rgba(104,201,251,.18)!important;
+  border-color:#68C9FB!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(100,201,255,.12)!important;
+}
+#page-steerco .steerco-country-sidebar-btn .nextgen-round-flag{
+  width:31px!important;
+  height:31px!important;
+  min-width:31px!important;
+}
+#page-steerco .steerco-quarter-btn{
+  outline:none!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+#page-steerco .steerco-quarter-btn.is-quarter-active{
+  background:#68C9FB!important;
+  color:#260A67!important;
+  border-color:#68C9FB!important;
+  box-shadow:0 8px 18px rgba(100,201,255,.18)!important;
+}
+#page-steerco .steerco-quarter-btn:not(.is-quarter-active){
+  background:rgba(255,255,255,.055)!important;
+  color:rgba(255,255,255,.55)!important;
+  border-color:rgba(255,255,255,.05)!important;
+}
+#page-steerco .steerco-index-btn{
+  min-height:46px!important;
+  border-radius:11px!important;
+  padding:10px 12px!important;
+  margin-bottom:4px!important;
+  color:#fff!important;
+}
+#page-steerco .steerco-index-btn:hover{
+  background:rgba(255,255,255,.075)!important;
+}
+#page-steerco .steerco-index-btn.active-steerco-tab{
+  background:rgba(255,255,255,.11)!important;
+}
+#page-steerco .steerco-index-btn span{
+  color:#fff!important;
+  font-size:15px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:-.01em!important;
+}
+#page-steerco .steerco-index-icon{
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:#BEEBFF!important;
+}
+#page-steerco .steerco-index-icon svg{
+  width:20px!important;
+  height:20px!important;
+  stroke-width:2.15!important;
+}
+#page-steerco .steerco-index-btn .tab-indicator{
+  background:#68C9FB!important;
+}
+#page-steerco .steerco-cover-view-shell{
+  height:100%;
+}
+@media(max-width:1023px){
+  #page-steerco{
+    height:auto!important;
+    min-height:calc(100vh - 76px)!important;
+    overflow:visible!important;
+  }
+  #page-steerco > section{height:auto!important;padding:8px!important}
+  #page-steerco .steerco-workspace,
+  #page-steerco .steerco-flex,
+  #page-steerco .steerco-main,
+  #page-steerco .steerco-content-panel{
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  #page-steerco .steerco-flex{flex-direction:column!important}
+  #page-steerco .steerco-sidebar{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    border-radius:18px!important;
+  }
+  #page-steerco .steerco-content-scroll{overflow:visible!important}
+}
+</style>
+
+
+<style>
+/* SteerCo · scroll lateral único */
+#page-steerco .steerco-sidebar{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(232,220,255,.58) transparent!important;
+}
+#page-steerco .steerco-sidebar::-webkit-scrollbar{width:5px!important}
+#page-steerco .steerco-sidebar::-webkit-scrollbar-track{background:transparent!important}
+#page-steerco .steerco-sidebar::-webkit-scrollbar-thumb{
+  background:rgba(232,220,255,.58)!important;
+  border-radius:999px!important;
+}
+#page-steerco .steerco-sidebar nav{
+  overflow:visible!important;
+  flex:0 0 auto!important;
+}
+</style>
+
+
+<style>
+/* SteerCo · portada con el mismo lenguaje visual que Follow up Holding */
+#page-steerco .steerco-followup-cover{
+  isolation:isolate!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(116deg,#0D1B56 0%,#111B56 42%,#2F006F 100%)!important;
+}
+#page-steerco .steerco-followup-cover .steerco-followup-motion{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  overflow:hidden;
+}
+#page-steerco .steerco-followup-cover .steerco-followup-motion::before,
+#page-steerco .steerco-followup-cover .steerco-followup-motion::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+#page-steerco .steerco-followup-cover .steerco-followup-motion::before{
+  width:72%;
+  height:180%;
+  top:-38%;
+  left:8%;
+  background:linear-gradient(112deg,rgba(255,255,255,0) 18%,rgba(120,196,255,.05) 30%,rgba(141,114,255,.28) 44%,rgba(121,219,255,.10) 53%,rgba(255,255,255,0) 66%);
+  filter:blur(18px);
+  opacity:.95;
+  transform:translate3d(-18%,0,0) rotate(-12deg);
+  animation:monthlyAuroraBeam 9s ease-in-out infinite alternate;
+}
+#page-steerco .steerco-followup-cover .steerco-followup-motion::after{
+  width:44%;
+  height:150%;
+  top:-26%;
+  right:-4%;
+  background:radial-gradient(circle at 38% 24%,rgba(155,120,255,.46) 0 12%,rgba(124,64,255,.2) 24%,rgba(74,31,186,0) 58%),linear-gradient(180deg,rgba(102,196,255,.18),rgba(133,61,255,0));
+  filter:blur(20px);
+  opacity:.88;
+  transform:translate3d(6%,-2%,0) scale(1);
+  animation:monthlyAuroraPulse 11s ease-in-out infinite alternate;
+}
+#page-steerco .steerco-followup-cover::before{
+  content:"";
+  position:absolute;
+  inset:-22%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 78% 20%,rgba(106,82,229,.48) 0 7%,rgba(88,57,205,.24) 15%,transparent 31%),
+    radial-gradient(circle at 91% 74%,rgba(123,26,236,.35) 0 9%,rgba(94,14,195,.17) 20%,transparent 34%),
+    radial-gradient(circle at 20% 84%,rgba(40,123,239,.18) 0 10%,transparent 30%);
+  filter:blur(24px);
+  opacity:.9;
+  transform:translate3d(0,0,0) scale(1.03);
+  animation:monthlyAuroraFloat 12s ease-in-out infinite alternate;
+}
+#page-steerco .steerco-followup-cover::after{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(113deg,transparent 34%,rgba(102,75,220,.04) 41%,rgba(132,99,255,.18) 49%,rgba(76,47,190,.08) 56%,transparent 63%);
+  filter:blur(18px);
+  opacity:.85;
+  transform:translateX(-16%) rotate(-3deg);
+  animation:monthlyAuroraSweep 10s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+}
+#page-steerco .steerco-followup-cover > .steerco-followup-decor{
+  z-index:1!important;
+}
+#page-steerco .steerco-followup-cover > .steerco-followup-content{
+  z-index:3!important;
+}
+@media (prefers-reduced-motion:reduce){
+  #page-steerco .steerco-followup-cover::before,
+  #page-steerco .steerco-followup-cover::after,
+  #page-steerco .steerco-followup-cover .steerco-followup-motion::before,
+  #page-steerco .steerco-followup-cover .steerco-followup-motion::after{
+    animation:none!important;
+  }
+}
+</style>
+
 </head>
 <body class="bg-[#F1F5F9] text-gray-800">
     <div id="siteLoadingScreen" role="status" aria-live="polite" aria-hidden="true">
@@ -1968,7 +2610,7 @@
                                 <button type="button" onclick="switchPage('page-monthly', null)" class="support-session-item primary">
                                     <span class="support-session-item-left">
                                         <span class="support-session-num">01</span>
-                                        <span>Follow up</span>
+                                        <span>Follow up Holding</span>
                                     </span>
                                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                 </button>
@@ -2228,133 +2870,130 @@
             </section>
         </div>
 
-        <div id="page-monthly" class="page-section hidden w-full min-h-[calc(100vh-76px)] bg-[#F1F5F9]">
-            <div class="flex h-full w-full">
-                <!-- Sidebar Navigation -->
-                <aside class="w-[280px] bg-white border-r border-slate-200 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-full shrink-0 z-20">
-                    <!-- Header Sidebar -->
-                    <div class="bg-[#004481] pt-8 px-6 pb-6 text-white rounded-tr-[2rem] mb-6 shadow-sm">
-                        <span class="text-[11px] font-black tracking-widest uppercase text-[#5BBEFF] block mb-1">EDC</span>
-                        <h2 class="text-[28px] font-black leading-none tracking-tight">Follow up</h2>
+        <div id="page-monthly" class="page-section hidden w-full bg-[#F1F5F9]">
+            <div class="monthly-full-shell">
+                <!-- Sidebar Navigation · estilo Engineering -->
+                <aside class="monthly-full-sidebar shrink-0 z-20">
+                    <div class="px-5 pt-6 pb-4 border-b border-white/10">
+                        <span class="text-[10px] font-black tracking-[0.22em] uppercase text-[#70D2FF] block">Follow up Holding</span>
                     </div>
 
-                    <!-- Navigation Items -->
-                    <nav class="flex-1 overflow-y-auto py-2 pb-6">
-                        
-                        <!-- Categoría 0: Agenda -->
-                        <button onclick="window.switchMonthlyTab('m-agenda', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2.5 mb-2 transition-all text-left group active-monthly-tab relative overflow-hidden hover:bg-slate-100 [&.active-monthly-tab]:bg-slate-100">
-                            <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#004481] rounded-r-md transition-transform transform translate-x-0 tab-indicator"></div>
-                            <div class="w-8 shrink-0 flex justify-center"><i data-lucide="layout-dashboard" class="w-5 h-5 text-slate-500 group-hover:text-[#004481] transition-colors"></i></div>
-                            <span class="font-bold text-[#004481] text-[13px] transition-colors">Agenda</span>
+                    <div class="px-4 py-5 border-b border-white/10">
+                        <div class="text-[10px] font-black tracking-[0.22em] uppercase text-[#70D2FF] mb-3">Periodo de consulta</div>
+
+                        <div class="grid grid-cols-[42px_1fr_42px] items-center gap-3 mb-3">
+                            <button type="button" class="h-10 rounded-xl bg-white/6 border border-white/6 text-white/50 text-2xl leading-none hover:bg-white/10 transition-colors">‹</button>
+                            <div class="text-center text-[27px] leading-none font-black text-white">2026</div>
+                            <button type="button" class="h-10 rounded-xl bg-white/6 border border-white/6 text-white/50 text-2xl leading-none hover:bg-white/10 transition-colors">›</button>
+                        </div>
+
+                        <button type="button" onclick="window.selectMonthlyQuarter('ALL', this)" data-monthly-quarter="ALL" class="monthly-quarter-btn w-full h-11 rounded-xl bg-white/12 border border-white/8 text-white text-[13px] font-black transition-all hover:bg-white/16">
+                            Año completo
                         </button>
 
-                        <!-- Categoría 1: Impacto y entrega de valor -->
-                        <div class="mb-4">
-                            <!-- Parent Header -->
-                            <div class="px-6 py-2 flex items-center gap-4 mb-2">
-                                <div class="w-8 h-8 rounded-[10px] bg-[#92E38A] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm">01</div>
-                                <span class="font-black text-[#004481] text-[13px] leading-tight">Impacto y entrega de valor</span>
+                        <div class="grid grid-cols-4 gap-2 mt-3">
+                            <button type="button" onclick="window.selectMonthlyQuarter('Q1', this)" data-monthly-quarter="Q1" class="monthly-quarter-btn h-10 rounded-xl bg-white/6 border border-white/5 text-white/55 text-[13px] font-black transition-all hover:bg-white/10">Q1</button>
+                            <button type="button" onclick="window.selectMonthlyQuarter('Q2', this)" data-monthly-quarter="Q2" class="monthly-quarter-btn h-10 rounded-xl bg-white/6 border border-white/5 text-white/55 text-[13px] font-black transition-all hover:bg-white/10">Q2</button>
+                            <button type="button" onclick="window.selectMonthlyQuarter('Q3', this)" data-monthly-quarter="Q3" class="monthly-quarter-btn is-quarter-active h-10 rounded-xl bg-[#64C9FF] border border-[#64C9FF] text-[#2E0B70] text-[13px] font-black shadow-sm transition-all">Q3</button>
+                            <button type="button" onclick="window.selectMonthlyQuarter('Q4', this)" data-monthly-quarter="Q4" class="monthly-quarter-btn h-10 rounded-xl bg-white/6 border border-white/5 text-white/55 text-[13px] font-black transition-all hover:bg-white/10">Q4</button>
+                        </div>
+                    </div>
+
+                    <nav class="px-3 py-4 pb-8">
+                        <div class="monthly-index-label px-2 mb-3">Seguimiento</div>
+
+                        <!-- Impacto y entrega de valor -->
+                        <div class="mb-5">
+                            <div class="monthly-section-main px-3 py-2.5 flex items-center gap-3">
+                                <div class="monthly-section-icon">
+                                    <i data-lucide="bar-chart-3"></i>
+                                </div>
+                                <span>Impacto y entrega de valor</span>
                             </div>
-                            
-                            <!-- Sub-items -->
-                            <div class="flex flex-col space-y-0.5">
-                                <button onclick="window.switchMonthlyTab('m-cierre', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2 transition-all text-left group relative overflow-hidden hover:bg-[#92E38A]/10 [&.active-monthly-tab]:bg-[#92E38A]/20">
-                                    <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#92E38A] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                    <div class="w-8 shrink-0 flex justify-center"><div class="w-1.5 h-1.5 rounded-full bg-[#92E38A]"></div></div>
-                                    <span class="font-bold text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Cierre Q2</span>
+
+                            <div class="ml-[28px] pl-4 border-l border-white/20 space-y-1 mt-1">
+                                <button onclick="window.switchMonthlyTab('m-cierre', this)" class="monthly-nav-btn monthly-subnav-btn w-full flex items-center gap-3 px-3 py-2.5 text-left relative overflow-hidden">
+                                    <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#64C9FF] -translate-x-full transition-transform"></div>
+                                    <div class="w-7 h-7 rounded-lg bg-white/8 border border-white/5 flex items-center justify-center text-[#70D2FF]">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-[13px] font-bold">Cierre de Q</span>
                                 </button>
-                                
-                                <button onclick="window.switchMonthlyTab('m-kpis-trans', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2 transition-all text-left group relative overflow-hidden hover:bg-[#92E38A]/10 [&.active-monthly-tab]:bg-[#92E38A]/20">
-                                    <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#92E38A] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                    <div class="w-8 shrink-0 flex justify-center"><div class="w-1.5 h-1.5 rounded-full bg-[#92E38A]"></div></div>
-                                    <span class="font-bold text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">KPIs de transformación</span>
+
+                                <button onclick="window.switchMonthlyTab('m-kpis-trans', this)" class="monthly-nav-btn monthly-subnav-btn w-full flex items-center gap-3 px-3 py-2.5 text-left relative overflow-hidden">
+                                    <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#64C9FF] -translate-x-full transition-transform"></div>
+                                    <div class="w-7 h-7 rounded-lg bg-white/8 border border-white/5 flex items-center justify-center text-[#70D2FF]">
+                                        <i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-[13px] font-bold">KPIs de transformación</span>
                                 </button>
-                                
-                                <button onclick="window.switchMonthlyTab('m-otros-kpis', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2 transition-all text-left group relative overflow-hidden hover:bg-[#92E38A]/10 [&.active-monthly-tab]:bg-[#92E38A]/20">
-                                    <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#92E38A] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                    <div class="w-8 shrink-0 flex justify-center"><div class="w-1.5 h-1.5 rounded-full bg-[#92E38A]"></div></div>
-                                    <span class="font-bold text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Otros KPIs</span>
+
+                                <button onclick="window.switchMonthlyTab('m-otros-kpis', this)" class="monthly-nav-btn monthly-subnav-btn w-full flex items-center gap-3 px-3 py-2.5 text-left relative overflow-hidden">
+                                    <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#64C9FF] -translate-x-full transition-transform"></div>
+                                    <div class="w-7 h-7 rounded-lg bg-white/8 border border-white/5 flex items-center justify-center text-[#70D2FF]">
+                                        <i data-lucide="list-checks" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-[13px] font-bold">Otros KPIs</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Categoría 2: Gestión de la inversión -->
-                        <button onclick="window.switchMonthlyTab('m-inversion', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2.5 mt-1 transition-all text-left group relative overflow-hidden hover:bg-[#95C3F4]/15 [&.active-monthly-tab]:bg-[#95C3F4]/30">
-                            <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#95C3F4] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                            <div class="w-8 h-8 rounded-[10px] bg-[#95C3F4] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm transition-transform">02</div>
-                            <span class="font-bold text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Gestión de la inversión</span>
+                        <div class="monthly-index-label px-2 mt-2 mb-3">Gestión</div>
+
+                        <!-- Gestión de la inversión -->
+                        <button onclick="window.switchMonthlyTab('m-inversion', this)" class="monthly-nav-btn monthly-primary-nav w-full flex items-center gap-3 px-3 py-3 mb-2 text-left relative overflow-hidden">
+                            <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#64C9FF] -translate-x-full transition-transform"></div>
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i data-lucide="wallet-cards"></i>
+                            </div>
+                            <span>Gestión de la inversión</span>
                         </button>
 
-                        <!-- Categoría 3: Actuales líneas de trabajo -->
-                        <button onclick="window.switchMonthlyTab('m-lineas', this)" class="monthly-nav-btn w-full flex items-center gap-4 px-6 py-2.5 mt-2 transition-all text-left group relative overflow-hidden hover:bg-[#FDE466]/15 [&.active-monthly-tab]:bg-[#FDE466]/30">
-                            <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#FDE466] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                            <div class="w-8 h-8 rounded-[10px] bg-[#FDE466] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm transition-transform">02</div>
-                            <span class="font-bold text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Actuales líneas de trabajo</span>
+                        <!-- Actuales líneas de trabajo -->
+                        <button onclick="window.switchMonthlyTab('m-lineas', this)" class="monthly-nav-btn monthly-primary-nav w-full flex items-center gap-3 px-3 py-3 text-left relative overflow-hidden">
+                            <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#64C9FF] -translate-x-full transition-transform"></div>
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i data-lucide="route"></i>
+                            </div>
+                            <span>Actuales líneas de trabajo</span>
                         </button>
-
                     </nav>
                 </aside>
 
                 <!-- Main Content Area -->
-                <main class="flex-1 p-6 overflow-y-auto h-full relative">
+                <main class="monthly-full-main relative">
                     
                     <!-- Tab Content 0: Agenda (Portada) -->
-                    <div id="m-agenda" class="monthly-tab-content block">
-                        <!-- Añadido max-w-6xl y mx-auto para hacerla más estrecha y centrada, sin cuadrícula -->
-                        <div class="bg-gradient-to-br from-white via-white to-blue-50/50 mx-auto rounded-2xl border border-slate-200 shadow-md w-full max-w-6xl aspect-video relative overflow-hidden flex flex-row items-center">
-                            
-                            <!-- Elementos decorativos de fondo (limpios) -->
-                            <div class="absolute -left-[10%] -bottom-[10%] w-[40%] h-[50%] bg-[#5BBEFF]/10 rounded-full blur-3xl pointer-events-none"></div>
-                            <div class="absolute right-[5%] top-[10%] w-[30%] h-[40%] bg-[#004481]/5 rounded-full blur-3xl pointer-events-none"></div>
-
-                            <!-- Columna Izquierda: Títulos y Texto -->
-                            <div class="w-full md:w-[45%] h-full flex flex-col justify-center px-8 md:px-12 lg:px-16 z-20">
-                                <h2 class="text-5xl md:text-6xl lg:text-[70px] font-black text-[#004481] tracking-tighter mb-4 leading-none drop-shadow-sm">Follow up</h2>
-                                <div class="w-16 h-2 bg-gradient-to-r from-[#5BBEFF] to-[#004481] rounded-full mb-6 shadow-sm"></div>
-                                <p class="text-lg lg:text-xl font-black text-slate-400 uppercase tracking-widest leading-tight">Oficina de<br>Transformación <span class="text-[#004481]">EDC</span></p>
+                    <div id="m-agenda" class="monthly-tab-content block h-full">
+                        <div class="monthly-hero-cover relative overflow-hidden border border-[#2E1A6E] shadow-[0_20px_55px_rgba(21,5,65,.24)] bg-[radial-gradient(circle_at_90%_5%,_rgba(99,48,201,.38),_transparent_30%),linear-gradient(135deg,_#101D55_0%,_#12194F_44%,_#34006F_100%)]">
+                            <div class="absolute inset-0 pointer-events-none">
+                                <div class="absolute left-[-10%] bottom-[-25%] w-[520px] h-[520px] rounded-full bg-[#30BDF9]/7 blur-3xl"></div>
+                                <div class="absolute right-[-6%] bottom-[-20%] w-[420px] h-[420px] rounded-full bg-[#7415E7]/20 blur-3xl"></div>
+                                <div class="absolute right-[1%] bottom-[-28%] w-[380px] h-[380px] rounded-full border border-white/5"></div>
+                                <div class="absolute right-[8%] bottom-[-18%] w-[290px] h-[290px] rounded-full border border-white/5"></div>
                             </div>
+                            <div class="monthly-hero-motion" aria-hidden="true"></div>
 
-                            <!-- Columna Derecha: Gráfico de Triángulos -->
-                            <div class="w-full md:w-[55%] h-full flex items-center justify-center relative z-10">
-                                <!-- Contenedor del gráfico ajustado al nuevo ancho -->
-                                <div class="relative w-[620px] h-[540px] scale-[0.5] sm:scale-[0.6] md:scale-[0.65] lg:scale-[0.75] xl:scale-[0.85] origin-center transition-transform duration-500 flex-shrink-0">
-                                    
-                                    <!-- Triángulo Superior (Gobierno) -->
-                                    <div class="absolute top-0 left-[160px] w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-3 transition-all duration-300 cursor-pointer z-10 group" onclick="window.showToast('Sección de Gobierno próximamente', 'info')">
-                                        <div class="w-full h-full bg-[#001391] text-white flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[22px] mb-1 text-center tracking-wide leading-none group-hover:scale-105 transition-transform">Gobierno</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight text-blue-100">Ceremonias &<br>Metodología</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Triángulo Inferior Izquierdo (Gestión) -->
-                                    <div class="absolute top-[270px] left-0 w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-2 hover:-translate-x-2 transition-all duration-300 cursor-pointer z-10 group" onclick="const btn = document.querySelector('button[onclick*=\'m-inversion\']'); if(btn) window.switchMonthlyTab('m-inversion', btn);">
-                                        <div class="w-full h-full bg-[#75B8FF] text-[#001391] flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide group-hover:scale-105 transition-transform">Gestión de la<br>inversión</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight mt-1 opacity-80">Presupuesto &<br>FTEs</span>
-                                        </div>
+                            <div class="relative z-10 h-full flex items-center">
+                                <div class="w-full max-w-[900px] ml-[14%] px-10">
+                                    <div class="inline-flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[0.23em] text-[#75CCFF] mb-6">
+                                        <span class="w-9 h-[3px] rounded-full bg-[#75CCFF]"></span>
+                                        <span>OFICINA DE TRANSFORMACIÓN · EDC</span>
                                     </div>
 
-                                    <!-- Triángulo Inferior Derecho (Impacto) -->
-                                    <div class="absolute top-[270px] left-[320px] w-[300px] h-[260px] drop-shadow-xl hover:drop-shadow-2xl hover:-translate-y-2 hover:translate-x-2 transition-all duration-300 cursor-pointer z-10 group" onclick="const btn = document.querySelector('button[onclick*=\'m-cierre\']'); if(btn) window.switchMonthlyTab('m-cierre', btn);">
-                                        <div class="w-full h-full bg-[#92E38A] text-[#001391] flex flex-col items-center justify-end pb-8" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
-                                            <span class="font-bold text-[20px] mb-1 text-center leading-tight tracking-wide group-hover:scale-105 transition-transform">Impacto y<br>entrega de valor</span>
-                                            <span class="text-[14px] text-center px-4 leading-tight mt-1 opacity-80">KPIs & Entregables</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Texto Invertido Central -->
-                                    <div class="absolute top-[270px] left-[160px] w-[300px] h-[260px] flex flex-col items-center justify-start pt-8 z-0 pointer-events-none">
-                                        <span class="font-bold text-[26px] text-[#001391] text-center leading-snug tracking-wide">Oficina de<br>Transformación<br>EDC</span>
-                                    </div>
+                                    <h2 class="text-[82px] md:text-[108px] xl:text-[124px] font-black tracking-[-0.06em] leading-[0.86] text-white drop-shadow-sm">
+                                        EDC
+                                    </h2>
                                     
+                                    <p class="mt-7 max-w-[700px] text-[20px] md:text-[23px] leading-[1.42] font-semibold text-white">
+                                        Una visión ejecutiva y conectada del avance, el impacto, la entrega de valor y los principales programas de transformación.
+                                    </p>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- Tab Content 1: Cierre Q2 -->
+                    <!-- Tab Content 1: Cierre Q3 -->
                     <div id="m-cierre" class="monthly-tab-content hidden">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full aspect-video relative overflow-hidden">
                             <div id="monthly-cierre-loading" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center transition-opacity duration-500">
@@ -2365,7 +3004,7 @@
                                 class="absolute top-0 left-0 w-full h-full border-none bg-white"
                                 src="https://docs.google.com/presentation/d/16OjF-KihWQRGcLSH2IqhNr1jDvcYSdKaTCjnYdI-1Xw/embed?rm=minimal" 
                                 onload="document.getElementById('monthly-cierre-loading').style.opacity = '0'; setTimeout(() => document.getElementById('monthly-cierre-loading').style.display = 'none', 500);"
-                                title="Presentación Cierre Q2"
+                                title="Presentación Cierre Q3"
                                 allowfullscreen>
                             </iframe>
                         </div>
@@ -2482,60 +3121,122 @@
                         <div class="steerco-flex flex flex-col lg:flex-row min-h-[calc(100vh-250px)]">
 
                             <!-- Índice lateral -->
-                            <aside class="steerco-sidebar w-full lg:w-[312px] bg-white border-r border-slate-200 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col shrink-0">
-                                <div class="bg-[#004481] pt-7 px-6 pb-6 text-white rounded-tr-[2rem] mb-6 shadow-sm">
-                                    <span class="text-[11px] font-black tracking-widest uppercase text-[#5BBEFF] block mb-1">EDC</span>
-                                    <h2 class="text-[28px] font-black leading-none tracking-tight">SteerCo</h2>
-                                    <p id="steerco-sidebar-country" class="text-[11px] font-bold text-blue-100 mt-3 uppercase tracking-widest">Selecciona país</p>
+                            
+                            <aside class="steerco-sidebar shrink-0 z-20 flex flex-col">
+                                <div class="px-5 pt-6 pb-4 border-b border-white/10">
+                                    <span class="text-[10px] font-black tracking-[0.22em] uppercase text-[#70D2FF] block mb-1">EDC</span>
+                                    <h2 class="text-[27px] font-black leading-none tracking-tight text-white">SteerCo</h2>
                                 </div>
 
-                                <nav class="flex-1 overflow-y-auto py-2 pb-6">
-                                    <button onclick="window.goToSteercoSection('kpis', this)" class="steerco-index-btn w-full flex items-center gap-4 px-6 py-3 mb-2 transition-all text-left group relative overflow-hidden hover:bg-[#92E38A]/10 [&.active-steerco-tab]:bg-[#92E38A]/20">
-                                        <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#92E38A] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                        <div class="w-8 h-8 rounded-[10px] bg-[#92E38A] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm">01</div>
-                                        <span class="font-black text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">KPIs</span>
+                                <!-- 1. Filtro país -->
+                                <div class="px-4 pt-5 pb-4 border-b border-white/10">
+                                    <div class="steerco-sidebar-label mb-3">País</div>
+                                    <div class="grid grid-cols-5 gap-2">
+                                        <button type="button" onclick="window.selectSteercoCountry('ESPAÑA', this)" class="steerco-country-btn steerco-country-sidebar-btn" aria-pressed="false" aria-label="España" title="España">
+    <span class="nextgen-round-flag"><img src="https://flagcdn.com/w80/es.png" alt="España"></span>
+</button>
+                                        <button type="button" onclick="window.selectSteercoCountry('MÉXICO', this)" class="steerco-country-btn steerco-country-sidebar-btn" aria-pressed="false" aria-label="México" title="México">
+    <span class="nextgen-round-flag"><img src="https://flagcdn.com/w80/mx.png" alt="México"></span>
+</button>
+                                        <button type="button" onclick="window.selectSteercoCountry('PERÚ', this)" class="steerco-country-btn steerco-country-sidebar-btn" aria-pressed="false" aria-label="Perú" title="Perú">
+    <span class="nextgen-round-flag"><img src="https://flagcdn.com/w80/pe.png" alt="Perú"></span>
+</button>
+                                        <button type="button" onclick="window.selectSteercoCountry('COLOMBIA', this)" class="steerco-country-btn steerco-country-sidebar-btn" aria-pressed="false" aria-label="Colombia" title="Colombia">
+    <span class="nextgen-round-flag"><img src="https://flagcdn.com/w80/co.png" alt="Colombia"></span>
+</button>
+                                        <button type="button" onclick="window.selectSteercoCountry('ARGENTINA', this)" class="steerco-country-btn steerco-country-sidebar-btn" aria-pressed="false" aria-label="Argentina" title="Argentina">
+    <span class="nextgen-round-flag"><img src="https://flagcdn.com/w80/ar.png" alt="Argentina"></span>
+</button>
+                                    </div>
+                                    <div id="steerco-sidebar-country" class="mt-3 text-[10px] font-black uppercase tracking-[0.18em] text-white/55">Selecciona país</div>
+                                </div>
+
+                                <!-- 2. Filtro trimestre -->
+                                <div class="px-4 py-4 border-b border-white/10">
+                                    <div class="steerco-sidebar-label mb-3">Periodo de consulta</div>
+
+                                    <div class="grid grid-cols-[42px_1fr_42px] items-center gap-3 mb-3">
+                                        <button type="button" class="h-10 rounded-xl bg-white/6 border border-white/6 text-white/50 text-2xl leading-none hover:bg-white/10 transition-colors">‹</button>
+                                        <div class="text-center text-[27px] leading-none font-black text-white">2026</div>
+                                        <button type="button" class="h-10 rounded-xl bg-white/6 border border-white/6 text-white/50 text-2xl leading-none hover:bg-white/10 transition-colors">›</button>
+                                    </div>
+
+                                    <button type="button" onclick="window.selectSteercoQuarter('ALL', this)" data-steerco-quarter="ALL" class="steerco-quarter-btn w-full h-11 rounded-xl bg-white/12 border border-white/8 text-white text-[13px] font-black transition-all hover:bg-white/16">
+                                        Año completo
                                     </button>
 
-                                    <button onclick="window.goToSteercoSection('otroskpis', this)" class="steerco-index-btn w-full flex items-center gap-4 px-6 py-3 mb-2 transition-all text-left group relative overflow-hidden hover:bg-[#FB923C]/15 [&.active-steerco-tab]:bg-[#FB923C]/25">
-                                        <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#FB923C] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                        <div class="w-8 h-8 rounded-[10px] bg-[#FB923C] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm">02</div>
-                                        <span class="font-black text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Otros KPIs</span>
+                                    <div class="grid grid-cols-4 gap-2 mt-3">
+                                        <button type="button" onclick="window.selectSteercoQuarter('Q1', this)" data-steerco-quarter="Q1" class="steerco-quarter-btn h-10 rounded-xl border transition-all">Q1</button>
+                                        <button type="button" onclick="window.selectSteercoQuarter('Q2', this)" data-steerco-quarter="Q2" class="steerco-quarter-btn h-10 rounded-xl border transition-all">Q2</button>
+                                        <button type="button" onclick="window.selectSteercoQuarter('Q3', this)" data-steerco-quarter="Q3" class="steerco-quarter-btn is-quarter-active h-10 rounded-xl border transition-all">Q3</button>
+                                        <button type="button" onclick="window.selectSteercoQuarter('Q4', this)" data-steerco-quarter="Q4" class="steerco-quarter-btn h-10 rounded-xl border transition-all">Q4</button>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Índice -->
+                                <nav class="px-3 py-4 pb-8">
+                                    <div class="steerco-sidebar-label px-2 mb-3">Índice</div>
+<button onclick="window.goToSteercoSection('kpis', this)" class="steerco-index-btn w-full flex items-center gap-3 text-left relative overflow-hidden">
+                                        <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full -translate-x-full transition-transform"></div>
+                                        <div class="steerco-index-icon"><i data-lucide="bar-chart-3"></i></div>
+                                        <span>KPIs</span>
                                     </button>
 
-                                    <button onclick="window.goToSteercoSection('bloques', this)" class="steerco-index-btn w-full flex items-center gap-4 px-6 py-3 mb-2 transition-all text-left group relative overflow-hidden hover:bg-[#95C3F4]/15 [&.active-steerco-tab]:bg-[#95C3F4]/30">
-                                        <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#95C3F4] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                        <div class="w-8 h-8 rounded-[10px] bg-[#95C3F4] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm">03</div>
-                                        <span class="font-black text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Bloques Funcionales</span>
+                                    <button onclick="window.goToSteercoSection('otroskpis', this)" class="steerco-index-btn w-full flex items-center gap-3 text-left relative overflow-hidden">
+                                        <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full -translate-x-full transition-transform"></div>
+                                        <div class="steerco-index-icon"><i data-lucide="list-checks"></i></div>
+                                        <span>Otros KPIs</span>
                                     </button>
 
-                                    <button onclick="window.goToSteercoSection('ftes', this)" class="steerco-index-btn w-full flex items-center gap-4 px-6 py-3 transition-all text-left group relative overflow-hidden hover:bg-[#FDE466]/15 [&.active-steerco-tab]:bg-[#FDE466]/30">
-                                        <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#FDE466] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                        <div class="w-8 h-8 rounded-[10px] bg-[#FDE466] text-[#002060] flex items-center justify-center font-black text-xs shrink-0 shadow-sm">04</div>
-                                        <span class="font-black text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">Presupuesto y FTEs</span>
+                                    <button onclick="window.goToSteercoSection('bloques', this)" class="steerco-index-btn w-full flex items-center gap-3 text-left relative overflow-hidden">
+                                        <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full -translate-x-full transition-transform"></div>
+                                        <div class="steerco-index-icon"><i data-lucide="boxes"></i></div>
+                                        <span>Bloques funcionales</span>
                                     </button>
 
-                                    <button id="steerco-highlight-btn" style="display:none" onclick="window.goToSteercoSection('highlightpaises', this)" class="steerco-index-btn hidden w-full flex items-center gap-4 px-6 py-3 mt-2 transition-all text-left group relative overflow-hidden hover:bg-[#E2E8F0]/55 [&.active-steerco-tab]:bg-[#E2E8F0]/75">
-                                        <div class="absolute left-0 top-2 bottom-2 w-1.5 bg-[#CBD5E1] rounded-r-md transition-transform transform -translate-x-full tab-indicator"></div>
-                                        <div class="w-8 h-8 rounded-[10px] bg-[#E2E8F0] text-[#334155] flex items-center justify-center font-black text-[10px] shrink-0 shadow-sm">05</div>
-                                        <span class="font-black text-slate-600 text-[13px] group-hover:text-[#004481] transition-colors">High Light Países</span>
+                                    <button onclick="window.goToSteercoSection('ftes', this)" class="steerco-index-btn w-full flex items-center gap-3 text-left relative overflow-hidden">
+                                        <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full -translate-x-full transition-transform"></div>
+                                        <div class="steerco-index-icon"><i data-lucide="wallet-cards"></i></div>
+                                        <span>Presupuesto y FTEs</span>
                                     </button>
 
+                                    <button id="steerco-highlight-btn" style="display:none" onclick="window.goToSteercoSection('highlightpaises', this)" class="steerco-index-btn hidden w-full flex items-center gap-3 text-left relative overflow-hidden">
+                                        <div class="tab-indicator absolute left-0 top-2 bottom-2 w-1 rounded-r-full -translate-x-full transition-transform"></div>
+                                        <div class="steerco-index-icon"><i data-lucide="presentation"></i></div>
+                                        <span>High Light Países</span>
+                                    </button>
                                 </nav>
                             </aside>
+
 
                             <!-- Pantalla de contenido sin salir de SteerCo -->
                             <main class="steerco-main flex-1 p-4 md:p-5 overflow-hidden">
                                 <div id="steerco-content-panel" class="steerco-content-panel bg-white rounded-3xl border border-slate-200 shadow-sm min-h-[calc(100vh-300px)] overflow-hidden">
                                     <div id="steerco-content-mount" class="steerco-content-scroll w-full h-full p-6">
-                                        <div class="h-[360px] flex items-center justify-center text-center">
-                                            <div>
-                                                <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-4">
-                                                    <i data-lucide="map-pin" class="w-5 h-5 text-[#004481]"></i>
+                                        <div class="steerco-followup-cover w-full h-full min-h-[calc(100vh-300px)] relative overflow-hidden border border-[#2E1A6E] shadow-[0_20px_55px_rgba(21,5,65,.24)]">
+                                            <div class="steerco-followup-decor absolute inset-0 pointer-events-none">
+                                                <div class="absolute left-[-10%] bottom-[-25%] w-[520px] h-[520px] rounded-full bg-[#30BDF9]/7 blur-3xl"></div>
+                                                <div class="absolute right-[-6%] bottom-[-20%] w-[420px] h-[420px] rounded-full bg-[#7415E7]/20 blur-3xl"></div>
+                                                <div class="absolute right-[1%] bottom-[-28%] w-[380px] h-[380px] rounded-full border border-white/5"></div>
+                                                <div class="absolute right-[8%] bottom-[-18%] w-[290px] h-[290px] rounded-full border border-white/5"></div>
+                                            </div>
+                                            <div class="steerco-followup-motion" aria-hidden="true"></div>
+
+                                            <div class="steerco-followup-content relative h-full min-h-[calc(100vh-300px)] flex items-center">
+                                                <div class="w-full max-w-[900px] ml-[14%] px-10">
+                                                    <div class="inline-flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[0.23em] text-[#75CCFF] mb-6">
+                                                        <span class="w-9 h-[3px] rounded-full bg-[#75CCFF]"></span>
+                                                        <span>OFICINA DE TRANSFORMACIÓN · STEERCO</span>
+                                                    </div>
+
+                                                    <h2 class="text-[82px] md:text-[108px] xl:text-[124px] font-black tracking-[-0.06em] leading-[0.86] text-white drop-shadow-sm">
+                                                        EDC
+                                                    </h2>
+
+                                                    <p class="mt-7 max-w-[700px] text-[20px] md:text-[23px] leading-[1.42] font-semibold text-white">
+                                                        Una visión ejecutiva y conectada del avance, el impacto, la entrega de valor y los principales programas de transformación.
+                                                    </p>
                                                 </div>
-                                                <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">SteerCo</p>
-                                                <p class="text-sm font-semibold text-slate-500 max-w-md">
-                                                    Selecciona una geografía y después una sección del índice lateral. El contenido se abrirá aquí, dentro de SteerCo, filtrado por el país seleccionado.
-                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -2863,10 +3564,6 @@
                     <div class="p-4 md:p-6 bg-gray-50/50 flex flex-col gap-6">
                         <div id="ep-highlights-top"></div>
                         <div class="inner-card p-5 md:p-6 relative overflow-visible">
-                            <div class="flex flex-col xl:flex-row mb-6 border-b border-gray-100 pb-4 gap-4 relative z-20 xl:items-center justify-between">
-                                <h4 class="text-[#004481] font-black text-[13px] tracking-widest uppercase flex items-center gap-2 shrink-0"><span id="epGeoTitlePlot"><i data-lucide="globe" class="w-5 h-5 inline-block text-[#004481]"></i> Visión global de la transformación</span></h4>
-                                <div class="flex flex-wrap gap-2 items-center justify-start xl:justify-end w-full" id="epDotPlotLegend"></div>
-                            </div>
                             <div class="overflow-x-auto w-full hide-scrollbar">
                                 <div class="min-w-[900px] relative pb-6 pr-6 md:pr-12" id="ep-roadmap-canvas">
                                     <div class="w-full relative mt-2">
@@ -3644,7 +4341,12 @@
                 highlightBtn.style.display = hasHighlight ? 'flex' : 'none';
             }
 
-            window.markSteercoIndexActive(null);
+            const agendaBtn = document.getElementById('steerco-agenda-btn');
+            if (agendaBtn && typeof window.markSteercoIndexActive === 'function') {
+                window.markSteercoIndexActive(agendaBtn);
+            } else {
+                window.markSteercoIndexActive(null);
+            }
             window.renderSteercoPlaceholder('Selecciona una sección del índice para abrirla filtrada por ' + displayCountry + '.');
 
             // Precalentamos Presupuesto/FTEs en segundo plano para que, cuando se pulse
@@ -3953,6 +4655,12 @@
         };
 
         window.goToSteercoSection = function(section, btn) {
+            if (section === 'agenda') {
+                window.markSteercoIndexActive(btn);
+                window.renderSteercoPlaceholder();
+                return;
+            }
+
             if (!window.steercoSelectedCountry) {
                 window.showToast('Selecciona primero un país en SteerCo.', 'error');
                 return;
@@ -4157,6 +4865,116 @@
             }
         };
 
+        window.monthlySelectedQuarter = 'Q3';
+
+        window.applyMonthlyQuarterToKpis = function(quarter) {
+            const select = document.getElementById('fTri');
+            if (!select) return false;
+            const normalized = String(quarter || 'Q3').toUpperCase();
+            const targetValue = normalized === 'ALL' ? 'ALL' : `26${normalized}`;
+            const hasOption = Array.from(select.options || []).some(option => option.value === targetValue);
+            if (!hasOption) return false;
+            select.value = targetValue;
+            try {
+                if (typeof window.handleTriChange === 'function') {
+                    window.handleTriChange(select);
+                } else if (typeof window.applyFilters === 'function') {
+                    window.applyFilters();
+                } else {
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            } catch (error) {
+                try { select.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+            }
+            return true;
+        };
+
+        window.applyMonthlyQuarterToFtes = function(quarter) {
+            const frame = document.getElementById('monthly-ftes-frame');
+            if (!frame || !frame.contentWindow || !frame.contentWindow.document) return false;
+            const doc = frame.contentWindow.document;
+            const select = doc.getElementById('quarterFilter');
+            if (!select) return false;
+            const normalized = String(quarter || 'Q3').toUpperCase();
+            const targetValue = normalized === 'ALL' ? 'TOTAL_2026' : normalized;
+            const hasOption = Array.from(select.options || []).some(option => option.value === targetValue);
+            if (!hasOption) return false;
+            select.value = targetValue;
+            try {
+                if (typeof frame.contentWindow.renderActiveModule === 'function') {
+                    frame.contentWindow.renderActiveModule();
+                } else {
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            } catch (error) {
+                try { select.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+            }
+            return true;
+        };
+
+        window.syncMonthlyQuarterEverywhere = function(quarter) {
+            const q = quarter || window.monthlySelectedQuarter || 'Q3';
+            window.monthlySelectedQuarter = q;
+            let attempts = 0;
+            let timer = null;
+            const trySync = function() {
+                const okKpis = window.applyMonthlyQuarterToKpis(q);
+                const okFtes = window.applyMonthlyQuarterToFtes(q);
+                attempts += 1;
+                if ((okKpis && okFtes) || attempts >= 24) {
+                    if (timer) clearInterval(timer);
+                }
+            };
+            trySync();
+            timer = setInterval(trySync, 250);
+            return true;
+        };
+
+        window.selectMonthlyQuarter = function(quarter, btn) {
+            window.monthlySelectedQuarter = quarter || 'Q3';
+
+            document.querySelectorAll('#page-monthly .monthly-quarter-btn').forEach(el => {
+                el.classList.remove('is-quarter-active');
+            });
+            if (btn) btn.classList.add('is-quarter-active');
+
+            try {
+                window.dispatchEvent(new CustomEvent('monthlyQuarterChange', {
+                    detail: { quarter: window.monthlySelectedQuarter }
+                }));
+            } catch (e) {}
+
+            try { window.syncMonthlyQuarterEverywhere(window.monthlySelectedQuarter); } catch (e) {}
+        };
+
+
+        window.refreshMonthlyInvestmentFrame = function() {
+            const frame = document.getElementById('monthly-ftes-frame');
+            if (!frame) return false;
+            try {
+                const win = frame.contentWindow;
+                if (!win || !win.document) return false;
+
+                ['loadPresupuestoData','loadFtesData','loadFtesStructureData','loadFtesPeopleData','loadFtesKpisData'].forEach(fn => {
+                    try {
+                        if (typeof win[fn] === 'function') win[fn]();
+                    } catch (e) {}
+                });
+
+                setTimeout(() => {
+                    try { window.applyMonthlyQuarterToFtes(window.monthlySelectedQuarter || 'Q3'); } catch (e) {}
+                }, 180);
+
+                setTimeout(() => {
+                    try { if (typeof win.renderActiveModule === 'function') win.renderActiveModule(); } catch (e) {}
+                }, 700);
+
+                return true;
+            } catch (e) {
+                return false;
+            }
+        };
+
         window.switchMonthlyTab = (tabId, btn) => {
             // Mover los paneles de KPIs y Bloques al layout del Monthly
             if (tabId === 'm-kpis-trans') {
@@ -4199,6 +5017,11 @@
             setTimeout(() => {
                 if (tabId === 'm-kpis-trans' && featuresData) window.applyFilters();
                 if (tabId === 'm-bloques' && endProductDataGlobal) renderEndProduct();
+                if (tabId === 'm-inversion') {
+                    try { window.loadEmbeddedFtesDashboard(); } catch (e) {}
+                    setTimeout(() => { try { window.refreshMonthlyInvestmentFrame(); } catch (e) {} }, 120);
+                    setTimeout(() => { try { window.refreshMonthlyInvestmentFrame(); } catch (e) {} }, 900);
+                }
             }, 50);
         };
 
@@ -4367,8 +5190,16 @@
             
             // Si entramos a page-monthly, forzamos click en el primer tab (Agenda) para que se muestre como portada
             if (pageId === 'page-monthly') {
-                const firstMonthlyBtn = document.querySelector('#page-monthly .monthly-nav-btn');
-                if (firstMonthlyBtn) window.switchMonthlyTab('m-agenda', firstMonthlyBtn);
+                document.querySelectorAll('#page-monthly .monthly-tab-content').forEach(tab => tab.classList.add('hidden'));
+                const agenda = document.getElementById('m-agenda');
+                if (agenda) agenda.classList.remove('hidden');
+                document.querySelectorAll('#page-monthly .monthly-nav-btn').forEach(el => el.classList.remove('active-monthly-tab'));
+            }
+
+            if (pageId === 'page-steerco' && typeof window.renderSteercoPlaceholder === 'function') {
+                const agendaBtn = document.getElementById('steerco-agenda-btn');
+                if (agendaBtn && typeof window.markSteercoIndexActive === 'function') window.markSteercoIndexActive(agendaBtn);
+                window.renderSteercoPlaceholder();
             }
 
             updateIcons(); window.scrollToTop();
@@ -5124,7 +5955,7 @@ window.EDCNps = (() => {
 
         const updateDynamicQuarterLabels = () => {
             const tri = document.getElementById('fTri')?.value || 'ALL';
-            const currentQ = tri === 'ALL' ? '26Q2' : tri;
+            const currentQ = tri === 'ALL' ? getLastClosedFeatureQuarter() : tri;
             document.querySelectorAll('.dynamic-q-label, .chart-q-label').forEach(el => el.innerText = currentQ);
         };
 
@@ -5220,7 +6051,7 @@ window.EDCNps = (() => {
             document.getElementById('overviewDataContainer').classList.remove('hidden');
 
             const geo = document.getElementById('fGeo').value;
-            const currentQ = document.getElementById('fTri').value === 'ALL' ? '26Q2' : document.getElementById('fTri').value;
+            const currentQ = document.getElementById('fTri').value === 'ALL' ? getLastClosedFeatureQuarter() : document.getElementById('fTri').value;
             const cLabel = geo === 'ALL' ? 'TOTAL' : geo;
             const cKey = geo === 'ALL' ? 'global' : window.getFtKey(geo);
             
@@ -5473,7 +6304,7 @@ window.EDCNps = (() => {
                 container.innerHTML = `<div class="feature-progress-detail"><div class="feature-progress-head"><div class="feature-progress-title">${featureProgressTitle}</div>${renderFeatureProgressActions(countryKey)}</div><div class="py-16 text-center text-sm font-bold text-slate-400">No hay datos de Layout KPIs disponibles para esta geografía.</div></div>`;
                 return;
             }
-            const selectedQuarter = document.getElementById('fTri').value === 'ALL' ? '26Q2' : document.getElementById('fTri').value;
+            const selectedQuarter = document.getElementById('fTri').value === 'ALL' ? getLastClosedFeatureQuarter() : document.getElementById('fTri').value;
             const show2028 = countryKey === 'argentina' || countryKey === 'global';
             const periodIndexes = SENDA_PERIODS.map((_, index) => index).filter(index => show2028 || index < 12);
             const periods = periodIndexes.map(index => SENDA_PERIODS[index]);
@@ -5547,7 +6378,7 @@ window.EDCNps = (() => {
             if(chartFeatureProgressInstance) { chartFeatureProgressInstance.destroy(); chartFeatureProgressInstance = null; }
             const timelineHeader = document.querySelector('#roadmapGrid .roadmap-timeline-header');
             if (timelineHeader) timelineHeader.style.display = '';
-            const container=document.getElementById('roadmapContent'), geo=document.getElementById('fGeo').value, currentQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value;
+            const container=document.getElementById('roadmapContent'), geo=document.getElementById('fGeo').value, currentQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value;
             const quarterMarkerPositions = {
                 '24Q4': 25,
                 '25Q1': 28,
@@ -5623,7 +6454,7 @@ window.EDCNps = (() => {
 
         function renderTrafficCharts() {
             if(!trafficData||!snapshotDataGlobal) return;
-            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value;
+            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value;
             let qIdx=trafficData.labels.indexOf(cQ); const hasExactEvolQ=qIdx!==-1; if(!hasExactEvolQ) qIdx=trafficData.labels.length-1;
             const trafficCountrySeries=trafficData.datasets.filter(ds=>ds.label!=='TOTAL'&&ds.label!=='Total');
             if(!trafficEvolutionSelectionInitialized){
@@ -5743,7 +6574,7 @@ window.EDCNps = (() => {
         function renderDigitalPenBarChart() {
             if(!digitalPenDataGlobal) return;
             const modeTitle = 'Penetración Digital 3x3';
-            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value;
+            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value;
 
             const kpiCountries=countryOrder;
             const cArr=[...kpiCountries,'TOTAL'].filter(c=>geo==='ALL'||c===geo);
@@ -5797,7 +6628,7 @@ window.EDCNps = (() => {
         function renderDigitalPenSitesCards() {
             const geo = document.getElementById('fGeo').value;
             const country = digPenDrilldownCountry || (geo === 'ALL' ? 'TOTAL' : geo);
-            const cQ = document.getElementById('fTri').value === 'ALL' ? '26Q2' : document.getElementById('fTri').value;
+            const cQ = document.getElementById('fTri').value === 'ALL' ? getLastClosedFeatureQuarter() : document.getElementById('fTri').value;
             renderDigitalPenHistoricoCharts(country, cQ);
 
             const backBtn = document.getElementById('digPenBackToComparison');
@@ -5917,7 +6748,7 @@ window.EDCNps = (() => {
 
         function renderRatingUI() {
             if(!ratingDataGlobal) return;
-            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value, rD=ratingDataGlobal[cQ];
+            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value, rD=ratingDataGlobal[cQ];
             if(!rD) { window.toggleEmptyState('rating-content-wrapper', true, `Sin datos para ${cQ}`); return; }
             window.toggleEmptyState('rating-content-wrapper', !rD.ios.real.some(v=>v!==null)&&!rD.android.real.some(v=>v!==null), `Pendiente de datos (${cQ})`);
 
@@ -5964,7 +6795,7 @@ window.EDCNps = (() => {
         }
         function renderMigratedClients() {
             if(!migratedDataGlobal) return;
-            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?'26Q2':document.getElementById('fTri').value;
+            const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value;
             document.getElementById('migratedMainTitle').innerHTML = geo==='ALL'?'Global':geo;
             window.drawGauge = (cId,r,t,cV) => {
                 if(window[cV]) window[cV].destroy();
@@ -6080,7 +6911,7 @@ window.EDCNps = (() => {
 
         function ngQuarter() {
             const el = document.getElementById('fTri_ep');
-            return (!el || el.value === 'ALL' || !el.value) ? '26Q2' : el.value;
+            return (!el || el.value === 'ALL' || !el.value) ? getLastClosedFeatureQuarter() : el.value;
         }
 
         let nextGenByBlockLoadPromise = null;
@@ -6536,7 +7367,7 @@ window.EDCNps = (() => {
         function renderEndProduct() {
             renderNextGenByBlock();
             if(!endProductDataGlobal||!endProductDataGlobal['TOTAL']) return;
-            const geo=document.getElementById('fGeo_ep').value, cQ=document.getElementById('fTri_ep').value==='ALL'?'26Q2':document.getElementById('fTri_ep').value;
+            const geo=document.getElementById('fGeo_ep').value, cQ=document.getElementById('fTri_ep').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri_ep').value;
             const progressData = typeof window.getEndProductDataForQuarter === 'function'
                 ? window.getEndProductDataForQuarter(endProductDataGlobal, cQ)
                 : endProductDataGlobal;
@@ -6548,8 +7379,6 @@ window.EDCNps = (() => {
 
             const hSD = cR?.progreso !== null && cR?.progreso !== undefined;
             window.toggleEmptyState('ep-roadmap-canvas', !hSD, `Pendiente de progreso`);
-
-            document.getElementById('epGeoTitlePlot').innerHTML=showGlobalOnly?`${window.getGlobalIconHtml('w-6 h-6 inline-block align-text-bottom mr-1')} Global (Progreso individual)`:geo==='ALL'?`${window.getGlobalIconHtml('w-6 h-6 inline-block align-text-bottom mr-1')} Visión global de la transformación`:`<span class="nextgen-round-flag w-6 h-6 inline-block align-text-bottom mr-2"><img src="https://flagcdn.com/w80/${flagsMap[geo]}.png" alt=""></span> ${geo} (Progreso individual)`;
 
             const aB=progressData['TOTAL'], rB=aB.filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')), cRTot=aB.find(d=>String(d.bloque).toUpperCase().includes('CONSOLIDADO')||String(d.bloque).toUpperCase().includes('TOTAL'));
             const bMH=(bN)=>{
@@ -6570,23 +7399,32 @@ window.EDCNps = (() => {
                 });
             });
 
-            const verTodosChip = `<div onclick="document.getElementById('fGeo_ep').value='ALL';window.handleGeoChange(document.getElementById('fGeo_ep'));" class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100 transition-all flex-shrink-0"><i data-lucide="arrow-left" class="w-4 h-4 text-[#004481]"></i><span class="text-[10px] font-black text-[#004481] uppercase tracking-widest">Ver Todos</span></div>`;
-            if (showGlobalOnly) {
-                document.getElementById('epDotPlotLegend').innerHTML = `<div onclick="epRoadmapGlobalSelected=false;renderEndProduct();" class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100 transition-all flex-shrink-0"><i data-lucide="arrow-left" class="w-4 h-4 text-[#004481]"></i><span class="text-[10px] font-black text-[#004481] uppercase tracking-widest">Ver Todos</span></div>`;
-            } else {
-                const globalChip = geo==='ALL' ? `<div onclick="epRoadmapGlobalSelected=true;renderEndProduct();" class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-[#004481] transition-all cursor-pointer flex-shrink-0">${window.getGlobalIconHtml('w-6 h-6')}<span class="text-[10px] font-black text-gray-700 uppercase tracking-widest">Global</span></div>` : '';
-                const countryChips = aC.map(c=>`<div onclick="document.getElementById('fGeo_ep').value='${c}';window.handleGeoChange(document.getElementById('fGeo_ep'));" class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-[#004481] transition-all cursor-pointer flex-shrink-0"><span class="nextgen-round-flag w-6 h-6"><img src="https://flagcdn.com/w80/${flagsMap[c]}.png" alt=""></span><span class="text-[10px] font-black text-gray-700 uppercase tracking-widest">${c}</span></div>`).join('');
-                document.getElementById('epDotPlotLegend').innerHTML = globalChip + countryChips + (geo!=='ALL'?verTodosChip:'');
-            }
-
             let h_p=hSD&&cR?.progreso!=null?cR.progreso:'--', h_t=cR?.target26Q4!=null?cR.target26Q4:'--', h_f=cR?.fin||'--';
+
+            // Chips de geografía (España/México/Perú/Colombia/Argentina/Global) en la
+            // propia cabecera, mismo formato que "Uso de NextGen por bloque funcional":
+            // al pulsarlos se filtra directamente la gráfica, sin fila de filtros aparte.
+            const geoProgressList = countryOrder.map(c=>{const t=progressData[c].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));return {c:c,p:t?.progreso!=null?t.progreso:null};});
+            const geoProgressValid = geoProgressList.filter(x=>x.p!==null);
+            const maxGeo = geoProgressValid.length?geoProgressValid.reduce((a,b)=>b.p>a.p?b:a):null;
+            const minGeo = geoProgressValid.length?geoProgressValid.reduce((a,b)=>b.p<a.p?b:a):null;
+            const geoChipsHtml = geoProgressList.map(x=>{
+                const width = x.p!=null?Math.max(0,Math.min(100,x.p)):0;
+                const isActive = geo===x.c;
+                const badge = (maxGeo&&minGeo&&maxGeo.c!==minGeo.c) ? (x.c===maxGeo.c?`<span class="ng-chip-badge up">▲ Mayor avance</span>`:x.c===minGeo.c?`<span class="ng-chip-badge down">▼ Menor avance</span>`:'') : '';
+                return `<button type="button" class="ng-chip${isActive?' active':''}" onclick="document.getElementById('fGeo_ep').value='${x.c}';window.handleGeoChange(document.getElementById('fGeo_ep'));">${badge}<div class="ng-chip-head"><span class="nextgen-round-flag w-6 h-6"><img src="https://flagcdn.com/w80/${flagsMap[x.c]}.png" alt=""></span><span>${nextGenEscape(x.c)}</span></div><div class="ng-chip-pct">${x.p!=null?fmtPct(x.p):'--'}</div><div class="ng-chip-bar"><i style="width:${width}%"></i></div></button>`;
+            }).join('') + (()=>{
+                const globalPct = cRTot&&cRTot.progreso!=null?cRTot.progreso:null;
+                const isGlobalActive = geo==='ALL'&&showGlobalOnly;
+                return `<button type="button" class="ng-chip${isGlobalActive?' active':''}" onclick="document.getElementById('fGeo_ep').value='ALL';window.handleGeoChange(document.getElementById('fGeo_ep'));epRoadmapGlobalSelected=true;renderEndProduct();"><div class="ng-chip-head">${window.getGlobalIconHtml('w-6 h-6')}<span>Global</span></div><div class="ng-chip-pct">${globalPct!=null?fmtPct(globalPct):'--'}</div><div class="ng-chip-bar"><i style="width:${globalPct!=null?Math.max(0,Math.min(100,globalPct)):0}%"></i></div></button>`;
+            })();
+
             if(geo==='ALL'){
-                let cT=countryOrder.map(c=>{let t=progressData[c].find(d=>String(d.bloque).toUpperCase().includes('TOTAL')||String(d.bloque).toUpperCase().includes('CONSOLIDADO'));return {c:c,p:t?.progreso!=null?t.progreso:null}}).filter(x=>x.p!==null).sort((a,b)=>b.p-a.p);
-                let bT=progressData['TOTAL'].filter(d=>!String(d.bloque).toUpperCase().includes('TOTAL')&&!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&d.progreso!==null).sort((a,b)=>b.progreso-a.progreso);
-                document.getElementById('ep-highlights-top').innerHTML=`<div class="ng-hero"><div class="ng-hero-figure"><div class="ng-hero-pct">${h_p!=='--'?fmtPct(h_p).replace('%',''):'--'}<sup>%</sup></div><div class="ng-hero-caption">Consolidado Total · <b>Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</b> · Fin: ${h_f}</div></div><div class="ng-hero-countries"><button type="button" class="ng-chip" onclick="document.getElementById('fGeo_ep').value='${cT[0]?cT[0].c:'ALL'}';window.handleGeoChange(document.getElementById('fGeo_ep'));"><div class="ng-chip-head"><i data-lucide="trending-up"></i><span>Mayor Avance</span></div><div class="ng-chip-pct" style="color:#88E783">${cT[0]?nextGenEscape(cT[0].c)+' · ':''}${hSD&&cT[0]?fmtPct(cT[0].p):'--'}</div><div class="ng-chip-bar"><i style="width:${cT[0]?Math.max(0,Math.min(100,cT[0].p)):0}%"></i></div></button><button type="button" class="ng-chip" onclick="document.getElementById('fGeo_ep').value='${cT.length?cT[cT.length-1].c:'ALL'}';window.handleGeoChange(document.getElementById('fGeo_ep'));"><div class="ng-chip-head"><i data-lucide="alert-circle"></i><span>Menor Avance</span></div><div class="ng-chip-pct" style="color:#FCA5A5">${cT.length?nextGenEscape(cT[cT.length-1].c)+' · ':''}${hSD&&cT.length?fmtPct(cT[cT.length-1].p):'--'}</div><div class="ng-chip-bar"><i style="width:${cT.length?Math.max(0,Math.min(100,cT[cT.length-1].p)):0}%"></i></div></button><div class="ng-chip"><div class="ng-chip-head"><i data-lucide="check-circle"></i><span>Bloque Líder</span></div><div class="ng-chip-pct">${hSD&&bT[0]?fmtPct(bT[0].progreso):'--'}</div><div class="ng-chip-sub" title="${bT[0]?nextGenEscape(bT[0].bloque):''}">${bT[0]?nextGenEscape(bT[0].bloque):'--'}</div><div class="ng-chip-bar"><i style="width:${bT[0]?Math.max(0,Math.min(100,bT[0].progreso)):0}%"></i></div></div></div></div>`;
+                document.getElementById('ep-highlights-top').innerHTML=`<div class="ng-hero"><div class="ng-hero-figure"><div class="ng-hero-pct">${h_p!=='--'?fmtPct(h_p).replace('%',''):'--'}<sup>%</sup></div><div class="ng-hero-caption">Consolidado Total · <b>Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</b> · Fin: ${h_f}</div></div><div class="ng-hero-countries">${geoChipsHtml}</div></div>`;
             }else{
                 let cD=progressData[geo].filter(d=>!String(d.bloque).toUpperCase().includes('CONSOLIDADO')&&!String(d.bloque).toUpperCase().includes('TOTAL')&&d.progreso!=null).sort((a,b)=>b.progreso-a.progreso);
-                document.getElementById('ep-highlights-top').innerHTML=`<div class="ng-hero"><div class="ng-hero-figure"><div class="ng-hero-pct">${h_p!=='--'?fmtPct(h_p).replace('%',''):'--'}<sup>%</sup></div><div class="ng-hero-caption"><span class="nextgen-round-flag w-4 h-4 inline-block align-text-bottom mr-1"><img src="https://flagcdn.com/w80/${flagsMap[geo]}.png" alt=""></span>Consolidado ${nextGenEscape(geo)} · <b>Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</b> · Fin: ${h_f}</div></div><div class="ng-hero-countries"><div class="ng-chip" title="${cD[0]?nextGenEscape(cD[0].bloque):''}"><div class="ng-chip-head"><i data-lucide="check-circle"></i><span>Mayor Avance</span></div><div class="ng-chip-pct" style="color:#88E783">${cD[0]?nextGenEscape(cD[0].bloque)+' · ':''}${hSD&&cD[0]?fmtPct(cD[0].progreso):'--'}</div><div class="ng-chip-bar"><i style="width:${cD[0]?Math.max(0,Math.min(100,cD[0].progreso)):0}%"></i></div></div><div class="ng-chip" title="${cD.length?nextGenEscape(cD[cD.length-1].bloque):''}"><div class="ng-chip-head"><i data-lucide="alert-triangle"></i><span>Menor Avance</span></div><div class="ng-chip-pct" style="color:#FCA5A5">${cD.length?nextGenEscape(cD[cD.length-1].bloque)+' · ':''}${hSD&&cD.length?fmtPct(cD[cD.length-1].progreso):'--'}</div><div class="ng-chip-bar"><i style="width:${cD.length?Math.max(0,Math.min(100,cD[cD.length-1].progreso)):0}%"></i></div></div></div></div>`;
+                const backChip = `<button type="button" class="ng-chip" onclick="document.getElementById('fGeo_ep').value='ALL';window.handleGeoChange(document.getElementById('fGeo_ep'));"><div class="ng-chip-head"><i data-lucide="arrow-left"></i><span>Volver a Todos</span></div></button>`;
+                document.getElementById('ep-highlights-top').innerHTML=`<div class="ng-hero"><div class="ng-hero-figure"><div class="ng-hero-pct">${h_p!=='--'?fmtPct(h_p).replace('%',''):'--'}<sup>%</sup></div><div class="ng-hero-caption"><span class="nextgen-round-flag w-4 h-4 inline-block align-text-bottom mr-1"><img src="https://flagcdn.com/w80/${flagsMap[geo]}.png" alt=""></span>Consolidado ${nextGenEscape(geo)} · <b>Target 2026: ${h_t!=='--'?fmtPct(h_t):'--'}</b> · Fin: ${h_f}</div></div><div class="ng-hero-countries"><div class="ng-chip" title="${cD[0]?nextGenEscape(cD[0].bloque):''}"><div class="ng-chip-head"><i data-lucide="check-circle"></i><span>Mayor Avance</span></div><div class="ng-chip-pct" style="color:#88E783">${cD[0]?nextGenEscape(cD[0].bloque)+' · ':''}${hSD&&cD[0]?fmtPct(cD[0].progreso):'--'}</div><div class="ng-chip-bar"><i style="width:${cD[0]?Math.max(0,Math.min(100,cD[0].progreso)):0}%"></i></div></div><div class="ng-chip" title="${cD.length?nextGenEscape(cD[cD.length-1].bloque):''}"><div class="ng-chip-head"><i data-lucide="alert-triangle"></i><span>Menor Avance</span></div><div class="ng-chip-pct" style="color:#FCA5A5">${cD.length?nextGenEscape(cD[cD.length-1].bloque)+' · ':''}${hSD&&cD.length?fmtPct(cD[cD.length-1].progreso):'--'}</div><div class="ng-chip-bar"><i style="width:${cD.length?Math.max(0,Math.min(100,cD[cD.length-1].progreso)):0}%"></i></div></div>${backChip}</div></div>`;
             }
 
             updateIcons();
@@ -7549,6 +8387,280 @@ window.EDCNps = (() => {
       stroke: currentColor;
     }
 
+
+    /* =========================================================
+       KPIs PRESUPUESTOS · ESTILO ENGINEERING
+       SOLO afecta a #kpiGrid. Los KPI de FTEs no se modifican.
+       ========================================================= */
+    #kpiGrid {
+      align-items: stretch;
+    }
+
+    @media (min-width: 1201px) {
+      #kpiGrid {
+        grid-template-columns: minmax(0, 1.08fr) repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    #kpiGrid .budget-kpi-card {
+      position: relative;
+      min-width: 0;
+      min-height: 116px;
+      height: 116px;
+      padding: 16px 18px 15px 22px;
+      border: 1px solid #DDE7F2;
+      border-radius: 18px;
+      background: #FFFFFF;
+      box-shadow: 0 4px 16px rgba(7, 33, 70, 0.05);
+      overflow: hidden;
+    }
+
+    #kpiGrid .budget-kpi-accent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      border-radius: 18px 0 0 18px;
+    }
+
+    #kpiGrid .budget-kpi-content {
+      height: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    #kpiGrid .budget-kpi-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    #kpiGrid .budget-kpi-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #7C8AA5;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-kpi-value {
+      display: block;
+      color: #1E3984;
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-kpi-card.is-reference .budget-kpi-value {
+      font-size: 36px;
+      color: #1E3984;
+    }
+
+    #kpiGrid .budget-kpi-card.is-executed .budget-kpi-value {
+      color: #2B5BA8;
+    }
+
+    #kpiGrid .budget-kpi-subtitle {
+      display: block;
+      margin-top: 8px;
+      color: #5B6F85;
+      font-size: 9px;
+      line-height: 1.15;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-kpi-icon {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #kpiGrid .budget-kpi-icon svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    #kpiGrid .budget-kpi-icon.reference {
+      color: #11B8C4;
+      background: #EEFDFC;
+    }
+
+    #kpiGrid .budget-kpi-icon.authorized {
+      color: #1E3984;
+      background: #F3F6FB;
+    }
+
+    #kpiGrid .budget-kpi-icon.executed {
+      color: #2B5BA8;
+      background: #EEF5FF;
+    }
+
+    #kpiGrid .budget-execution-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(108px, .86fr);
+      gap: 11px;
+      align-items: stretch;
+      padding: 12px 13px 12px 22px;
+    }
+
+    #kpiGrid .budget-execution-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #kpiGrid .budget-execution-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    #kpiGrid .budget-execution-heading .budget-kpi-label {
+      margin-bottom: 0;
+      font-size: 9px;
+      letter-spacing: .13em;
+    }
+
+    #kpiGrid .budget-execution-expected {
+      color: #7C8AA5;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-execution-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      margin-top: 5px;
+      min-width: 0;
+    }
+
+    #kpiGrid .budget-execution-pct {
+      color: #1E3984;
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-execution-detail {
+      margin-bottom: 2px;
+      color: #5B6F85;
+      font-size: 7.5px;
+      line-height: 1.1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-progress {
+      position: relative;
+      height: 7px;
+      margin-top: 9px;
+      border-radius: 999px;
+      background: #E5EDF7;
+      overflow: visible;
+    }
+
+    #kpiGrid .budget-progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-radius: 999px;
+      transition: width .35s ease;
+    }
+
+    #kpiGrid .budget-progress-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      border-left: 2px dashed #304A7A;
+    }
+
+    #kpiGrid .budget-status-box {
+      min-width: 0;
+      border: 1px solid #D6E3F0;
+      border-radius: 12px;
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #kpiGrid .budget-status-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    #kpiGrid .budget-status-icon {
+      width: 23px;
+      height: 23px;
+      flex: 0 0 23px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    #kpiGrid .budget-status-label {
+      font-size: 7.5px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    #kpiGrid .budget-status-delta {
+      margin-top: 4px;
+      font-size: 21px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    #kpiGrid .budget-status-range {
+      margin-top: 4px;
+      font-size: 7px;
+      line-height: 1.1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1350px) {
+      #kpiGrid .budget-execution-card {
+        grid-template-columns: minmax(0, 1.45fr) minmax(96px, .82fr);
+      }
+
+      #kpiGrid .budget-kpi-value {
+        font-size: 28px;
+      }
+
+      #kpiGrid .budget-kpi-card.is-reference .budget-kpi-value {
+        font-size: 32px;
+      }
+    }
+
     /* --- CHARTS & SUMMARY PANEL --- */
     .charts-grid {
       display: grid;
@@ -7625,6 +8737,25 @@ window.EDCNps = (() => {
       justify-content: center;
     }
 
+    .accumulated-execution-expected {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 5px 0;
+      color: #7382A3;
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .accumulated-execution-expected-icon {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      border: 2px dashed #8493B2;
+      border-radius: 2px;
+    }
+
     .accumulated-execution-legend {
       justify-content: flex-start;
       margin: 0 0 4px 0;
@@ -7633,7 +8764,7 @@ window.EDCNps = (() => {
 
     .accumulated-execution-row {
       display: grid;
-      grid-template-columns: 42px minmax(0, 1fr) 74px;
+      grid-template-columns: 42px minmax(0, 1fr) 88px;
       align-items: center;
       gap: 12px;
     }
@@ -7758,12 +8889,265 @@ window.EDCNps = (() => {
     }
 
     .accumulated-execution-pct {
-      font-size: 15px;
-      font-weight: 900;
-      color: #0087A8;
-      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
+    }
+
+    .accumulated-execution-pct-badge {
+      width: 72px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid #D6E3F0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 16px;
+      line-height: 40px;
+      font-weight: 900;
+      box-shadow: 0 3px 10px rgba(7, 33, 70, 0.05);
+    }
+
+    .accumulated-execution-pct-badge.numeric-pop {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transform: none !important;
+    }
+
+    .accumulated-execution-pct-badge.is-na {
+      color: #7C8AA5;
+      background: #F4F7FB;
+      border-color: #D6E3F0;
+    }
+
+
+    /* =========================================================
+       SEMÁFORO EJECUCIÓN EDC
+       Sustituye la antigua distribución de referencia.
+       ========================================================= */
+    .budget-semaphore-card .chart-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .budget-semaphore-title-wrap {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .budget-semaphore-controls {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      padding: 4px;
+      border: 1px solid #CBD8E8;
+      border-radius: 11px;
+      background: #F1F5FA;
+      box-shadow: 0 2px 6px rgba(7, 33, 70, 0.06);
+    }
+
+    .budget-semaphore-btn {
+      min-width: 104px;
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: transparent;
+      color: #5E6F93;
+      font: inherit;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+
+    .budget-semaphore-btn.active {
+      background: #241A8F;
+      color: #FFFFFF;
+      box-shadow: 0 3px 8px rgba(36, 26, 143, 0.18);
+    }
+
+    .budget-semaphore-body {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .budget-semaphore-criteria {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px 14px;
+      margin: 2px 0 14px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #F7F9FC;
+      color: #52658A;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .budget-semaphore-criteria-title {
+      color: #7B8AAA;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .budget-semaphore-criterion {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .budget-semaphore-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+    }
+
+    .budget-semaphore-grid-head,
+    .budget-semaphore-row {
+      display: grid;
+      grid-template-columns: 78px repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .budget-semaphore-grid-head {
+      margin-bottom: 7px;
+    }
+
+    .budget-semaphore-quarter {
+      text-align: center;
+      color: #7B8AAA;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .budget-semaphore-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .budget-semaphore-program {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 54px;
+      padding-right: 0;
+      color: #004481;
+      font-size: 10px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    .budget-semaphore-program-color {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+      border-radius: 2px;
+    }
+
+    .budget-semaphore-country-flag {
+      width: 60px;
+      min-width: 60px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .budget-semaphore-country-flag .flag-icon {
+      width: 24px !important;
+      height: 16px !important;
+      margin: 0 !important;
+      transform: scale(2.35);
+      transform-origin: center;
+    }
+
+    .budget-semaphore-program-name {
+      display: none !important;
+    }
+
+    .budget-semaphore-cell {
+      min-width: 0;
+      min-height: 51px;
+      padding: 6px 5px;
+      border: 1px solid #D6DCE5;
+      border-radius: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(7, 33, 70, 0.03);
+    }
+
+    .budget-semaphore-main {
+      max-width: 100%;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .budget-semaphore-main.diff {
+      font-size: 12px;
+    }
+
+    .budget-semaphore-detail {
+      max-width: 100%;
+      margin-top: 5px;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1250px) {
+      .budget-semaphore-grid-head,
+      .budget-semaphore-row {
+        grid-template-columns: 70px repeat(4, minmax(0, 1fr));
+        gap: 5px;
+      }
+
+      .budget-semaphore-program {
+        font-size: 9px;
+      }
+
+      .budget-semaphore-main {
+        font-size: 13px;
+      }
+
+      .budget-semaphore-main.diff {
+        font-size: 10px;
+      }
+
+      .budget-semaphore-detail {
+        font-size: 7px;
+      }
+
+      .budget-semaphore-btn {
+        min-width: 92px;
+        padding: 8px 9px;
+        font-size: 10px;
+      }
     }
 
     /* --- DONUT REFERENCIA --- */
@@ -8247,42 +9631,45 @@ window.EDCNps = (() => {
 
     .breakdown-table-wrap {
       width: 100%;
-      overflow-x: auto;
-      border-radius: 7px;
+      overflow: hidden;
+      border-radius: 10px;
       border: 1px solid #DCE5F0;
     }
 
-    .breakdown-table-wrap::-webkit-scrollbar { height: 0; }
-    .breakdown-table-wrap { scrollbar-width: none; }
-
     .breakdown-table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: collapse;
-      min-width: 860px;
-      font-size: 13px;
+      font-size: 11px;
       color: var(--bbva-dark);
     }
 
+    .breakdown-table col.breakdown-country-col {
+      width: 7%;
+    }
+
+    .breakdown-table col.breakdown-data-col {
+      width: 5.8125%;
+    }
+
     .breakdown-table thead tr:first-child th {
-      background: #EEF4FB;
       color: var(--bbva-dark);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
       text-align: center;
-      padding: 12px 10px;
+      padding: 10px 3px;
       border-bottom: 1px solid #C9D8EA;
     }
 
     .breakdown-table thead tr:nth-child(2) th {
       background: #FFFFFF;
       color: var(--bbva-dark);
-      font-size: 13px;
+      font-size: 9px;
       font-weight: 900;
       text-align: center;
-      padding: 11px 10px;
+      padding: 9px 2px;
       border-bottom: 2px solid #AFC7E3;
+      white-space: nowrap;
     }
 
     .breakdown-table th.breakdown-country-head {
@@ -8290,19 +9677,38 @@ window.EDCNps = (() => {
       font-style: italic;
       text-transform: none !important;
       letter-spacing: 0 !important;
+      font-size: 11px !important;
     }
 
     .breakdown-table th.q1-head { background: #F0F0F0 !important; }
     .breakdown-table th.q2-head { background: #E3EDF8 !important; }
     .breakdown-table th.q3-head { background: #D5E5F6 !important; }
+    .breakdown-table th.q4-head { background: #C7DBF2 !important; }
+
+    .breakdown-table thead .metric-demand {
+      border-bottom-color: #49A5E6 !important;
+    }
+
+    .breakdown-table thead .metric-authorized {
+      border-bottom-color: #BFD7F6 !important;
+    }
+
+    .breakdown-table thead .metric-executed {
+      border-bottom-color: #1E3984 !important;
+    }
+
+    .breakdown-table thead .metric-pct {
+      border-bottom-color: #2DCCCD !important;
+    }
 
     .breakdown-table tbody td {
-      padding: 13px 12px;
+      padding: 10px 3px;
       border-bottom: 1px solid #DCE5F0;
       text-align: center;
-      font-size: 14px;
+      font-size: 11px;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
       overflow: visible;
     }
 
@@ -8311,37 +9717,79 @@ window.EDCNps = (() => {
     }
 
     .breakdown-country-cell {
-      text-align: left !important;
+      text-align: center !important;
       font-weight: 900 !important;
       display: flex;
       align-items: center;
-      gap: 10px;
-      white-space: nowrap;
+      justify-content: center;
+      white-space: normal !important;
+      line-height: 1.08;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
     }
 
     .breakdown-country-cell .flag-icon {
-      width: 24px;
-      height: 16px;
-      border-radius: 2px;
+      width: 24px !important;
+      height: 16px !important;
+      flex: 0 0 auto;
+      margin: 0 !important;
+      transform: scale(1.65);
+      transform-origin: center;
     }
 
-    .breakdown-country-cell .flag-global,
-    .breakdown-country-cell .flag-holding {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-    }
-
-    .breakdown-country-cell.only-flag {
-      justify-content: center;
-      text-align: center !important;
-      gap: 0;
+    .breakdown-country-name {
+      display: none !important;
     }
 
     .breakdown-total-row td {
       background: #DCEAF7;
-      font-size: 15px;
+      font-size: 11px;
       font-weight: 900;
+    }
+
+    .breakdown-total-row td:first-child {
+      text-align: center !important;
+      font-size: 12px;
+    }
+
+    .breakdown-exec-pill {
+      min-width: 50px;
+      height: 31px;
+      padding: 0 5px;
+      border: 1px solid #D6DCE5;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .breakdown-exec-pill.good {
+      color: #00A63C;
+      background: #ECFBF0;
+      border-color: #A8E6B8;
+    }
+
+    .breakdown-exec-pill.mid {
+      color: #A88A00;
+      background: #F8F7D9;
+      border-color: #E2D766;
+    }
+
+    .breakdown-exec-pill.low {
+      color: #C65F00;
+      background: #FFF3E8;
+      border-color: #FFC47A;
+    }
+
+    .breakdown-exec-pill.na {
+      color: #8B97A8;
+      background: #F3F5F8;
+      border-color: #D6DCE5;
     }
 
     .breakdown-empty {
@@ -8351,6 +9799,27 @@ window.EDCNps = (() => {
       font-size: 12px;
       font-weight: 900;
       text-transform: uppercase;
+    }
+
+    @media (max-width: 1250px) {
+      .breakdown-table tbody td {
+        font-size: 10px;
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+
+      .breakdown-table thead tr:nth-child(2) th {
+        font-size: 8px;
+        padding-left: 1px;
+        padding-right: 1px;
+      }
+
+      .breakdown-exec-pill {
+        min-width: 43px;
+        height: 29px;
+        font-size: 10px;
+      }
+
     }
 
 
@@ -9283,14 +10752,39 @@ window.EDCNps = (() => {
               </div>
             </article>
 
-            <!-- PANEL DERECHO: Distribución de referencia por país -->
-            <article class="chart-card">
+            <!-- PANEL DERECHO: Semáforo ejecución por trimestre -->
+            <article class="chart-card budget-semaphore-card">
               <div class="chart-header">
-                <div class="chart-title" id="referenceDistributionTitle">DISTRIBUCIÓN REFERENCIA 2026</div>
-                <div class="chart-subtitle" id="referenceDistributionSubtitle">Distribución de la referencia entre los países</div>
+                <div class="budget-semaphore-title-wrap">
+                  <div class="chart-title">SEMÁFORO EJECUCIÓN POR TRIMESTRE</div>
+                  <div class="chart-subtitle" id="budgetSemaphoreSubtitle">
+                    % Ejecutado ÷ Autorizado por país y trimestre
+                  </div>
+                </div>
+
+                <div class="budget-semaphore-controls">
+                  <button
+                    id="budgetSemaphorePctBtn"
+                    class="budget-semaphore-btn active"
+                    type="button"
+                    aria-pressed="true"
+                    onclick="setBudgetSemaphoreMode('pct')">
+                    % Ejecución
+                  </button>
+
+                  <button
+                    id="budgetSemaphoreDiffBtn"
+                    class="budget-semaphore-btn"
+                    type="button"
+                    aria-pressed="false"
+                    onclick="setBudgetSemaphoreMode('diff')">
+                    Diferencia
+                  </button>
+                </div>
               </div>
-              <div class="chart-body" id="referenceDistributionBody">
-                <!-- Inyectado via JS -->
+
+              <div class="chart-body" id="budgetSemaphoreBody">
+                <!-- Inyectado vía JS -->
               </div>
             </article>
 
@@ -9405,6 +10899,7 @@ window.EDCNps = (() => {
     // --- VARIABLES Y CONFIGURACIÓN ---
     let presupuestoRows = [];
     let ftesRows = [];
+    let ftesStructureRows = [];
     let ftesPeopleRows = [];
     let ftesKpisRows = [];
     let ftesKpisSelectedQuarter = 'Q2';
@@ -9421,6 +10916,7 @@ window.EDCNps = (() => {
     let activeModule = 'presupuesto';
     let barChartInstance = null;
     let referenceDoughnutInstance = null;
+    let budgetSemaphoreMode = 'pct';
     let ftesAssignedChartInstance = null;
 
     // Registrar el plugin de Datalabels si existe (se cargó via CDN)
@@ -9562,7 +11058,7 @@ window.EDCNps = (() => {
     };
 
     // --- API APPS SCRIPT PARA GOOGLE SITES / HTML EXTERNO ---
-    const APPS_SCRIPT_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwlciajOHldg2zgQenD6bDE9TtePO1gAjX6a9ZkQ9xNaa6ZQ2RXbET-vVUUVVgA0Xxqbg/exec';
+    const APPS_SCRIPT_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwa-nLPRNANJofLg8Kk7xI3SvcklYP5-Fph9wBEzDChDBvSqOjdWgrxZVA1d92Lcgm2kA/exec';
 
     function callAppsScriptApi(action) {
       return new Promise((resolve, reject) => {
@@ -9621,6 +11117,7 @@ window.EDCNps = (() => {
       bindStaticEvents();
       loadPresupuestoData();
       loadFtesData();
+      loadFtesStructureData();
       loadFtesPeopleData();
       loadFtesKpisData();
     });
@@ -9719,6 +11216,19 @@ window.EDCNps = (() => {
           if (container) {
             container.innerHTML = '<div class="empty-state">Error al cargar datos FTEs</div>';
           }
+        });
+    }
+
+    function loadFtesStructureData() {
+      callAppsScriptApi('getFtesStructureData')
+        .then(function (data) {
+          ftesStructureRows = Array.isArray(data) ? data : [];
+          if (activeModule === 'ftes') renderFtes();
+        })
+        .catch(function (error) {
+          console.error('Error al cargar estructura INT + PART / EXT:', error);
+          ftesStructureRows = [];
+          if (activeModule === 'ftes') renderFtes();
         });
     }
 
@@ -9838,7 +11348,7 @@ window.EDCNps = (() => {
 
       renderKpis(budgetKpiTotals, currencyMode, selectedQuarter);
       renderAccumulatedExecutionChart(accumulatedGrouped, currencyMode, selectedQuarter);
-      renderReferenceDistribution(grouped, currencyMode, selectedQuarter);
+      renderBudgetSemaphore(presupuestoRows, currencyMode, selectedQuarter);
       renderMainChart(grouped, currencyMode, selectedQuarter);
       renderBudgetBreakdownTable(presupuestoRows, currencyMode, selectedCountry);
     }
@@ -9921,7 +11431,10 @@ window.EDCNps = (() => {
       `;
 
       renderFtesAssignedChart(ftesRows, periodQuarter);
-      renderFtesStructureChart(ftesRows, periodQuarter);
+      renderFtesStructureChart(
+        getBestFtesStructureDataset(periodQuarter),
+        periodQuarter
+      );
       renderFtesSummaryTable(rows, periodQuarter);
       renderFtesPeopleCards(ftesPeopleRows, selectedQuarterRaw, selectedCountry);
       renderFtesKpisChart(ftesKpisRows, ftesKpisSelectedQuarter, selectedCountry);
@@ -10732,6 +12245,33 @@ window.EDCNps = (() => {
       return Number(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    function getBestFtesStructureDataset(periodQuarter) {
+      const q = normalizeQuarter(periodQuarter);
+
+      const hasValidStructureForQuarter = (rows) => {
+        if (!Array.isArray(rows) || !rows.length) return false;
+
+        return getFtesRowsForQuarter(rows, q, selectedCountry)
+          .some(row => {
+            const directInternal = toNumber(row.structureInternalPctPoints);
+            const directExternal = toNumber(row.structureExternalPctPoints);
+
+            if (directInternal > 0 || directExternal > 0) {
+              return true;
+            }
+
+            const share = getFteInternalExternalShare(row);
+            return share.hasData;
+          });
+      };
+
+      if (hasValidStructureForQuarter(ftesStructureRows)) {
+        return ftesStructureRows;
+      }
+
+      return ftesRows;
+    }
+
     function renderFtesStructureChart(rows, periodQuarter) {
       const container = document.getElementById('ftesStructureBody');
       const title = document.getElementById('ftesStructureTitle');
@@ -10751,7 +12291,30 @@ window.EDCNps = (() => {
       const quarterRows = getFtesRowsForQuarter(rows, q, selectedCountry);
       const dataRows = quarterRows
         .map(row => {
+          const directInternal = toNumber(row.structureInternalPctPoints);
+          const directExternal = toNumber(row.structureExternalPctPoints);
+
+          if (directInternal > 0 || directExternal > 0) {
+            const totalDirect = directInternal + directExternal;
+
+            let internal = directInternal;
+            let external = directExternal;
+
+            if (totalDirect > 0 && Math.abs(totalDirect - 100) > 0.5) {
+              internal = (directInternal / totalDirect) * 100;
+              external = (directExternal / totalDirect) * 100;
+            }
+
+            return {
+              pais: normalizeCountry(row.pais),
+              internal: Math.max(0, Math.min(100, internal)),
+              external: Math.max(0, Math.min(100, external)),
+              hasData: totalDirect > 0
+            };
+          }
+
           const share = getFteInternalExternalShare(row);
+
           return {
             pais: normalizeCountry(row.pais),
             internal: share.internal,
@@ -10808,21 +12371,25 @@ window.EDCNps = (() => {
     function getFteInternalExternalShare(row) {
       let internal = getFirstFtePercentValue(row, [
         // Code.gs debe devolver la columna L como internosParticipadas / pctInternosParticipadas
+        'rawL', 'structureInternalPctPoints',
         'internosParticipadas', 'pctInternosParticipadas',
         'internos_participadas', 'internos_participadas_pct', 'pct_internos_participadas',
         'porcentajeInternosParticipadas', 'porcentaje_internos_participadas',
         'internosMasParticipadas', 'internos_mas_participadas',
         'internosYParticipadas', 'internos_y_participadas', 'intPart', 'int_part',
         'internosPart', 'internos_part', 'inter_participadas', 'internos_parti',
-        'internos_particip', 'columnaL', 'columnL', 'col_l', 'l', 'internos'
+        'internos_particip', 'columnaL', 'columnL', 'col_l', 'l', 'internos',
+        'internalPct', 'internosParticipadasPctDirecto'
       ]);
 
       let external = getFirstFtePercentValue(row, [
         // Code.gs debe devolver la columna M como externos / pctExternos
+        'rawM', 'structureExternalPctPoints',
         'externos', 'pctExternos',
         'externosPct', 'externos_pct', 'pct_externos',
         'porcentajeExternos', 'porcentaje_externos', 'external', 'externo',
-        'columnaM', 'columnM', 'col_m', 'm'
+        'columnaM', 'columnM', 'col_m', 'm',
+        'externalPct', 'externosPctDirecto'
       ]);
 
       internal = normalizeFtePercentValue(internal);
@@ -10849,11 +12416,26 @@ window.EDCNps = (() => {
     }
 
     function getFirstFtePercentValue(row, keys) {
+      let fallback = 0;
+
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
-        if (row[key] !== undefined && row[key] !== null && row[key] !== '') return row[key];
+        const value = row[key];
+
+        if (value === undefined || value === null || value === '') {
+          continue;
+        }
+
+        const normalized = normalizeFtePercentValue(value);
+
+        if (normalized > 0) {
+          return value;
+        }
+
+        fallback = value;
       }
-      return 0;
+
+      return fallback;
     }
 
     function normalizeFtePercentValue(value) {
@@ -11292,84 +12874,351 @@ window.EDCNps = (() => {
 
     function calculateBudgetKpiTotals(rows, selectedQuarter, currencyMode, selectedCountryFilter) {
       const isTotal2026 = selectedQuarter === 'TOTAL_2026';
-      const validQuarters = isTotal2026 ? ['Q1', 'Q2', 'Q3', 'Q4'] : [selectedQuarter];
+
+      // Autorizado/Ejecutado del recuadro central:
+      // Q seleccionado = solo ese Q; Total 2026 = Q1+Q2+Q3+Q4.
+      const validQuarters = isTotal2026
+        ? ['Q1', 'Q2', 'Q3', 'Q4']
+        : [selectedQuarter];
+
+      // Para el % anual acumulamos ejecutado hasta el Q seleccionado.
+      const selectedQuarterOrder = isTotal2026
+        ? 4
+        : (QUARTER_ORDER[selectedQuarter] || 0);
+
       const refGroups = {};
-      let referenciaPeriodo = 0;
       let autorizado = 0;
       let ejecutado = 0;
+      let ejecutadoAcumulado = 0;
 
       rows.forEach(row => {
         const pais = normalizeCountry(row.pais);
         const quarter = normalizeQuarter(row.quarter);
+        const quarterOrder = QUARTER_ORDER[quarter] || 0;
         const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
 
         if (!isQuarterRow(row)) return;
         if (vistaMoneda !== currencyMode) return;
         if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
 
-        // Referencia anual 2026 exacta: una sola vez por país/programa, no se duplica por Q.
-        const programa = normalizeGeneric(row.programa || row.program || row.nombrePrograma || row.endProduct || row.end_product || row.producto || 'TOTAL');
+        // REFERENCIA: siempre anual 2026 y una sola vez por país/programa.
+        const programa = normalizeGeneric(
+          row.programa ||
+          row.program ||
+          row.nombrePrograma ||
+          row.endProduct ||
+          row.end_product ||
+          row.producto ||
+          'TOTAL'
+        );
+
         const refKey = `${pais}__${programa}`;
         if (!refGroups[refKey]) refGroups[refKey] = { annual: 0 };
-        refGroups[refKey].annual = Math.max(refGroups[refKey].annual, getAnnualReferenceValue(row));
+
+        refGroups[refKey].annual = Math.max(
+          refGroups[refKey].annual,
+          getAnnualReferenceValue(row)
+        );
+
+        // Ejecución acumulada para el KPI anual.
+        if (quarterOrder > 0 && quarterOrder <= selectedQuarterOrder) {
+          ejecutadoAcumulado += getMetricValue(row, 'ejecutado');
+        }
 
         if (!validQuarters.includes(quarter)) return;
 
-        // Q concreto = solo ese Q. Total 2026 = Q1 + Q2 + Q3 + Q4.
         autorizado += getMetricValue(row, 'autorizado');
         ejecutado += getMetricValue(row, 'ejecutado');
-        referenciaPeriodo += getPeriodReferenceValue(row);
       });
 
-      const referenciaAnual = Object.values(refGroups).reduce((sum, item) => sum + toNumber(item.annual), 0);
-      const referencia = isTotal2026
-        ? referenciaAnual
-        : (referenciaPeriodo > 0 ? referenciaPeriodo : referenciaAnual);
+      const referenciaAnual = Object.values(refGroups)
+        .reduce((sum, item) => sum + toNumber(item.annual), 0);
 
-      return { referencia, autorizado, ejecutado };
+      return {
+        referencia: referenciaAnual,
+        referenciaAnual,
+        autorizado,
+        ejecutado,
+        ejecutadoAcumulado
+      };
+    }
+
+    function getBudgetExecutionExpectedConfig(selectedQuarter) {
+      const map = {
+        Q1: { target: 28, min: 25, max: 30, label: 'Q1' },
+        Q2: { target: 56, min: 51, max: 61, label: 'Q2' },
+        Q3: { target: 75, min: 65, max: 79, label: 'Q3' },
+        Q4: { target: 100, min: 90, max: 100, label: 'Q4' },
+        TOTAL_2026: { target: 100, min: 90, max: 100, label: '2026' }
+      };
+
+      return map[selectedQuarter] || {
+        target: null,
+        min: null,
+        max: null,
+        label: ''
+      };
+    }
+
+    function getBudgetExecutionComparisonQuarter(rows, selectedQuarter, currencyMode, countryFilter) {
+      // Q4 2026 ya ha comenzado.
+      // Cuando la vista está en Total 2026, el rango aplicable es siempre Q4 (90%-100%),
+      // independientemente de que todavía haya poca o ninguna ejecución imputada en Q4.
+      if (selectedQuarter === 'TOTAL_2026') {
+        return 'Q4';
+      }
+
+      return selectedQuarter;
+    }
+
+    function getBudgetExecutionStatus(actualPct, selectedQuarter) {
+      const cfg = getBudgetExecutionExpectedConfig(selectedQuarter);
+
+      if (cfg.target === null) {
+        return {
+          cfg,
+          accent: '#7C8AA5',
+          text: '#5B6F85',
+          soft: '#F4F7FB',
+          border: '#D6E3F0',
+          iconBg: '#E9EEF5',
+          icon: '•',
+          label: 'Sin rango definido',
+          delta: null
+        };
+      }
+
+      if (actualPct < cfg.min) {
+        return {
+          cfg,
+          accent: '#C65F00',
+          text: '#C65F00',
+          soft: '#FFF6EB',
+          border: '#FFC47A',
+          iconBg: '#FFE8CC',
+          icon: '!',
+          label: 'Por debajo del rango',
+          delta: actualPct - cfg.target
+        };
+      }
+
+      if (actualPct > cfg.max) {
+        return {
+          cfg,
+          accent: '#D50032',
+          text: '#D50032',
+          soft: '#FFF0F4',
+          border: '#FFB3C2',
+          iconBg: '#F8DDE3',
+          icon: '!',
+          label: 'Por encima del rango',
+          delta: actualPct - cfg.target
+        };
+      }
+
+      return {
+        cfg,
+        accent: '#00A63C',
+        text: '#00A63C',
+        soft: '#ECFBF0',
+        border: '#A8E6B8',
+        iconBg: '#D9F5E1',
+        icon: '✓',
+        label: 'Dentro del rango esperado',
+        delta: actualPct - cfg.target
+      };
+    }
+
+    function formatBudgetPp(value) {
+      const rounded = Math.round(Number(value || 0));
+      return `${rounded > 0 ? '+' : ''}${rounded} pp`;
     }
 
     function renderKpis(totals, currencyMode, selectedQuarter) {
       const isTotal2026 = selectedQuarter === 'TOTAL_2026';
       const periodLabel = isTotal2026 ? '2026' : getQuarterDisplay(selectedQuarter);
 
-      const ref = toNumber(totals && totals.referencia);
+      const ref = toNumber(
+        totals && (
+          totals.referenciaAnual !== undefined
+            ? totals.referenciaAnual
+            : totals.referencia
+        )
+      );
+
       const aut = toNumber(totals && totals.autorizado);
-      const eje = toNumber(totals && totals.ejecutado);
-      const pctEjecucion = aut > 0 ? (eje / aut) : 0;
+      const ejePeriodo = toNumber(totals && totals.ejecutado);
+      const ejeAcumulado = toNumber(
+        totals && (
+          totals.ejecutadoAcumulado !== undefined
+            ? totals.ejecutadoAcumulado
+            : totals.ejecutado
+        )
+      );
+
+      // EDC: la ejecución se compara SIEMPRE contra Referencia anual.
+      const pctEjecucion = ref > 0 ? (ejeAcumulado / ref) : 0;
+      const pctValue = pctEjecucion * 100;
       const suffix = getCurrencySuffix(selectedCountry, currencyMode);
 
+      const statusQuarter = getBudgetExecutionComparisonQuarter(
+        presupuestoRows,
+        selectedQuarter,
+        currencyMode,
+        selectedCountry
+      );
+
+      const status = getBudgetExecutionStatus(
+        pctValue,
+        statusQuarter
+      );
+
+      const cfg = status.cfg;
+
+      const fillWidth = Math.max(0, Math.min(pctValue, 100));
+      const markerStyle = cfg.target === null
+        ? 'display:none;'
+        : `left:${Math.max(0, Math.min(cfg.target, 100))}%;`;
+
+      const exactTarget = cfg.target !== null && cfg.min === cfg.max;
+
+      const expectedText = cfg.target === null
+        ? 'Sin objetivo definido'
+        : (
+            exactTarget
+              ? `${cfg.target}% · Esperado ${cfg.label || statusQuarter}`
+              : `${cfg.min}%-${cfg.max}% · Esperado ${cfg.label || statusQuarter}`
+          );
+
+      const deltaText = status.delta === null
+        ? '—'
+        : formatBudgetPp(status.delta);
+
+      const rangeText = cfg.target === null
+        ? 'Sin rango para este periodo'
+        : (
+            exactTarget
+              ? `Objetivo ${cfg.target}%`
+              : `Rango ${cfg.min}% - ${cfg.max}%`
+          );
+
       document.getElementById('kpiGrid').innerHTML = `
-        <article class="kpi-card type-ref">
-          <div class="kpi-info">
-            <div class="kpi-label">REFERENCIA ${periodLabel}</div>
-            <div class="kpi-value">${formatNumber(ref)}${suffix}</div>
+        <article class="budget-kpi-card is-reference">
+          <div class="budget-kpi-accent" style="background:#2DCCCD;"></div>
+
+          <div class="budget-kpi-content">
+            <div class="budget-kpi-text">
+              <span class="budget-kpi-label" style="color:#1464A5;">
+                REFERENCIA 2026
+              </span>
+
+              <span class="budget-kpi-value">
+                ${formatNumber(ref)}${suffix}
+              </span>
+
+              <span class="budget-kpi-subtitle">
+                Base anual del % de ejecución
+              </span>
+            </div>
+
+            <div class="budget-kpi-icon reference">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M4 18V8"></path>
+                <path d="M8 18V5"></path>
+                <path d="M12 18v-7"></path>
+                <path d="M16 18V9"></path>
+                <path d="M20 18V4"></path>
+                <path d="m4 7 4-3 4 5 4-2 4-4"></path>
+              </svg>
+            </div>
           </div>
-          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
         </article>
 
-        <article class="kpi-card type-aut">
-          <div class="kpi-info">
-            <div class="kpi-label">AUTORIZADO ${periodLabel}</div>
-            <div class="kpi-value">${formatNumber(aut)}${suffix}</div>
+        <article class="budget-kpi-card">
+          <div class="budget-kpi-accent" style="background:#1E3984;"></div>
+
+          <div class="budget-kpi-content">
+            <div class="budget-kpi-text">
+              <span class="budget-kpi-label">AUTORIZADO ${periodLabel}</span>
+              <span class="budget-kpi-value">${formatNumber(aut)}${suffix}</span>
+            </div>
+
+            <div class="budget-kpi-icon authorized">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="12" cy="12" r="8"></circle>
+                <path d="m9.5 12 1.8 1.8L15 10"></path>
+              </svg>
+            </div>
           </div>
-          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
         </article>
 
-        <article class="kpi-card type-exe">
-          <div class="kpi-info">
-            <div class="kpi-label">EJECUTADO ${periodLabel}</div>
-            <div class="kpi-value">${formatNumber(eje)}${suffix}</div>
+        <article class="budget-kpi-card is-executed">
+          <div class="budget-kpi-accent" style="background:#2B5BA8;"></div>
+
+          <div class="budget-kpi-content">
+            <div class="budget-kpi-text">
+              <span class="budget-kpi-label">EJECUTADO ${periodLabel}</span>
+              <span class="budget-kpi-value">${formatNumber(ejePeriodo)}${suffix}</span>
+            </div>
+
+            <div class="budget-kpi-icon executed">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M7 17 17 7"></path>
+                <path d="M10 7h7v7"></path>
+              </svg>
+            </div>
           </div>
-          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
         </article>
 
-        <article class="kpi-card type-ava">
-          <div class="kpi-info">
-            <div class="kpi-label">% EJECUCIÓN ${periodLabel}</div>
-            <div class="kpi-value">${formatPercent(pctEjecucion, 2)}</div>
+        <article class="budget-kpi-card budget-execution-card">
+          <div class="budget-kpi-accent" style="background:${status.accent};"></div>
+
+          <div class="budget-execution-main">
+            <div class="budget-execution-heading">
+              <span class="budget-kpi-label">EJECUCIÓN ANUAL</span>
+              <span class="budget-execution-expected">${expectedText}</span>
+            </div>
+
+            <div class="budget-execution-value-row">
+              <span class="budget-execution-pct" style="color:${status.accent};">
+                ${formatPercent(pctEjecucion, 0)}
+              </span>
+
+              <span class="budget-execution-detail">
+                ${formatNumber(ejeAcumulado)}${suffix} / ${formatNumber(ref)}${suffix}
+              </span>
+            </div>
+
+            <div class="budget-progress">
+              <div
+                class="budget-progress-fill"
+                style="width:${fillWidth}%;background:${status.accent};">
+              </div>
+
+              <div
+                class="budget-progress-marker"
+                style="${markerStyle}">
+              </div>
+            </div>
           </div>
-          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+
+          <div
+            class="budget-status-box"
+            style="background:${status.soft};border-color:${status.border};color:${status.text};">
+
+            <div class="budget-status-top">
+              <span
+                class="budget-status-icon"
+                style="background:${status.iconBg};color:${status.text};">
+                ${status.icon}
+              </span>
+
+              <span class="budget-status-label">${status.label}</span>
+            </div>
+
+            <span class="budget-status-delta">${deltaText}</span>
+            <span class="budget-status-range">${rangeText}</span>
+          </div>
         </article>
       `;
     }
@@ -11378,6 +13227,17 @@ window.EDCNps = (() => {
       const container = document.getElementById('accumulatedExecutionBody');
       const subtitle = document.getElementById('accumulatedExecutionSubtitle');
       const periodLabel = selectedQuarter === 'TOTAL_2026' ? '2026' : getQuarterDisplay(selectedQuarter);
+
+      const comparisonQuarter = getBudgetExecutionComparisonQuarter(
+        presupuestoRows,
+        selectedQuarter,
+        currencyMode,
+        selectedCountry
+      );
+
+      const expectedConfig = getBudgetExecutionExpectedConfig(
+        comparisonQuarter
+      );
 
       if (subtitle) {
         subtitle.textContent = selectedQuarter === 'TOTAL_2026'
@@ -11398,10 +13258,27 @@ window.EDCNps = (() => {
 
       container.innerHTML = `
         <div class="accumulated-execution-body">
+          <div class="accumulated-execution-expected">
+            <span class="accumulated-execution-expected-icon"></span>
+            <span>
+              Ejecución esperada ${comparisonQuarter} - ${expectedConfig.min}% a ${expectedConfig.max}%
+            </span>
+          </div>
+
           <div class="custom-legend accumulated-execution-legend">
-            <div class="legend-item"><div class="legend-color" style="background:var(--bbva-dark)"></div>Referencia 2026</div>
-            <div class="legend-item"><div class="legend-color" style="background:#AFC7E3"></div>Ejecutado acumulado</div>
-            <div class="legend-item" style="color:#0087A8">% ejecución vs referencia</div>
+            <div class="legend-item">
+              <div class="legend-color" style="background:var(--bbva-dark)"></div>
+              Referencia 2026
+            </div>
+
+            <div class="legend-item">
+              <div class="legend-color" style="background:#AFC7E3"></div>
+              Ejecutado acumulado
+            </div>
+
+            <div class="legend-item" style="color:#0087A8">
+              % ejecución vs referencia
+            </div>
           </div>
           ${grouped.map(row => {
             const reference = toNumber(row.referencia2026);
@@ -11430,7 +13307,47 @@ window.EDCNps = (() => {
                     </div>
                   </div>
                 </div>
-                <div class="accumulated-execution-pct"><span class="numeric-pop" title="% ejecución vs referencia">${pct === null ? 'N/A' : formatPercent(pct, 0)}</span></div>
+                <div class="accumulated-execution-pct">
+                  ${
+                    pct === null
+                      ? `
+                        <span
+                          class="accumulated-execution-pct-badge is-na numeric-pop"
+                          title="Sin referencia anual disponible">
+                          N/A
+                        </span>
+                      `
+                      : (() => {
+                          const pctValue = pct * 100;
+                          const executionStatus = getBudgetExecutionStatus(
+                            pctValue,
+                            comparisonQuarter
+                          );
+
+                          const cfg = executionStatus.cfg;
+                          const rangeText = cfg && cfg.target !== null
+                            ? (
+                                cfg.min === cfg.max
+                                  ? `Objetivo ${cfg.target}%`
+                                  : `Rango ${cfg.min}% - ${cfg.max}%`
+                              )
+                            : 'Sin rango definido';
+
+                          return `
+                            <span
+                              class="accumulated-execution-pct-badge numeric-pop"
+                              style="
+                                color:${executionStatus.text};
+                                background:${executionStatus.soft};
+                                border-color:${executionStatus.border};
+                              "
+                              title="% ejecución vs referencia · ${executionStatus.label} · ${rangeText}">
+                              ${formatPercent(pct, 0)}
+                            </span>
+                          `;
+                        })()
+                  }
+                </div>
               </div>
             `;
           }).join('')}
@@ -11759,6 +13676,266 @@ window.EDCNps = (() => {
     }
 
     // --- GRÁFICO CIRCULAR (DERECHA): DISTRIBUCIÓN REFERENCIA POR PAÍS ---
+
+    function getBudgetSemaphoreCountryData(rows, currencyMode, selectedCountryFilter) {
+      const countryMap = {};
+
+      (rows || []).forEach(row => {
+        if (!isQuarterRow(row)) return;
+
+        const pais = normalizeCountry(row.pais);
+        const quarter = normalizeQuarter(row.quarter);
+        const quarterOrder = QUARTER_ORDER[quarter] || 0;
+        const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
+
+        if (!quarterOrder) return;
+        if (vistaMoneda !== currencyMode) return;
+        if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
+
+        if (!countryMap[pais]) {
+          countryMap[pais] = {
+            pais,
+            name: toNiceCountryName(pais),
+            q: {
+              Q1: { autorizado: 0, ejecutado: 0 },
+              Q2: { autorizado: 0, ejecutado: 0 },
+              Q3: { autorizado: 0, ejecutado: 0 },
+              Q4: { autorizado: 0, ejecutado: 0 }
+            }
+          };
+        }
+
+        countryMap[pais].q[quarter].autorizado += getMetricValue(row, 'autorizado');
+        countryMap[pais].q[quarter].ejecutado += getMetricValue(row, 'ejecutado');
+      });
+
+      return Object.values(countryMap)
+        .sort((a, b) => sortCountries(a.pais, b.pais));
+    }
+
+    function getBudgetSemaphoreCellStyle(pct, hasAuthorized, hasExecuted) {
+      if (!hasAuthorized && !hasExecuted) {
+        return {
+          bg: '#F3F5F8',
+          border: '#D6DCE5',
+          text: '#8B97A8',
+          subtext: '#7B8698',
+          pending: true
+        };
+      }
+
+      if (!hasAuthorized) {
+        return {
+          bg: '#F3F5F8',
+          border: '#D6DCE5',
+          text: '#8B97A8',
+          subtext: '#7B8698',
+          pending: true
+        };
+      }
+
+      if (pct >= 85) {
+        return {
+          bg: '#ECFBF0',
+          border: '#A8E6B8',
+          text: '#00A63C',
+          subtext: '#008C32',
+          pending: false
+        };
+      }
+
+      if (pct >= 70) {
+        return {
+          bg: '#F8F7D9',
+          border: '#E2D766',
+          text: '#A88A00',
+          subtext: '#8D7300',
+          pending: false
+        };
+      }
+
+      return {
+        bg: '#FFF3E8',
+        border: '#FFC47A',
+        text: '#C65F00',
+        subtext: '#A65000',
+        pending: false
+      };
+    }
+
+    function formatBudgetSemaphoreDifference(value, suffix) {
+      const number = Number(value || 0);
+      const prefix = number > 0 ? '+' : '';
+      return `${prefix}${formatNumber(number)}${suffix}`;
+    }
+
+    function setBudgetSemaphoreMode(mode) {
+      budgetSemaphoreMode = mode === 'diff' ? 'diff' : 'pct';
+      renderPresupuesto();
+    }
+
+    function renderBudgetSemaphore(rows, currencyMode, selectedQuarter) {
+      const container = document.getElementById('budgetSemaphoreBody');
+      const subtitle = document.getElementById('budgetSemaphoreSubtitle');
+      const pctButton = document.getElementById('budgetSemaphorePctBtn');
+      const diffButton = document.getElementById('budgetSemaphoreDiffBtn');
+
+      if (!container) return;
+
+      const isDifferenceMode = budgetSemaphoreMode === 'diff';
+
+      if (pctButton) {
+        pctButton.classList.toggle('active', !isDifferenceMode);
+        pctButton.setAttribute('aria-pressed', String(!isDifferenceMode));
+      }
+
+      if (diffButton) {
+        diffButton.classList.toggle('active', isDifferenceMode);
+        diffButton.setAttribute('aria-pressed', String(isDifferenceMode));
+      }
+
+      if (subtitle) {
+        subtitle.textContent = isDifferenceMode
+          ? 'Diferencia = Ejecutado − Autorizado por país y trimestre'
+          : '% Ejecutado ÷ Autorizado por país y trimestre';
+      }
+
+      const countries = getBudgetSemaphoreCountryData(
+        rows,
+        currencyMode,
+        selectedCountry
+      );
+
+      if (!countries.length) {
+        container.innerHTML = '<div class="empty-state">Sin datos disponibles</div>';
+        return;
+      }
+
+      const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+      const suffix = getCurrencySuffix(selectedCountry, currencyMode);
+
+      const criteriaHtml = `
+        <div class="budget-semaphore-criteria">
+          <span class="budget-semaphore-criteria-title">Criterio:</span>
+
+          <span class="budget-semaphore-criterion">
+            <span class="budget-semaphore-dot" style="background:#00A63C;"></span>
+            ≥85%
+          </span>
+
+          <span class="budget-semaphore-criterion">
+            <span class="budget-semaphore-dot" style="background:#C9AF00;"></span>
+            70-84%
+          </span>
+
+          <span class="budget-semaphore-criterion">
+            <span class="budget-semaphore-dot" style="background:#C65F00;"></span>
+            &lt;70%
+          </span>
+
+          <span class="budget-semaphore-criterion">
+            <span class="budget-semaphore-dot" style="background:#B7C2CF;"></span>
+            Sin iniciar
+          </span>
+        </div>
+      `;
+
+      let html = `
+        <div class="budget-semaphore-body">
+          ${criteriaHtml}
+
+          <div class="budget-semaphore-grid-head">
+            <div></div>
+            ${quarters.map(quarter => `
+              <div class="budget-semaphore-quarter">${quarter}</div>
+            `).join('')}
+          </div>
+
+          <div class="budget-semaphore-rows">
+      `;
+
+      countries.forEach(country => {
+        html += `
+          <div class="budget-semaphore-row">
+            <div class="budget-semaphore-program" title="${escapeHtml(country.name)}">
+              <span class="budget-semaphore-country-flag">
+                ${flagHTML(country.pais, 'flag-sm')}
+              </span>
+
+            </div>
+        `;
+
+        quarters.forEach(quarter => {
+          const autorizado = toNumber(country.q[quarter].autorizado);
+          const ejecutado = toNumber(country.q[quarter].ejecutado);
+          const hasAuthorized = autorizado > 0;
+          const hasExecuted = ejecutado > 0;
+          const pct = hasAuthorized ? (ejecutado / autorizado) * 100 : 0;
+          const difference = ejecutado - autorizado;
+
+          const style = getBudgetSemaphoreCellStyle(
+            pct,
+            hasAuthorized,
+            hasExecuted
+          );
+
+          let mainText = 'N/A';
+          let detailText = 'Sin iniciar';
+
+          if (!style.pending) {
+            if (isDifferenceMode) {
+              const prefix = difference > 0 ? '+' : '';
+              mainText = `${prefix}${formatNumber(difference)}${suffix}`;
+              detailText = `${Math.round(pct)}% ejecutado`;
+            } else {
+              mainText = `${Math.round(pct)}%`;
+              detailText = `${formatNumber(ejecutado)} / ${formatNumber(autorizado)}${suffix}`;
+            }
+          } else if (hasExecuted && !hasAuthorized) {
+            detailText = 'Sin autorizado';
+          }
+
+          html += `
+            <div
+              class="budget-semaphore-cell"
+              style="
+                background:${style.bg};
+                border-color:${style.border};
+              "
+              title="${quarter} · ${
+                style.pending
+                  ? (hasExecuted && !hasAuthorized ? 'Sin autorizado' : 'Sin iniciar')
+                  : `${Math.round(pct)}% ejecución`
+              }">
+
+              <div
+                class="budget-semaphore-main ${isDifferenceMode ? 'diff' : ''}"
+                style="color:${style.text};">
+                ${mainText}
+              </div>
+
+              <div
+                class="budget-semaphore-detail"
+                style="color:${style.subtext};">
+                ${detailText}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
     function renderReferenceDistribution(grouped, currencyMode, selectedQuarter) {
       const container = document.getElementById('referenceDistributionBody');
       const title = document.getElementById('referenceDistributionTitle');
@@ -11874,64 +14051,164 @@ window.EDCNps = (() => {
       const container = document.getElementById('budgetBreakdownTableBody');
       if (!container) return;
 
-      const grouped = aggregateBudgetBreakdownByCountry(rows, currencyMode, selectedCountryFilter);
+      const grouped = aggregateBudgetBreakdownByCountry(
+        rows,
+        currencyMode,
+        selectedCountryFilter
+      );
 
       if (!grouped.length) {
         container.innerHTML = '<div class="breakdown-empty">Sin datos disponibles</div>';
         return;
       }
 
-      const totals = grouped.reduce((acc, row) => {
-        acc.q1Autorizado += row.q1Autorizado;
-        acc.q1Ejecutado += row.q1Ejecutado;
-        acc.q2Autorizado += row.q2Autorizado;
-        acc.q2Ejecutado += row.q2Ejecutado;
-        acc.q3Autorizado += row.q3Autorizado;
-        acc.q3Ejecutado += row.q3Ejecutado;
-        return acc;
-      }, { q1Autorizado: 0, q1Ejecutado: 0, q2Autorizado: 0, q2Ejecutado: 0, q3Autorizado: 0, q3Ejecutado: 0 });
+      const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
-      const rowsHtml = grouped.map(row => `
-        <tr>
-          <td class="breakdown-country-cell only-flag" title="${escapeHtml(toNiceCountryName(row.pais))}">${flagHTML(row.pais)}</td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q1Autorizado)}">${formatNumber(row.q1Autorizado)}</span></td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q1Ejecutado)}">${formatNumber(row.q1Ejecutado)}</span></td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q2Autorizado)}">${formatNumber(row.q2Autorizado)}</span></td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q2Ejecutado)}">${formatNumber(row.q2Ejecutado)}</span></td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q3Autorizado)}">${formatNumber(row.q3Autorizado)}</span></td>
-          <td><span class="breakdown-number numeric-pop" title="${formatNumber(row.q3Ejecutado)}">${formatNumber(row.q3Ejecutado)}</span></td>
-        </tr>
-      `).join('');
+      const renderExecutionPill = (autorizado, ejecutado) => {
+        const aut = toNumber(autorizado);
+        const eje = toNumber(ejecutado);
+
+        if (aut <= 0) {
+          return '<span class="breakdown-exec-pill na">N/A</span>';
+        }
+
+        const pct = (eje / aut) * 100;
+        const className = pct >= 85
+          ? 'good'
+          : (pct >= 70 ? 'mid' : 'low');
+
+        return `
+          <span class="breakdown-exec-pill ${className}">
+            ${Math.round(pct)}%
+          </span>
+        `;
+      };
+
+      const totals = {
+        Q1: { demandado: 0, autorizado: 0, ejecutado: 0 },
+        Q2: { demandado: 0, autorizado: 0, ejecutado: 0 },
+        Q3: { demandado: 0, autorizado: 0, ejecutado: 0 },
+        Q4: { demandado: 0, autorizado: 0, ejecutado: 0 }
+      };
+
+      grouped.forEach(row => {
+        quarters.forEach(quarter => {
+          totals[quarter].demandado += toNumber(row.q[quarter].demandado);
+          totals[quarter].autorizado += toNumber(row.q[quarter].autorizado);
+          totals[quarter].ejecutado += toNumber(row.q[quarter].ejecutado);
+        });
+      });
+
+      const rowsHtml = grouped.map(row => {
+        const quarterCells = quarters.map(quarter => {
+          const data = row.q[quarter];
+
+          return `
+            <td>
+              <span class="breakdown-number numeric-pop">
+                ${formatNumber(data.demandado)}
+              </span>
+            </td>
+
+            <td>
+              <span class="breakdown-number numeric-pop">
+                ${formatNumber(data.autorizado)}
+              </span>
+            </td>
+
+            <td>
+              <span class="breakdown-number numeric-pop">
+                ${formatNumber(data.ejecutado)}
+              </span>
+            </td>
+
+            <td>
+              ${renderExecutionPill(data.autorizado, data.ejecutado)}
+            </td>
+          `;
+        }).join('');
+
+        return `
+          <tr>
+            <td
+              class="breakdown-country-cell"
+              title="${escapeHtml(toNiceCountryName(row.pais))}">
+              ${flagHTML(row.pais, 'flag-sm')}
+            </td>
+
+            ${quarterCells}
+          </tr>
+        `;
+      }).join('');
+
+      const totalCells = quarters.map(quarter => {
+        const data = totals[quarter];
+
+        return `
+          <td>
+            <span class="breakdown-number numeric-pop">
+              ${formatNumber(data.demandado)}
+            </span>
+          </td>
+
+          <td>
+            <span class="breakdown-number numeric-pop">
+              ${formatNumber(data.autorizado)}
+            </span>
+          </td>
+
+          <td>
+            <span class="breakdown-number numeric-pop">
+              ${formatNumber(data.ejecutado)}
+            </span>
+          </td>
+
+          <td>
+            ${renderExecutionPill(data.autorizado, data.ejecutado)}
+          </td>
+        `;
+      }).join('');
 
       container.innerHTML = `
         <div class="breakdown-table-wrap">
           <table class="breakdown-table">
+            <colgroup>
+              <col class="breakdown-country-col">
+              ${Array.from({ length: 16 }, () =>
+                '<col class="breakdown-data-col">'
+              ).join('')}
+            </colgroup>
+
             <thead>
               <tr>
-                <th class="breakdown-country-head" rowspan="2">País</th>
-                <th class="q1-head" colspan="2">Q1</th>
-                <th class="q2-head" colspan="2">Q2</th>
-                <th class="q3-head" colspan="2">Q3</th>
+                <th
+                  class="breakdown-country-head"
+                  rowspan="2">
+                  País
+                </th>
+
+                <th class="q1-head" colspan="4">Q1</th>
+                <th class="q2-head" colspan="4">Q2</th>
+                <th class="q3-head" colspan="4">Q3</th>
+                <th class="q4-head" colspan="4">Q4</th>
               </tr>
+
               <tr>
-                <th>Autorizado</th>
-                <th>Ejecutado</th>
-                <th>Autorizado</th>
-                <th>Ejecutado</th>
-                <th>Autorizado</th>
-                <th>Ejecutado</th>
+                ${quarters.map(() => `
+                  <th class="metric-demand">Demandado</th>
+                  <th class="metric-authorized">Autorizado</th>
+                  <th class="metric-executed">Ejecutado</th>
+                  <th class="metric-pct">% Ejec.</th>
+                `).join('')}
               </tr>
             </thead>
+
             <tbody>
               ${rowsHtml}
+
               <tr class="breakdown-total-row">
                 <td>Total</td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q1Autorizado)}">${formatNumber(totals.q1Autorizado)}</span></td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q1Ejecutado)}">${formatNumber(totals.q1Ejecutado)}</span></td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q2Autorizado)}">${formatNumber(totals.q2Autorizado)}</span></td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q2Ejecutado)}">${formatNumber(totals.q2Ejecutado)}</span></td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q3Autorizado)}">${formatNumber(totals.q3Autorizado)}</span></td>
-                <td><span class="breakdown-number numeric-pop" title="${formatNumber(totals.q3Ejecutado)}">${formatNumber(totals.q3Ejecutado)}</span></td>
+                ${totalCells}
               </tr>
             </tbody>
           </table>
@@ -12003,39 +14280,29 @@ window.EDCNps = (() => {
         const vistaMoneda = String(row.vistaMoneda || '').trim().toUpperCase();
 
         if (!isQuarterRow(row)) return;
-        if (!['Q1', 'Q2', 'Q3'].includes(quarter)) return;
+        if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(quarter)) return;
         if (vistaMoneda !== currencyMode) return;
         if (selectedCountryFilter !== 'ALL' && pais !== selectedCountryFilter) return;
 
         if (!map[pais]) {
           map[pais] = {
             pais,
-            q1Autorizado: 0,
-            q1Ejecutado: 0,
-            q2Autorizado: 0,
-            q2Ejecutado: 0,
-            q3Autorizado: 0,
-            q3Ejecutado: 0
+            q: {
+              Q1: { demandado: 0, autorizado: 0, ejecutado: 0 },
+              Q2: { demandado: 0, autorizado: 0, ejecutado: 0 },
+              Q3: { demandado: 0, autorizado: 0, ejecutado: 0 },
+              Q4: { demandado: 0, autorizado: 0, ejecutado: 0 }
+            }
           };
         }
 
-        if (quarter === 'Q1') {
-          map[pais].q1Autorizado += getMetricValue(row, 'autorizado');
-          map[pais].q1Ejecutado += getMetricValue(row, 'ejecutado');
-        }
-
-        if (quarter === 'Q2') {
-          map[pais].q2Autorizado += getMetricValue(row, 'autorizado');
-          map[pais].q2Ejecutado += getMetricValue(row, 'ejecutado');
-        }
-
-        if (quarter === 'Q3') {
-          map[pais].q3Autorizado += getMetricValue(row, 'autorizado');
-          map[pais].q3Ejecutado += getMetricValue(row, 'ejecutado');
-        }
+        map[pais].q[quarter].demandado += getMetricValue(row, 'demandado');
+        map[pais].q[quarter].autorizado += getMetricValue(row, 'autorizado');
+        map[pais].q[quarter].ejecutado += getMetricValue(row, 'ejecutado');
       });
 
-      return Object.values(map).sort((a, b) => sortCountries(a.pais, b.pais));
+      return Object.values(map)
+        .sort((a, b) => sortCountries(a.pais, b.pais));
     }
 
     function aggregatePresupuestoByCountry(rows, selectedQuarter, currencyMode, selectedCountryFilter) {
@@ -12474,6 +14741,27 @@ window.EDCNps = (() => {
     }
   }, 300);
 
+  function bindMonthlyQuarterSync() {
+    const frame = document.getElementById('monthly-ftes-frame');
+    if (frame && !frame.dataset.monthlyQuarterSyncBound) {
+      frame.dataset.monthlyQuarterSyncBound = '1';
+      frame.addEventListener('load', function () {
+        try { window.syncMonthlyQuarterEverywhere(window.monthlySelectedQuarter || 'Q3'); } catch (e) {}
+    setTimeout(function () { try { window.refreshMonthlyInvestmentFrame(); } catch (e) {} }, 350);
+        setTimeout(function () { try { window.refreshMonthlyInvestmentFrame(); } catch (e) {} }, 200);
+      });
+    }
+    try { window.syncMonthlyQuarterEverywhere(window.monthlySelectedQuarter || 'Q3'); } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(bindMonthlyQuarterSync, 250);
+    }, { once: true });
+  } else {
+    setTimeout(bindMonthlyQuarterSync, 250);
+  }
+
   setTimeout(() => clearInterval(patchWhenReady), 10000);
 })();
 </script>
@@ -12545,18 +14833,38 @@ window.EDCNps = (() => {
     if (!views.cover) return;
 
     const country = window.steercoSelectedCountry;
+    const flagCode = country && typeof window.getSteercoFlagClass === 'function'
+      ? window.getSteercoFlagClass(country)
+      : null;
 
     if (!country) {
       views.cover.innerHTML = `
-        <div class="steerco-cover-empty">
-          <div>
-            <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-4">
-              <i data-lucide="map-pin" class="w-5 h-5 text-[#004481]"></i>
+        <div class="w-full rounded-[28px] overflow-hidden border border-[#1D2D72] shadow-[0_18px_50px_rgba(8,21,60,0.18)] relative bg-[radial-gradient(circle_at_top_right,_rgba(109,40,217,0.26),_transparent_28%),linear-gradient(135deg,_#091B55_0%,_#081742_48%,_#2B046B_100%)] min-h-[520px] flex items-center">
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute left-[-8%] bottom-[-14%] w-[280px] h-[280px] rounded-full bg-[#29C3FF]/10 blur-3xl"></div>
+            <div class="absolute right-[-4%] top-[-10%] w-[220px] h-[220px] rounded-full bg-[#8B5CF6]/20 blur-3xl"></div>
+          </div>
+          <div class="relative z-10 grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-center w-full px-8 md:px-10 lg:px-12 py-10">
+            <div>
+              <div class="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.22em] text-[#73C7FF] mb-5">
+                <span class="w-10 h-[3px] rounded-full bg-[#73C7FF]"></span>
+                <span>EDC · SteerCo</span>
+              </div>
+              <h3 class="text-[48px] md:text-[64px] font-black tracking-[-0.05em] leading-[0.94] text-white">Steer<span class="text-[#73C7FF]">Co</span></h3>
+              <p class="mt-6 text-[17px] md:text-[19px] leading-[1.5] font-semibold text-white/80 max-w-[540px]">
+                Selecciona una geografía en el índice lateral, elige el trimestre y después navega por los contenidos del comité.
+              </p>
             </div>
-            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">SteerCo</p>
-            <p class="text-sm font-semibold text-slate-500 max-w-md">
-              Selecciona una geografía para abrir la portada del comité y después navega por el índice lateral.
-            </p>
+            <div class="relative flex items-center justify-center">
+              <div class="w-full max-w-[340px] rounded-[28px] border border-white/10 bg-white/8 backdrop-blur-sm p-6 shadow-[0_26px_46px_rgba(4,10,36,0.32)]">
+                <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center mb-5">
+                  <i data-lucide="map-pin" class="w-6 h-6 text-[#73C7FF]"></i>
+                </div>
+                <div class="text-[11px] font-black uppercase tracking-[0.18em] text-[#C6E9FF] mb-2">Geografía</div>
+                <div class="text-[28px] font-black text-white leading-none mb-3">Pendiente de selección</div>
+                <p class="text-[13px] font-semibold text-white/70 leading-relaxed">Usa el filtro de país del índice lateral para abrir la portada específica de cada sesión SteerCo.</p>
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -12565,30 +14873,50 @@ window.EDCNps = (() => {
       return;
     }
 
-    const flagCode = typeof window.getSteercoFlagClass === 'function'
-      ? window.getSteercoFlagClass(country)
-      : 'es';
-
     views.cover.innerHTML = `
-      <div class="steerco-cover-wrap">
-        <div class="steerco-cover-hero" role="img" aria-label="Portada SteerCo BBVA Empresas ${country}">
-          <div class="steerco-cover-left">
-            <div class="steerco-cover-bbva">BBVA</div>
-            <div class="steerco-cover-subbrand">Banco de Empresas<br>e Instituciones</div>
-
-            <div class="steerco-cover-kicker">SteerCo</div>
-            <div class="steerco-cover-zigzag"></div>
-            <div class="steerco-cover-title">BBVA Empresas</div>
-            <div class="steerco-cover-country">${country}</div>
-            <span class="steerco-cover-flag" title="${country}" aria-label="Bandera de ${country}"><img src="https://flagcdn.com/w160/${flagCode}.png" alt=""></span>
+      <div class="w-full rounded-[28px] overflow-hidden border border-[#1D2D72] shadow-[0_18px_50px_rgba(8,21,60,0.18)] relative bg-[radial-gradient(circle_at_top_right,_rgba(109,40,217,0.30),_transparent_28%),linear-gradient(135deg,_#091B55_0%,_#081742_48%,_#2B046B_100%)] min-h-[520px] flex items-center">
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="absolute left-[-8%] bottom-[-14%] w-[280px] h-[280px] rounded-full bg-[#29C3FF]/10 blur-3xl"></div>
+          <div class="absolute right-[-4%] top-[-10%] w-[220px] h-[220px] rounded-full bg-[#8B5CF6]/20 blur-3xl"></div>
+          <div class="absolute right-[10%] bottom-[-10%] w-[260px] h-[260px] rounded-full border border-white/6"></div>
+        </div>
+        <div class="relative z-10 grid lg:grid-cols-[1.1fr_.9fr] gap-8 items-center w-full px-8 md:px-10 lg:px-12 py-10">
+          <div>
+            <div class="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.22em] text-[#73C7FF] mb-5">
+              <span class="w-10 h-[3px] rounded-full bg-[#73C7FF]"></span>
+              <span>EDC · SteerCo</span>
+            </div>
+            <h3 class="text-[48px] md:text-[64px] font-black tracking-[-0.05em] leading-[0.94] text-white">Steer<span class="text-[#73C7FF]">Co</span></h3>
+            <div class="mt-6 inline-flex items-center gap-3 rounded-full bg-white/10 border border-white/10 px-4 py-2.5">
+              <span class="nextgen-round-flag w-10 h-10" title="${country}" aria-label="Bandera de ${country}"><img src="https://flagcdn.com/w80/${flagCode}.png" alt=""></span>
+              <div>
+                <div class="text-[10px] font-black uppercase tracking-[0.18em] text-[#C6E9FF]">Geografía seleccionada</div>
+                <div class="text-[20px] font-black text-white leading-none mt-1">${country}</div>
+              </div>
+            </div>
+            <p class="mt-6 text-[17px] md:text-[19px] leading-[1.5] font-semibold text-white/80 max-w-[560px]">
+              Vista ejecutiva del comité para ${country}. Usa el índice lateral para abrir KPIs, otros indicadores, bloques funcionales y presupuesto/FTEs con la geografía aplicada.
+            </p>
           </div>
-
-          <div class="steerco-cover-visual" aria-hidden="true">
-            <div class="steerco-tech-platform"></div>
-            <div class="steerco-tech-panel code"></div>
-            <div class="steerco-tech-panel chart"></div>
-            <div class="steerco-tech-panel dashboard"></div>
-            <div class="steerco-tech-cloud"></div>
+          <div class="relative flex items-center justify-center">
+            <div class="relative w-full max-w-[360px] aspect-[1/1]">
+              <div class="absolute top-[10%] right-[10%] w-[46%] h-[40%] rounded-[24px] bg-white/8 border border-white/10 backdrop-blur-sm rotate-[-8deg]"></div>
+              <div class="absolute top-[18%] left-[4%] w-[50%] h-[44%] rounded-[26px] bg-gradient-to-br from-[#0F2E85] to-[#153C9A] border border-white/10 shadow-[0_24px_42px_rgba(4,10,36,0.38)] flex items-end p-5">
+                <div>
+                  <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#C6E9FF] mb-2">Comité</div>
+                  <div class="text-[24px] font-black text-white leading-none">SteerCo</div>
+                </div>
+              </div>
+              <div class="absolute bottom-[8%] right-[4%] w-[54%] h-[48%] rounded-[26px] bg-gradient-to-br from-[#2A066E] to-[#4A0FB4] border border-white/10 shadow-[0_26px_46px_rgba(4,10,36,0.42)] p-5 flex flex-col justify-between">
+                <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#C6E9FF]">Agenda</div>
+                <div class="space-y-2">
+                  <div class="h-2.5 rounded-full bg-white/10 overflow-hidden"><span class="block h-full w-[66%] rounded-full bg-[#73C7FF]"></span></div>
+                  <div class="h-2.5 rounded-full bg-white/10 overflow-hidden"><span class="block h-full w-[52%] rounded-full bg-[#92E38A]"></span></div>
+                  <div class="h-2.5 rounded-full bg-white/10 overflow-hidden"><span class="block h-full w-[74%] rounded-full bg-[#FDE466]"></span></div>
+                </div>
+                <div class="text-[13px] font-semibold text-white/75 leading-relaxed">Portada preparada para ${country}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -14113,6 +16441,567 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
         };
         window.switchPage.__catalogoKpisPatched = true;
     }
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   FOLLOW UP HOLDING · GESTIÓN DE LA INVERSIÓN
+   Sincronización robusta del filtro Q con Presupuestos/FTEs.
+   ========================================================= */
+(function () {
+  function monthlyQuarterToDashboardValue(quarter) {
+    const q = String(quarter || window.monthlySelectedQuarter || 'Q3').toUpperCase();
+    return q === 'ALL' ? 'TOTAL_2026' : q;
+  }
+
+  function getMonthlyFtesFrame() {
+    return document.getElementById('monthly-ftes-frame');
+  }
+
+  function hideMonthlyFtesLoader() {
+    const loader = document.getElementById('monthly-ftes-loading');
+    if (!loader) return;
+    loader.style.opacity = '0';
+    window.setTimeout(function () {
+      loader.style.display = 'none';
+    }, 350);
+  }
+
+  function showMonthlyFtesLoader() {
+    const loader = document.getElementById('monthly-ftes-loading');
+    if (!loader) return;
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+  }
+
+  function buildMonthlyInvestmentSrcdoc(quarter) {
+    const template = document.getElementById('ftes-dashboard-srcdoc-template');
+    if (!template) return '';
+
+    const targetQuarter = monthlyQuarterToDashboardValue(quarter);
+    let srcdoc = template.innerHTML;
+
+    const bootstrap = `
+<script>
+(function () {
+  const TARGET_QUARTER = ${JSON.stringify(targetQuarter)};
+
+  function applyTargetQuarter() {
+    const select = document.getElementById('quarterFilter');
+    if (!select) return false;
+
+    const hasTarget = Array.from(select.options || []).some(function (option) {
+      return option.value === TARGET_QUARTER;
+    });
+
+    if (!hasTarget) return false;
+
+    select.value = TARGET_QUARTER;
+
+    try {
+      if (typeof renderActiveModule === 'function') {
+        renderActiveModule();
+      } else {
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    } catch (error) {
+      try { select.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+    }
+
+    return true;
+  }
+
+  let attempts = 0;
+  const timer = setInterval(function () {
+    attempts += 1;
+
+    const applied = applyTargetQuarter();
+
+    if (applied) {
+      setTimeout(applyTargetQuarter, 250);
+      setTimeout(applyTargetQuarter, 800);
+      clearInterval(timer);
+    } else if (attempts >= 80) {
+      clearInterval(timer);
+    }
+  }, 100);
+
+  window.addEventListener('load', function () {
+    setTimeout(applyTargetQuarter, 100);
+    setTimeout(applyTargetQuarter, 500);
+  });
+})();
+<` + `/script>`;
+
+    if (srcdoc.includes('</body>')) {
+      srcdoc = srcdoc.replace('</body>', bootstrap + '\n</body>');
+    } else {
+      srcdoc += bootstrap;
+    }
+
+    return srcdoc;
+  }
+
+  function applyQuarterInsideMonthlyFrame(quarter) {
+    const frame = getMonthlyFtesFrame();
+    if (!frame || !frame.contentWindow) return false;
+
+    try {
+      const doc = frame.contentWindow.document;
+      if (!doc) return false;
+
+      const select = doc.getElementById('quarterFilter');
+      if (!select) return false;
+
+      const targetQuarter = monthlyQuarterToDashboardValue(quarter);
+      const hasTarget = Array.from(select.options || []).some(function (option) {
+        return option.value === targetQuarter;
+      });
+
+      if (!hasTarget) return false;
+
+      select.value = targetQuarter;
+
+      try {
+        if (typeof frame.contentWindow.renderActiveModule === 'function') {
+          frame.contentWindow.renderActiveModule();
+        } else {
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      } catch (error) {
+        try { select.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function reloadMonthlyInvestmentDashboard(quarter) {
+    const frame = getMonthlyFtesFrame();
+    if (!frame) return false;
+
+    const srcdoc = buildMonthlyInvestmentSrcdoc(quarter);
+    if (!srcdoc) return false;
+
+    showMonthlyFtesLoader();
+
+    frame.onload = function () {
+      hideMonthlyFtesLoader();
+
+      window.setTimeout(function () {
+        applyQuarterInsideMonthlyFrame(window.monthlySelectedQuarter || quarter || 'Q3');
+      }, 120);
+
+      window.setTimeout(function () {
+        applyQuarterInsideMonthlyFrame(window.monthlySelectedQuarter || quarter || 'Q3');
+      }, 650);
+    };
+
+    frame.dataset.ftesLoaded = '1';
+    frame.dataset.monthlyInvestmentLoaded = '1';
+    frame.srcdoc = srcdoc;
+
+    return true;
+  }
+
+  window.applyMonthlyQuarterToFtes = function (quarter) {
+    const q = quarter || window.monthlySelectedQuarter || 'Q3';
+
+    if (applyQuarterInsideMonthlyFrame(q)) {
+      return true;
+    }
+
+    const frame = getMonthlyFtesFrame();
+    if (!frame) return false;
+
+    const now = Date.now();
+    const lastReload = Number(frame.dataset.monthlyLastReload || 0);
+
+    // Evita recargas continuas mientras el iframe está arrancando.
+    if (!lastReload || now - lastReload > 1800) {
+      frame.dataset.monthlyLastReload = String(now);
+      reloadMonthlyInvestmentDashboard(q);
+    }
+
+    return false;
+  };
+
+  window.refreshMonthlyInvestmentFrame = function () {
+    const frame = getMonthlyFtesFrame();
+    if (!frame) return false;
+
+    const quarter = window.monthlySelectedQuarter || 'Q3';
+
+    if (applyQuarterInsideMonthlyFrame(quarter)) {
+      hideMonthlyFtesLoader();
+
+      try {
+        const win = frame.contentWindow;
+        if (win) {
+          [
+            'loadPresupuestoData',
+            'loadFtesData',
+            'loadFtesStructureData',
+            'loadFtesPeopleData',
+            'loadFtesKpisData'
+          ].forEach(function (functionName) {
+            try {
+              if (typeof win[functionName] === 'function') {
+                win[functionName]();
+              }
+            } catch (e) {}
+          });
+        }
+      } catch (e) {}
+
+      window.setTimeout(function () {
+        applyQuarterInsideMonthlyFrame(quarter);
+      }, 300);
+
+      return true;
+    }
+
+    return reloadMonthlyInvestmentDashboard(quarter);
+  };
+
+  function bindMonthlyInvestmentFrame() {
+    const frame = getMonthlyFtesFrame();
+    if (!frame || frame.dataset.monthlyInvestmentBound === '1') return;
+
+    frame.dataset.monthlyInvestmentBound = '1';
+
+    frame.addEventListener('load', function () {
+      hideMonthlyFtesLoader();
+
+      window.setTimeout(function () {
+        applyQuarterInsideMonthlyFrame(window.monthlySelectedQuarter || 'Q3');
+      }, 100);
+    });
+  }
+
+  function initializeMonthlyInvestment() {
+    bindMonthlyInvestmentFrame();
+
+    const frame = getMonthlyFtesFrame();
+    if (!frame) return;
+
+    // Si el iframe antiguo se quedó vacío, se sustituye por una copia
+    // limpia del mismo dashboard de Presupuestos/FTEs.
+    window.setTimeout(function () {
+      let healthy = false;
+
+      try {
+        healthy = !!(
+          frame.contentWindow &&
+          frame.contentWindow.document &&
+          frame.contentWindow.document.getElementById('quarterFilter')
+        );
+      } catch (e) {}
+
+      if (!healthy) {
+        reloadMonthlyInvestmentDashboard(window.monthlySelectedQuarter || 'Q3');
+      }
+    }, 350);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeMonthlyInvestment, { once: true });
+  } else {
+    initializeMonthlyInvestment();
+  }
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   STEERCO · SINCRONIZACIÓN PAÍS + Q
+   ========================================================= */
+(function () {
+  window.steercoSelectedQuarter = window.steercoSelectedQuarter || 'Q3';
+  window.steercoCurrentSection = window.steercoCurrentSection || 'agenda';
+
+  function normalizeSteercoQuarter(quarter) {
+    const q = String(quarter || window.steercoSelectedQuarter || 'Q3').toUpperCase();
+    return ['Q1','Q2','Q3','Q4','ALL'].includes(q) ? q : 'Q3';
+  }
+
+  function steercoQuarterForKpis(quarter) {
+    const q = normalizeSteercoQuarter(quarter);
+    return q === 'ALL' ? 'ALL' : '26' + q;
+  }
+
+  function steercoQuarterForFtes(quarter) {
+    const q = normalizeSteercoQuarter(quarter);
+    return q === 'ALL' ? 'TOTAL_2026' : q;
+  }
+
+  window.applySteercoQuarterToKpiFilters = function (quarter) {
+    const q = normalizeSteercoQuarter(quarter);
+    window.steercoSelectedQuarter = q;
+
+    if (typeof window.captureSteercoDashboardFilterState === 'function') {
+      window.captureSteercoDashboardFilterState();
+    }
+    window.steercoHasAppliedDashboardFilters = true;
+
+    const target = steercoQuarterForKpis(q);
+    const main = document.getElementById('fTri');
+    const ep = document.getElementById('fTri_ep');
+
+    const setValue = function (select) {
+      if (!select) return false;
+      const hasOption = Array.from(select.options || []).some(function (option) {
+        return option.value === target;
+      });
+      if (!hasOption) return false;
+      select.value = target;
+      return true;
+    };
+
+    const mainSet = setValue(main);
+    setValue(ep);
+
+    try {
+      if (mainSet && typeof window.handleTriChange === 'function') {
+        window.handleTriChange(main);
+      } else {
+        if (typeof window.applyFilters === 'function') window.applyFilters();
+        if (typeof window.renderEndProduct === 'function') window.renderEndProduct();
+      }
+    } catch (e) {}
+
+    return true;
+  };
+
+  window.applySteercoQuarterToFtesDashboard = function (quarter, attempt) {
+    const q = normalizeSteercoQuarter(quarter);
+    window.steercoSelectedQuarter = q;
+
+    const frame = document.getElementById('steerco-ftes-frame');
+    const tryNumber = Number(attempt || 0);
+
+    if (!frame) {
+      if (tryNumber < 60) {
+        setTimeout(function () {
+          window.applySteercoQuarterToFtesDashboard(q, tryNumber + 1);
+        }, 250);
+      }
+      return false;
+    }
+
+    try {
+      const frameWindow = frame.contentWindow;
+      const doc = frame.contentDocument || (frameWindow && frameWindow.document);
+      if (!doc) throw new Error('iframe sin documento');
+
+      const select = doc.getElementById('quarterFilter');
+      if (!select) throw new Error('quarterFilter no disponible');
+
+      const target = steercoQuarterForFtes(q);
+      const hasOption = Array.from(select.options || []).some(function (option) {
+        return option.value === target;
+      });
+      if (!hasOption) throw new Error('quarter no disponible');
+
+      select.value = target;
+
+      const ChangeEvent = frameWindow && frameWindow.Event ? frameWindow.Event : Event;
+      select.dispatchEvent(new ChangeEvent('change', { bubbles: true }));
+
+      if (frameWindow && typeof frameWindow.renderActiveModule === 'function') {
+        frameWindow.renderActiveModule();
+      }
+
+      return true;
+    } catch (error) {
+      if (tryNumber < 60) {
+        setTimeout(function () {
+          window.applySteercoQuarterToFtesDashboard(q, tryNumber + 1);
+        }, 250);
+      }
+      return false;
+    }
+  };
+
+  window.syncSteercoQuarterEverywhere = function (quarter) {
+    const q = normalizeSteercoQuarter(quarter);
+    window.steercoSelectedQuarter = q;
+
+    try { window.applySteercoQuarterToKpiFilters(q); } catch (e) {}
+    try { window.applySteercoQuarterToFtesDashboard(q, 0); } catch (e) {}
+
+    return true;
+  };
+
+  window.selectSteercoQuarter = function (quarter, button) {
+    const q = normalizeSteercoQuarter(quarter);
+    window.steercoSelectedQuarter = q;
+
+    document.querySelectorAll('#page-steerco .steerco-quarter-btn').forEach(function (btn) {
+      btn.classList.remove('is-quarter-active');
+    });
+
+    if (button) button.classList.add('is-quarter-active');
+
+    window.syncSteercoQuarterEverywhere(q);
+
+    // Si estamos viendo un módulo dependiente de trimestre, se repinta en el momento.
+    const section = window.steercoCurrentSection || 'agenda';
+    const country = window.steercoSelectedCountry;
+
+    if (country && (section === 'kpis' || section === 'bloques')) {
+      setTimeout(function () {
+        try {
+          if (typeof window.applySteercoCountryToKpiFilters === 'function') {
+            window.applySteercoCountryToKpiFilters(country);
+          }
+        } catch (e) {}
+      }, 60);
+    }
+
+    if (country && section === 'ftes') {
+      setTimeout(function () {
+        try { window.applySteercoQuarterToFtesDashboard(q, 0); } catch (e) {}
+      }, 80);
+    }
+  };
+
+  // País + Q siempre viajan juntos hacia KPIs/Bloques.
+  const originalApplyCountryKpis = window.applySteercoCountryToKpiFilters;
+  if (typeof originalApplyCountryKpis === 'function' && !originalApplyCountryKpis.__quarterPatched) {
+    window.applySteercoCountryToKpiFilters = function (country) {
+      const result = originalApplyCountryKpis.apply(this, arguments);
+      setTimeout(function () {
+        try {
+          window.applySteercoQuarterToKpiFilters(window.steercoSelectedQuarter || 'Q3');
+        } catch (e) {}
+      }, 40);
+      return result;
+    };
+    window.applySteercoCountryToKpiFilters.__quarterPatched = true;
+  }
+
+  // País + Q siempre viajan juntos hacia Presupuesto/FTEs.
+  const originalApplyCountryFtes = window.applySteercoCountryToFtesDashboard;
+  if (typeof originalApplyCountryFtes === 'function' && !originalApplyCountryFtes.__quarterPatched) {
+    window.applySteercoCountryToFtesDashboard = function (country, attempt) {
+      const result = originalApplyCountryFtes.apply(this, arguments);
+      setTimeout(function () {
+        try {
+          window.applySteercoQuarterToFtesDashboard(window.steercoSelectedQuarter || 'Q3', 0);
+        } catch (e) {}
+      }, 80);
+      return result;
+    };
+    window.applySteercoCountryToFtesDashboard.__quarterPatched = true;
+  }
+
+  const originalSelectCountry = window.selectSteercoCountry;
+  if (typeof originalSelectCountry === 'function' && !originalSelectCountry.__quarterPatched) {
+    window.selectSteercoCountry = function (country, button) {
+      const result = originalSelectCountry.apply(this, arguments);
+      setTimeout(function () {
+        try { window.syncSteercoQuarterEverywhere(window.steercoSelectedQuarter || 'Q3'); } catch (e) {}
+      }, 100);
+      return result;
+    };
+    window.selectSteercoCountry.__quarterPatched = true;
+  }
+
+  const originalGoToSection = window.goToSteercoSection;
+  if (typeof originalGoToSection === 'function' && !originalGoToSection.__quarterPatched) {
+    window.goToSteercoSection = function (section, button) {
+      window.steercoCurrentSection = section || 'agenda';
+      const result = originalGoToSection.apply(this, arguments);
+
+      setTimeout(function () {
+        try { window.syncSteercoQuarterEverywhere(window.steercoSelectedQuarter || 'Q3'); } catch (e) {}
+      }, 120);
+
+      return result;
+    };
+    window.goToSteercoSection.__quarterPatched = true;
+  }
+
+  // Al cargar SteerCo, Q3 queda marcado como estado inicial.
+  function initSteercoQuarterUi() {
+    const active = document.querySelector('#page-steerco [data-steerco-quarter="' + (window.steercoSelectedQuarter || 'Q3') + '"]');
+    if (active) {
+      document.querySelectorAll('#page-steerco .steerco-quarter-btn').forEach(function (btn) {
+        btn.classList.remove('is-quarter-active');
+      });
+      active.classList.add('is-quarter-active');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSteercoQuarterUi, { once: true });
+  } else {
+    initSteercoQuarterUi();
+  }
+})();
+</script>
+
+
+<script>
+/* SteerCo · portada igual a Follow up Holding (solo override visual) */
+(function () {
+  function steercoFollowupCoverHtml() {
+    return `
+      <div class="steerco-followup-cover w-full h-full min-h-[calc(100vh-300px)] relative overflow-hidden border border-[#2E1A6E] shadow-[0_20px_55px_rgba(21,5,65,.24)]">
+        <div class="steerco-followup-decor absolute inset-0 pointer-events-none">
+          <div class="absolute left-[-10%] bottom-[-25%] w-[520px] h-[520px] rounded-full bg-[#30BDF9]/7 blur-3xl"></div>
+          <div class="absolute right-[-6%] bottom-[-20%] w-[420px] h-[420px] rounded-full bg-[#7415E7]/20 blur-3xl"></div>
+          <div class="absolute right-[1%] bottom-[-28%] w-[380px] h-[380px] rounded-full border border-white/5"></div>
+          <div class="absolute right-[8%] bottom-[-18%] w-[290px] h-[290px] rounded-full border border-white/5"></div>
+        </div>
+        <div class="steerco-followup-motion" aria-hidden="true"></div>
+
+        <div class="steerco-followup-content relative h-full min-h-[calc(100vh-300px)] flex items-center">
+          <div class="w-full max-w-[900px] ml-[14%] px-10">
+            <div class="inline-flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[0.23em] text-[#75CCFF] mb-6">
+              <span class="w-9 h-[3px] rounded-full bg-[#75CCFF]"></span>
+              <span>OFICINA DE TRANSFORMACIÓN · STEERCO</span>
+            </div>
+
+            <h2 class="text-[82px] md:text-[108px] xl:text-[124px] font-black tracking-[-0.06em] leading-[0.86] text-white drop-shadow-sm">
+              EDC
+            </h2>
+
+            <p class="mt-7 max-w-[700px] text-[20px] md:text-[23px] leading-[1.42] font-semibold text-white">
+              Una visión ejecutiva y conectada del avance, el impacto, la entrega de valor y los principales programas de transformación.
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.renderSteercoPlaceholder = function () {
+    if (typeof window.restoreSteercoMovedContent === 'function') {
+      window.restoreSteercoMovedContent();
+    }
+
+    const cover = document.getElementById('steerco-cover-view');
+    const mount = document.getElementById('steerco-content-mount');
+    const target = cover || mount;
+    if (!target) return;
+
+    target.innerHTML = steercoFollowupCoverHtml();
+
+    if (typeof window.showSteercoStageView === 'function' && cover) {
+      window.showSteercoStageView('cover');
+    }
+    if (typeof window.resetSteercoContentScroll === 'function') {
+      window.resetSteercoContentScroll('auto');
+    }
+    if (typeof updateIcons === 'function') updateIcons();
+  };
 })();
 </script>
 

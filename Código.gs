@@ -1276,8 +1276,14 @@ function getFeatureTransformedTotalsByCountry_() {
   const norm = gthNormalizeLabel_;
 
   // Un trimestre por cada corte que tenga 17_NEXTGEN_SITES (p.ej. 26Q2 y
-  // 26Q3), para que hablen del mismo corte temporal.
-  const quarterLabels = getNextGenSitesQuarterLabels_();
+  // 26Q3), para que hablen del mismo corte temporal, más cualquier trimestre
+  // que ya tenga columna propia en 04_RAW_KPIS aunque 17_NEXTGEN_SITES
+  // todavía no lo tenga (para que este dato no se quede esperando a que se
+  // actualice esa otra pestaña).
+  const quarterLabelSet = {};
+  getNextGenSitesQuarterLabels_().forEach(label => { quarterLabelSet[label] = true; });
+  header.monthCols.forEach(m => { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
   const result = {};
   quarterLabels.forEach(quarterLabel => {
     const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);

@@ -7068,6 +7068,19 @@ window.EDCNps = (() => {
                 .then(data => {
                     digitalPen3x3RealGlobal = (data && typeof data === 'object') ? data : null;
                     if (!digitalPen3x3RealGlobal) console.warn('No se han encontrado datos válidos de Digital Pen. 3x3 en 04_RAW_KPIS.');
+                    // Sustituye el "real" (no el target) de digitalPenDataGlobal por este,
+                    // más fiable: así la gráfica "Digital Penetration 3x3 por País" y el
+                    // gauge del resumen muestran siempre el mismo valor.
+                    if (digitalPen3x3RealGlobal) {
+                        Object.keys(digitalPen3x3RealGlobal).forEach(quarter => {
+                            if (!digitalPenDataGlobal) digitalPenDataGlobal = {};
+                            if (!digitalPenDataGlobal[quarter]) digitalPenDataGlobal[quarter] = {};
+                            Object.keys(digitalPen3x3RealGlobal[quarter]).forEach(country => {
+                                if (!digitalPenDataGlobal[quarter][country]) digitalPenDataGlobal[quarter][country] = {real: null, target: null};
+                                digitalPenDataGlobal[quarter][country].real = digitalPen3x3RealGlobal[quarter][country];
+                            });
+                        });
+                    }
                     if (typeof renderOverview === 'function') renderOverview();
                     if (typeof renderDigitalPenBarChart === 'function') renderDigitalPenBarChart();
                     return digitalPen3x3RealGlobal;

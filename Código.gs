@@ -1356,76 +1356,82 @@ function getTrafficToNextGenTotalsByCountry_() {
 }
 
 /* =========================================================
-   LECTOR GENÉRICO POR FILA ANCLA EN 04_RAW_KPIS
-   Para KPIs cuya fila exacta (no solo el texto de Metric) ya se conoce
-   de antemano (p.ej. "FT Transformadas" = fila 24, "Digital Pen 3x3" =
-   fila 59, "Rating iOS" = fila 41, "Rating Android" = fila 47, todas con
-   BU=TOTAL en esa fila): apunta a esa fila exacta para el valor TOTAL (así
-   no se puede confundir con una fila "Target" que comparta el mismo texto
-   de Metric) y localiza sus filas hermanas por país buscando el MISMO
-   texto de Metric que tiene esa fila ancla.
+   LECTOR POR CELDA EXACTA EN 04_RAW_KPIS
+   A diferencia del resto de funciones de 04_RAW_KPIS (que detectan la
+   columna del trimestre por el texto de cabecera), aquí el real y el
+   target de cada trimestre son dos COLUMNAS DISTINTAS de la misma fila
+   (p.ej. para 26Q3: BQ = real, CD = target), no dos filas. Como el
+   detector de "columna de mes" (gthRawKpisHeader_) solo lee una fila de
+   cabecera y no distingue esas dos columnas por texto, aquí se apunta
+   directamente a la columna exacta que confirmó el equipo de EDC.
    ========================================================= */
-function getRawKpisSeriesByAnchorRow_(anchorRow1Based) {
+
+/** "BQ" -> 68 (índice 0-based de esa columna). Solo letras A-Z, sin signo. */
+function gthColumnLetterToIndex0_(letters) {
+  let n = 0;
+  const text = String(letters || '').toUpperCase();
+  for (let i = 0; i < text.length; i++) {
+    n = n * 26 + (text.charCodeAt(i) - 64);
+  }
+  return n - 1;
+}
+
+/** Valor de una fila exacta (1-indexed, tal cual se ve en la hoja) en una
+ *  columna exacta (letra), y de sus filas hermanas por país (mismo texto
+ *  de Metric que esa fila, BU=SPA/MEX/PER/COL/ARG). */
+function getRawKpisValuesByCellRef_(anchorRow1Based, columnLetter) {
   const header = gthRawKpisHeader_();
   const norm = gthNormalizeLabel_;
 
   const anchorIndex = anchorRow1Based - 1; // values[] es 0-indexed, las filas de la hoja son 1-indexed
   if (anchorIndex < 0 || anchorIndex >= header.values.length) return {};
-  const anchorRow = header.values[anchorIndex];
-  const anchorMetric = norm(anchorRow[header.colMetric]);
+  const anchorMetric = norm(header.values[anchorIndex][header.colMetric]);
   if (!anchorMetric) return {};
 
-  const quarterLabelSet = {};
-  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
-  const quarterLabels = Object.keys(quarterLabelSet);
-
+  const colIndex = gthColumnLetterToIndex0_(columnLetter);
   const result = {};
-  quarterLabels.forEach(function (quarterLabel) {
-    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
-    const quarterResult = {};
-    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
-      const row = header.values[r];
-      const metric = norm(row[header.colMetric]);
-      if (metric !== anchorMetric) continue;
+  for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+    const row = header.values[r];
+    const metric = norm(row[header.colMetric]);
+    if (metric !== anchorMetric) continue;
 
-      const country = GTH_RAW_KPIS_COUNTRY_MAP_[norm(row[header.colBU])];
-      if (!country) continue;
+    const country = GTH_RAW_KPIS_COUNTRY_MAP_[norm(row[header.colBU])];
+    if (!country) continue;
 
-      const value = gthFirstReportedValue_(row, candidateCols);
-      if (value === null) continue;
+    const value = gthFirstReportedValue_(row, [colIndex]);
+    if (value === null) continue;
 
-      quarterResult[country] = value;
-    }
-    result[quarterLabel] = quarterResult;
-  });
-
+    result[country] = value;
+  }
   return result;
 }
 
-/** % real de "FT Transformadas" (fila 24 de 04_RAW_KPIS, BU=TOTAL), por
- *  trimestre y país: el valor que va en el centro del gauge "FT
+/** % real de "FT Transformadas" a 26Q3 (fila 24 de 04_RAW_KPIS, columna
+ *  BQ), por país: el valor que va en el centro del gauge "FT
  *  Transformadas" del resumen de KPIs (el target de ese gauge sigue
- *  saliendo de Layout KPIs EDC, sin cambios). */
+ *  saliendo de Layout KPIs EDC, sin cambios). Se devuelve bajo la clave
+ *  "26Q3" porque esa es la única columna confirmada hasta ahora; otros
+ *  trimestres caen al origen anterior (ver renderOverview en el HTML). */
 function getFtTransformedRealByCountry_() {
-  return getRawKpisSeriesByAnchorRow_(24);
+  return { '26Q3': getRawKpisValuesByCellRef_(24, 'BQ') };
 }
 
-/** % real de "Digital Pen. 3x3" (fila 59 de 04_RAW_KPIS, BU=TOTAL), por
- *  trimestre y país: el valor que va en el centro de ese gauge. */
+/** % real de "Digital Pen. 3x3" a 26Q3 (fila 59 de 04_RAW_KPIS, columna
+ *  BQ), por país: el valor que va en el centro de ese gauge. */
 function getDigitalPen3x3RealByCountry_() {
-  return getRawKpisSeriesByAnchorRow_(59);
+  return { '26Q3': getRawKpisValuesByCellRef_(59, 'BQ') };
 }
 
-/** Rating iOS real (fila 41 de 04_RAW_KPIS, BU=TOTAL), por trimestre y
- *  país: el valor que va en el centro del gauge "Rating iOS". */
+/** Rating iOS real a 26Q3 (fila 41 de 04_RAW_KPIS, columna BQ), por país:
+ *  el valor que va en el centro del gauge "Rating iOS". */
 function getRatingIosRealByCountry_() {
-  return getRawKpisSeriesByAnchorRow_(41);
+  return { '26Q3': getRawKpisValuesByCellRef_(41, 'BQ') };
 }
 
-/** Rating Android real (fila 47 de 04_RAW_KPIS, BU=TOTAL), por trimestre
- *  y país: el valor que va en el centro del gauge "Rating And.". */
+/** Rating Android real a 26Q3 (fila 47 de 04_RAW_KPIS, columna BQ), por
+ *  país: el valor que va en el centro del gauge "Rating And.". */
 function getRatingAndroidRealByCountry_() {
-  return getRawKpisSeriesByAnchorRow_(47);
+  return { '26Q3': getRawKpisValuesByCellRef_(47, 'BQ') };
 }
 
 /* =========================================================

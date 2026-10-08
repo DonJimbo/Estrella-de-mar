@@ -79,11 +79,17 @@
         #section-rating .rating-platform.is-empty{grid-template-areas:'label label' 'empty empty';min-height:48px}
         #section-rating .rating-empty-value{grid-area:empty;color:#94a3b8;font-size:12px;font-weight:700}
         #section-rating .dashboard-detail-link,
-        #section-nps .dashboard-detail-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:8px 15px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:linear-gradient(135deg,#b6edff 0%,#5bbeff 100%);color:#003b73;font-size:10px;line-height:1;font-weight:900;letter-spacing:.055em;text-transform:uppercase;box-shadow:0 5px 14px rgba(0,33,91,.25),inset 0 1px 0 rgba(255,255,255,.6);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;text-decoration:none;white-space:nowrap}
+        #section-nps .dashboard-detail-link,
+        #section-traffic .dashboard-detail-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:8px 15px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:linear-gradient(135deg,#b6edff 0%,#5bbeff 100%);color:#003b73;font-size:10px;line-height:1;font-weight:900;letter-spacing:.055em;text-transform:uppercase;box-shadow:0 5px 14px rgba(0,33,91,.25),inset 0 1px 0 rgba(255,255,255,.6);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;text-decoration:none;white-space:nowrap}
         #section-rating .dashboard-detail-link:hover,
-        #section-nps .dashboard-detail-link:hover{color:#002c58;filter:brightness(1.04);transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,33,91,.32),inset 0 1px 0 rgba(255,255,255,.7)}
+        #section-nps .dashboard-detail-link:hover,
+        #section-traffic .dashboard-detail-link:hover{color:#002c58;filter:brightness(1.04);transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,33,91,.32),inset 0 1px 0 rgba(255,255,255,.7)}
         #section-rating .dashboard-detail-link:focus-visible,
-        #section-nps .dashboard-detail-link:focus-visible{outline:3px solid #fff;outline-offset:2px}
+        #section-nps .dashboard-detail-link:focus-visible,
+        #section-traffic .dashboard-detail-link:focus-visible{outline:3px solid #fff;outline-offset:2px}
+        .bbva-2025-cta-internal{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.25rem;padding:.55rem .9rem;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:#001E4D;color:#fff;font-size:.7rem;line-height:1.1;font-weight:900;letter-spacing:.035em;text-transform:uppercase;box-shadow:0 5px 14px rgba(0,30,77,.35);transition:transform .2s ease,filter .2s ease,box-shadow .2s ease;text-align:center}
+        .bbva-2025-cta-internal:hover{transform:translateY(-2px);filter:brightness(1.15);box-shadow:0 9px 18px rgba(0,30,77,.45)}
+        .bbva-2025-cta-internal:focus-visible{outline:3px solid #fff;outline-offset:2px}
         #section-nps .nps-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
         @media(max-width:1180px){#section-rating .rating-country-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
         @media(max-width:780px){#section-rating .rating-country-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -1741,9 +1747,8 @@
         #ep-nextgen .ng-row-avance small{display:block;font-size:.6rem;font-weight:700;color:var(--ng-grey3);margin-top:.2rem;text-transform:uppercase;letter-spacing:.02em}
         #ep-nextgen .ng-drawer{display:none;padding:.2rem 1.2rem 1.1rem 3.5rem;background:#FCFDFF}
         #ep-nextgen .ng-row[data-open="true"] .ng-drawer{display:block}
-        #ep-nextgen .ng-subrow{display:grid;grid-template-columns:minmax(0,1fr) 4rem 9rem 4.8rem 1.6rem;gap:.8rem;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--ng-grey1);cursor:pointer}
+        #ep-nextgen .ng-subrow{display:grid;grid-template-columns:minmax(0,1fr) 4rem 9rem 4.8rem 1.6rem;gap:.8rem;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--ng-grey1)}
         #ep-nextgen .ng-subrow:last-child{border-bottom:0}
-        #ep-nextgen .ng-subrow:hover{background:#F2FAFF}
         #ep-nextgen .ng-subname{font-size:.74rem;font-weight:700;color:var(--ng-grey4);display:flex;align-items:center;gap:.5rem;min-width:0}
         #ep-nextgen .ng-subname img{width:1.22rem;height:.84rem;object-fit:cover;border-radius:2px;border:1px solid var(--ng-grey1);flex:none}
         #ep-nextgen .ng-subname .nextgen-round-flag img{width:100%;height:100%;object-fit:cover;border-radius:0;border:0}
@@ -1760,7 +1765,7 @@
         #ep-nextgen table.ng-matrix thead th .nextgen-round-flag img{width:100%;height:100%;object-fit:cover;border-radius:0;border:0;margin:0}
         #ep-nextgen table.ng-matrix th.ng-matrix-row-head{position:sticky;left:0;background:#fff;z-index:3;text-align:left;font-weight:700;text-transform:none;letter-spacing:0;font-size:.76rem;color:var(--ng-midnight);min-width:13rem;max-width:18rem}
         #ep-nextgen table.ng-matrix tbody tr:hover th.ng-matrix-row-head,#ep-nextgen table.ng-matrix tbody tr:hover td{background:#F5F8FF}
-        #ep-nextgen .ng-cell{display:block;border-radius:.5rem;padding:.42rem 0;font-weight:900;font-variant-numeric:tabular-nums;color:var(--ng-midnight);cursor:pointer}
+        #ep-nextgen .ng-cell{display:block;border-radius:.5rem;padding:.42rem 0;font-weight:900;font-variant-numeric:tabular-nums;color:var(--ng-midnight)}
         #ep-nextgen .ng-legend{display:flex;align-items:center;gap:.55rem;padding:.8rem 1.2rem;font-size:.68rem;color:var(--ng-grey4);font-weight:700;border-top:var(--ng-line)}
         #ep-nextgen .ng-legend i{display:block;width:1.5rem;height:.6rem;border-radius:3px}
 
@@ -1780,8 +1785,6 @@
         }
 
         /* Resaltado breve al llegar desde Uso de NextGen al Roadmap. */
-        @keyframes epRoadmapHighlight{0%,100%{background:transparent;box-shadow:inset 0 0 0 transparent}20%,72%{background:rgba(133,200,255,.28);box-shadow:inset 4px 0 0 #004481,0 0 0 2px rgba(133,200,255,.42)}}
-        #ep-roadmap .ep-roadmap-highlight{animation:epRoadmapHighlight 2s ease-in-out both;border-radius:.55rem}
         @keyframes nextGenBlockHighlight{0%,100%{background:transparent;box-shadow:inset 0 0 0 transparent}20%,72%{background:rgba(133,200,255,.3);box-shadow:inset 4px 0 0 #004481,0 0 0 2px rgba(133,200,255,.42)}}
         #ep-nextgen .nextgen-block-highlight{animation:nextGenBlockHighlight 2s ease-in-out both;border-radius:.5rem}
 
@@ -2471,6 +2474,44 @@
   #page-steerco .steerco-followup-cover .steerco-followup-motion::after{
     animation:none!important;
   }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   STEERCO · PRESUPUESTO/FTEs A ALTURA COMPLETA
+   ÚNICO OBJETIVO:
+   que el iframe de Presupuesto/FTEs ocupe toda la ventana
+   disponible del panel derecho, igual que Follow up Holding.
+   ========================================================= */
+#page-steerco #steerco-content-mount{
+  height:100%!important;
+  min-height:0!important;
+}
+
+#page-steerco #steerco-stage-persistent{
+  height:100%!important;
+  min-height:100%!important;
+}
+
+#page-steerco #steerco-ftes-view{
+  height:100%!important;
+  min-height:100%!important;
+}
+
+#page-steerco #steerco-ftes-wrapper{
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+}
+
+#page-steerco #steerco-ftes-frame{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  flex:1 1 auto!important;
 }
 </style>
 
@@ -3399,7 +3440,8 @@
                     <div class="bg-[#004481] px-6 py-4 flex items-center justify-between border-b border-[#004481]">
                         <div class="flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-white/80"></i><h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">Traffic to Next Gen Web Empresas <span class="dynamic-q-label px-2 py-0.5 rounded-md bg-white/20 text-white text-[9px] font-bold"></span></h2></div>
                         <div class="traffic-section-actions">
-                            <button type="button" onclick="window.openNextGenByBlock()" class="bbva-2025-cta"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver uso de NextGen por Bloque Funcional</button>
+                            <a href="https://datastudio.google.com/reporting/e9813620-775f-4731-a920-6ab3abeb6e1e/page/p_shajqv9vld" target="_blank" rel="noopener noreferrer" class="dashboard-detail-link" aria-label="Abrir el dashboard en detalle de Traffic to Next Gen"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver dashboard</a>
+                            <button type="button" onclick="window.openNextGenByBlock()" class="bbva-2025-cta-internal"><i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Ver uso de NextGen por Bloque Funcional</button>
                             <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
                         </div>
                     </div>
@@ -3588,7 +3630,10 @@
                 <section id="ep-nextgen" class="executive-card overflow-hidden scroll-offset mb-8">
                     <div class="nextgen-section-head px-6 py-4 flex items-center justify-between border-b">
                         <div class="flex items-center gap-2"><i data-lucide="network" class="w-4 h-4 text-white/80"></i><h2 class="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">Uso de NextGen por bloque funcional</h2></div>
-                        <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
+                        <div class="traffic-section-actions">
+                            <button type="button" onclick="window.openTrafficToNextGen()" class="bbva-2025-cta-internal"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Ver Traffic to Next Gen</button>
+                            <button onclick="window.scrollToTop()" class="text-white/70 hover:text-white flex items-center gap-1.5 text-[9px] uppercase font-bold tracking-wider transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full"><i data-lucide="arrow-up" class="w-3 h-3"></i> Subir</button>
+                        </div>
                     </div>
                     <div class="p-4 md:p-6 bg-[#F7F8F8]">
                         <div class="ng-hero">
@@ -5225,7 +5270,7 @@
         };
 
         // --- VARIABLES GLOBALES ---
-        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, nextGenTrafficTotalsGlobal=null, featuresEvolution2025=null, digitalPenSitesGlobal=null, digitalPenYoyGlobal=null, digitalPenHistoricoGlobal=null, digitalPenRealTargetGlobal=null;
+        let featuresData=null, featureProgressData=null, trafficData=null, snapshotDataGlobal=null, digitalPenDataGlobal=null, ratingDataGlobal=null, migratedDataGlobal=null, endProductDataGlobal=null, nextGenByBlockDataGlobal=null, nextGenCountryAvanceGlobal=null, nextGenTrafficTotalsGlobal=null, featuresEvolution2025=null, digitalPenSitesGlobal=null, digitalPenYoyGlobal=null, digitalPenHistoricoGlobal=null, digitalPenRealTargetGlobal=null, ftTransformedRealGlobal=null, digitalPen3x3RealGlobal=null, ratingIosRealGlobal=null, ratingAndroidRealGlobal=null;
         let overviewGauges=[], chartEvolInstance=null, chartSnapGroupedInstance=null, chartDigPenBarInstance=null, chartMigSendaGlobal=null, chartMigGemaGlobal=null, chartFeatureProgressInstance=null, featureDetailKey=null, featureProgressLoading=false, featureProgressLoadError='', trafficEvolutionVisible=new Set(), trafficEvolutionSelectionInitialized=false;
         const chartColors = {'España':'#a855f7','México':'#22c55e','Perú':'#ef4444','Colombia':'#1e3a8a','Argentina':'#3b82f6','TOTAL':'#004481'};
         const flagsMap = { 'Holding':'Holding','España':'es','México':'mx','Perú':'pe','Colombia':'co','Argentina':'ar','TOTAL':'global','Global':'global','ALL':'global'};
@@ -5815,6 +5860,10 @@ window.EDCNps = (() => {
                     loadDigitalPenYoyData();
                     loadDigitalPenHistoricoData();
                     loadDigitalPenRealTargetData();
+                    loadFtTransformedRealData();
+                    loadDigitalPen3x3RealData();
+                    loadRatingIosRealData();
+                    loadRatingAndroidRealData();
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -5937,24 +5986,47 @@ window.EDCNps = (() => {
             const cLabel = geo === 'ALL' ? 'TOTAL' : geo;
             const cKey = geo === 'ALL' ? 'global' : window.getFtKey(geo);
             
-            // FT transformadas se leen desde PPT Status, no desde Roadmap FT.
-            let ft_r = featuresData.realByQuarter?.[currentQ]?.[cKey] ?? null;
+            // FT transformadas: real desde 04_RAW_KPIS (EDC Base de datos limpia
+            // SITES); si todavía no ha llegado, se usa PPT Status como reserva.
+            let ft_r = ftTransformedRealGlobal?.[currentQ]?.[cLabel] ?? featuresData.realByQuarter?.[currentQ]?.[cKey] ?? null;
             let ft_t = featuresData.targetByQuarter?.[currentQ]?.[cKey] ?? null;
-            
-            let tr_r=getTrafficNextGenValue(currentQ,cLabel), dp_r=digitalPenDataGlobal[currentQ]?.[cLabel]?.real??null, dp_t=digitalPenDataGlobal[currentQ]?.[cLabel]?.target??null;
-            
+
+            let tr_r=getTrafficNextGenValue(currentQ,cLabel);
+            let dp_r = digitalPen3x3RealGlobal?.[currentQ]?.[cLabel] ?? digitalPenDataGlobal[currentQ]?.[cLabel]?.real ?? null;
+            let dp_t = digitalPenDataGlobal[currentQ]?.[cLabel]?.target ?? null;
+
             let iosR=null, iosT=null, andR=null, andT=null;
             if(ratingDataGlobal&&ratingDataGlobal[currentQ]){
                 const qD = ratingDataGlobal[currentQ];
                 if(geo==='ALL'){
-                    iosR = qD.ios.globalReal !== null ? qD.ios.globalReal : (qD.ios.real.filter(v=>v!==null).length ? qD.ios.real.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.ios.real.filter(v=>v!==null).length : null);
                     iosT = qD.ios.globalTarget !== null ? qD.ios.globalTarget : (qD.ios.target.filter(v=>v!==null).length ? qD.ios.target.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.ios.target.filter(v=>v!==null).length : null);
-                    andR = qD.android.globalReal !== null ? qD.android.globalReal : (qD.android.real.filter(v=>v!==null).length ? qD.android.real.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.android.real.filter(v=>v!==null).length : null);
                     andT = qD.android.globalTarget !== null ? qD.android.globalTarget : (qD.android.target.filter(v=>v!==null).length ? qD.android.target.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.android.target.filter(v=>v!==null).length : null);
                 } else {
                     let idx = allCountriesList.indexOf(geo)-1;
-                    iosR=qD.ios.real[idx]; iosT=qD.ios.target[idx];
-                    andR=qD.android.real[idx]; andT=qD.android.target[idx];
+                    iosT = qD.ios.target[idx];
+                    andT = qD.android.target[idx];
+                }
+            }
+            // Rating iOS/Android: real desde 04_RAW_KPIS, con el mismo respaldo
+            // de Layout KPIs EDC que antes si todavía no ha llegado.
+            iosR = ratingIosRealGlobal?.[currentQ]?.[cLabel] ?? iosR;
+            andR = ratingAndroidRealGlobal?.[currentQ]?.[cLabel] ?? andR;
+            if((iosR===null||iosR===undefined) && ratingDataGlobal&&ratingDataGlobal[currentQ]){
+                const qD = ratingDataGlobal[currentQ];
+                if(geo==='ALL'){
+                    iosR = qD.ios.globalReal !== null ? qD.ios.globalReal : (qD.ios.real.filter(v=>v!==null).length ? qD.ios.real.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.ios.real.filter(v=>v!==null).length : null);
+                } else {
+                    let idx = allCountriesList.indexOf(geo)-1;
+                    iosR=qD.ios.real[idx];
+                }
+            }
+            if((andR===null||andR===undefined) && ratingDataGlobal&&ratingDataGlobal[currentQ]){
+                const qD = ratingDataGlobal[currentQ];
+                if(geo==='ALL'){
+                    andR = qD.android.globalReal !== null ? qD.android.globalReal : (qD.android.real.filter(v=>v!==null).length ? qD.android.real.filter(v=>v!==null).reduce((a,b)=>a+b,0)/qD.android.real.filter(v=>v!==null).length : null);
+                } else {
+                    let idx = allCountriesList.indexOf(geo)-1;
+                    andR=qD.android.real[idx];
                 }
             }
 
@@ -6962,6 +7034,91 @@ window.EDCNps = (() => {
             return digitalPenRealTargetLoadPromise;
         }
 
+        // Real de "FT Transformadas", "Digital Pen. 3x3", "Rating iOS" y
+        // "Rating Android" (los 4 gauges del resumen de KPIs), por trimestre y
+        // país: 04_RAW_KPIS, filas 24/59/41/47 (ver getRawKpisSeriesByAnchorRow_
+        // en Código.gs). El target de cada uno sigue saliendo de donde salía.
+        let ftTransformedRealLoadPromise = null;
+        function loadFtTransformedRealData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar el real de FT Transformadas.');
+                return ftTransformedRealLoadPromise || Promise.resolve(null);
+            }
+            ftTransformedRealLoadPromise = window.catalogoApi('getFtTransformedRealByCountry')
+                .then(data => {
+                    ftTransformedRealGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!ftTransformedRealGlobal) console.warn('No se han encontrado datos válidos de FT Transformadas en 04_RAW_KPIS.');
+                    if (typeof renderOverview === 'function') renderOverview();
+                    return ftTransformedRealGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el real de FT Transformadas (04_RAW_KPIS).', error);
+                    return null;
+                });
+            return ftTransformedRealLoadPromise;
+        }
+
+        let digitalPen3x3RealLoadPromise = null;
+        function loadDigitalPen3x3RealData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar el real de Digital Pen. 3x3.');
+                return digitalPen3x3RealLoadPromise || Promise.resolve(null);
+            }
+            digitalPen3x3RealLoadPromise = window.catalogoApi('getDigitalPen3x3RealByCountry')
+                .then(data => {
+                    digitalPen3x3RealGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!digitalPen3x3RealGlobal) console.warn('No se han encontrado datos válidos de Digital Pen. 3x3 en 04_RAW_KPIS.');
+                    if (typeof renderOverview === 'function') renderOverview();
+                    if (typeof renderDigitalPenBarChart === 'function') renderDigitalPenBarChart();
+                    return digitalPen3x3RealGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el real de Digital Pen. 3x3 (04_RAW_KPIS).', error);
+                    return null;
+                });
+            return digitalPen3x3RealLoadPromise;
+        }
+
+        let ratingIosRealLoadPromise = null;
+        function loadRatingIosRealData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar el real de Rating iOS.');
+                return ratingIosRealLoadPromise || Promise.resolve(null);
+            }
+            ratingIosRealLoadPromise = window.catalogoApi('getRatingIosRealByCountry')
+                .then(data => {
+                    ratingIosRealGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!ratingIosRealGlobal) console.warn('No se han encontrado datos válidos de Rating iOS en 04_RAW_KPIS.');
+                    if (typeof renderOverview === 'function') renderOverview();
+                    return ratingIosRealGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el real de Rating iOS (04_RAW_KPIS).', error);
+                    return null;
+                });
+            return ratingIosRealLoadPromise;
+        }
+
+        let ratingAndroidRealLoadPromise = null;
+        function loadRatingAndroidRealData() {
+            if (typeof window.catalogoApi !== 'function') {
+                console.warn('catalogoApi no está disponible todavía para cargar el real de Rating Android.');
+                return ratingAndroidRealLoadPromise || Promise.resolve(null);
+            }
+            ratingAndroidRealLoadPromise = window.catalogoApi('getRatingAndroidRealByCountry')
+                .then(data => {
+                    ratingAndroidRealGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!ratingAndroidRealGlobal) console.warn('No se han encontrado datos válidos de Rating Android en 04_RAW_KPIS.');
+                    if (typeof renderOverview === 'function') renderOverview();
+                    return ratingAndroidRealGlobal;
+                })
+                .catch(error => {
+                    console.warn('No se pudo cargar el real de Rating Android (04_RAW_KPIS).', error);
+                    return null;
+                });
+            return ratingAndroidRealLoadPromise;
+        }
+
         window.addEventListener('load', () => {
             window.setTimeout(() => {
                 const preload = () => {
@@ -6972,6 +7129,10 @@ window.EDCNps = (() => {
                     if (!digitalPenYoyGlobal) loadDigitalPenYoyData();
                     if (!digitalPenHistoricoGlobal) loadDigitalPenHistoricoData();
                     if (!digitalPenRealTargetGlobal) loadDigitalPenRealTargetData();
+                    if (!ftTransformedRealGlobal) loadFtTransformedRealData();
+                    if (!digitalPen3x3RealGlobal) loadDigitalPen3x3RealData();
+                    if (!ratingIosRealGlobal) loadRatingIosRealData();
+                    if (!ratingAndroidRealGlobal) loadRatingAndroidRealData();
                 };
                 if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
                 else preload();
@@ -7051,7 +7212,7 @@ window.EDCNps = (() => {
                     ? blocksForCountry.map(block => {
                         const row = getNextGenRecord(country, block.key);
                         const attrs = `data-nextgen-country="${nextGenEscape(country)}" data-nextgen-block="${nextGenEscape(row.bloque)}"`;
-                        return `<div class="ng-subrow" ${attrs} title="Abrir el bloque en la gráfica de progreso">` +
+                        return `<div class="ng-subrow" ${attrs}>` +
                             `<div class="ng-subname"><span>${nextGenEscape(block.label)}</span></div>` +
                             `<div class="ng-sub-avance">${nextGenPercent(row.avance)}</div>` +
                             ngBar(row.nextGen, true) +
@@ -7096,7 +7257,7 @@ window.EDCNps = (() => {
                 const drawer = entries.length
                     ? entries.map(entry => {
                         const attrs = `data-nextgen-country="${nextGenEscape(entry.country)}" data-nextgen-block="${nextGenEscape(entry.row.bloque)}"`;
-                        return `<div class="ng-subrow" ${attrs} title="Abrir el bloque en la gráfica de progreso">` +
+                        return `<div class="ng-subrow" ${attrs}>` +
                             `<div class="ng-subname">${nextGenCountryIcon(entry.country, 'w-6 h-6')}<span>${nextGenEscape(nextGenCountryLabel(entry.country))}</span></div>` +
                             ngBar(entry.row.nextGen, true) +
                             `<div class="ng-subpct">${nextGenPercent(entry.row.nextGen)}</div>` +
@@ -7205,8 +7366,6 @@ window.EDCNps = (() => {
                 if (row) row.scrollIntoView({ block: 'center', behavior: 'smooth' });
                 return;
             }
-            const cell = event.target.closest('[data-nextgen-country][data-nextgen-block]');
-            if (cell) window.focusRoadmapBlock(cell.dataset.nextgenCountry, cell.dataset.nextgenBlock);
         });
 
         let ngSearchTimer = 0;
@@ -7227,30 +7386,13 @@ window.EDCNps = (() => {
             }, 120);
         };
 
-        window.focusRoadmapBlock = function(country, block) {
-            const selectedCountry = country === 'TOTAL' ? 'ALL' : country;
-            const geoSelect = document.getElementById('fGeo_ep');
-            if (geoSelect) {
-                geoSelect.value = selectedCountry;
-                if (typeof window.handleGeoChange === 'function') window.handleGeoChange(geoSelect);
-            }
-
+        window.openTrafficToNextGen = function() {
             const navButton = typeof window.getSiteNavButtonForPage === 'function'
-                ? window.getSiteNavButtonForPage('page-endproduct')
+                ? window.getSiteNavButtonForPage('page-kpis')
                 : null;
-            if (typeof window.switchPage === 'function') window.switchPage('page-endproduct', navButton);
-
+            if (typeof window.switchPage === 'function') window.switchPage('page-kpis', navButton);
             window.setTimeout(() => {
-                renderEndProduct();
-                const key = getFunctionalBlockKey(block);
-                const target = Array.from(document.querySelectorAll('#epDotPlotRows [data-ep-block-key]'))
-                    .find(row => row.dataset.epBlockKey === key);
-                if (!target) return;
-                document.querySelectorAll('#epDotPlotRows .ep-roadmap-highlight')
-                    .forEach(row => row.classList.remove('ep-roadmap-highlight'));
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                target.classList.add('ep-roadmap-highlight');
-                window.setTimeout(() => target.classList.remove('ep-roadmap-highlight'), 2000);
+                document.getElementById('section-traffic')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 120);
         };
 
@@ -7536,6 +7678,153 @@ window.EDCNps = (() => {
 
 
 <!-- Dashboard FTEs/Presupuesto integrado sin iframe externo de Apps Script -->
+
+<script id="edc-ftes-shared-api-hub">
+/* =========================================================
+   EDC · PRESUPUESTO / FTEs · HUB DE DATOS COMPARTIDO
+   - Una sola petición por dataset aunque existan 3 iframes.
+   - Reutiliza peticiones en curso y resultados recientes.
+   - Precalienta Presupuesto al entrar en el Sites.
+   ========================================================= */
+(function () {
+  if (window.edcFtesApiRequest) return;
+
+  const API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwa-nLPRNANJofLg8Kk7xI3SvcklYP5-Fph9wBEzDChDBvSqOjdWgrxZVA1d92Lcgm2kA/exec';
+  const CACHE_TTL_MS = 120000;
+
+  const hub = window.__edcFtesSharedApiHub || (window.__edcFtesSharedApiHub = {
+    cache: Object.create(null),
+    inflight: Object.create(null),
+    sequence: 0
+  });
+
+  function requestOnce(action) {
+    return new Promise(function (resolve, reject) {
+      const callbackName = '__edcFtesSharedCb_' + Date.now() + '_' + (++hub.sequence);
+      const script = document.createElement('script');
+      let settled = false;
+      let timer = null;
+
+      function cleanup() {
+        if (timer) window.clearTimeout(timer);
+        try { delete window[callbackName]; } catch (error) { window[callbackName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[callbackName] = function (response) {
+        if (settled) return;
+        settled = true;
+        cleanup();
+
+        if (!response || response.status !== 'ok') {
+          reject(new Error(response && response.message ? response.message : 'Respuesta incorrecta de Apps Script'));
+          return;
+        }
+
+        resolve(response.data);
+      };
+
+      script.async = true;
+      script.src =
+        API_URL +
+        '?api=1' +
+        '&action=' + encodeURIComponent(action) +
+        '&callback=' + encodeURIComponent(callbackName) +
+        '&t=' + Date.now();
+
+      script.onerror = function () {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(new Error('No se pudo conectar con Apps Script.'));
+      };
+
+      (document.head || document.body || document.documentElement).appendChild(script);
+
+      timer = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(new Error('Timeout: Apps Script no respondió'));
+      }, 20000);
+    });
+  }
+
+  window.edcFtesApiRequest = function (action, options) {
+    options = options || {};
+    const now = Date.now();
+    const cached = hub.cache[action];
+
+    if (!options.force && cached && (now - cached.time) < CACHE_TTL_MS) {
+      return Promise.resolve(cached.data);
+    }
+
+    if (!options.force && hub.inflight[action]) {
+      return hub.inflight[action];
+    }
+
+    const request = requestOnce(action)
+      .catch(function () {
+        // Solo un reintento ante un fallo puntual. Sigue siendo una única
+        // petición compartida para todos los iframes.
+        return new Promise(function (resolve) {
+          window.setTimeout(resolve, 450);
+        }).then(function () {
+          return requestOnce(action);
+        });
+      })
+      .then(function (data) {
+        hub.cache[action] = { data: data, time: Date.now() };
+        return data;
+      })
+      .finally(function () {
+        if (hub.inflight[action] === request) {
+          delete hub.inflight[action];
+        }
+      });
+
+    hub.inflight[action] = request;
+    return request;
+  };
+
+  function prewarmFtesData() {
+    // Prioridad absoluta: Presupuesto. Los demás datasets se calientan después
+    // y solo una vez gracias al hub compartido.
+    window.edcFtesApiRequest('getPresupuestoData').catch(function () {});
+
+    window.setTimeout(function () {
+      window.edcFtesApiRequest('getFtesData').catch(function () {});
+    }, 900);
+
+    window.setTimeout(function () {
+      window.edcFtesApiRequest('getFtesStructureData').catch(function () {});
+    }, 1150);
+
+    window.setTimeout(function () {
+      window.edcFtesApiRequest('getFtesPersonasData').catch(function () {});
+    }, 1400);
+
+    window.setTimeout(function () {
+      window.edcFtesApiRequest('getFtesKpisData').catch(function () {});
+    }, 1650);
+  }
+
+  function schedulePrewarm() {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(prewarmFtesData, { timeout: 900 });
+    } else {
+      window.setTimeout(prewarmFtesData, 650);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedulePrewarm, { once: true });
+  } else {
+    schedulePrewarm();
+  }
+})();
+</script>
+
 <template id="ftes-dashboard-srcdoc-template">
 <!DOCTYPE html>
 <html lang="es">
@@ -10971,16 +11260,59 @@ window.EDCNps = (() => {
     // --- API APPS SCRIPT PARA GOOGLE SITES / HTML EXTERNO ---
     const APPS_SCRIPT_API_URL = 'https://script.google.com/a/macros/bbva.com/s/AKfycbwa-nLPRNANJofLg8Kk7xI3SvcklYP5-Fph9wBEzDChDBvSqOjdWgrxZVA1d92Lcgm2kA/exec';
 
-    function callAppsScriptApi(action) {
-      return new Promise((resolve, reject) => {
-        const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+    // --- API APPS SCRIPT · CARGA COMPARTIDA Y SIN PETICIONES DUPLICADAS ---
+    const API_CACHE_TTL_MS = 120000;
+    const localApiState = window.__edcLocalFtesApiState || (window.__edcLocalFtesApiState = {
+      cache: Object.create(null),
+      inflight: Object.create(null)
+    });
 
-        window[callbackName] = function (response) {
-          try {
-            delete window[callbackName];
+    function callAppsScriptApi(action, options) {
+      options = options || {};
 
-            const script = document.getElementById(callbackName);
-            if (script) script.remove();
+      // Cuando este dashboard está embebido en el Sites, las tres vistas
+      // (General, Follow up Holding y SteerCo) comparten UNA sola petición
+      // por dataset a través del padre. Si no es accesible, usamos el fallback local.
+      try {
+        if (
+          !options.force &&
+          window.parent &&
+          window.parent !== window &&
+          typeof window.parent.edcFtesApiRequest === 'function'
+        ) {
+          return window.parent.edcFtesApiRequest(action, options);
+        }
+      } catch (error) {
+        // El fallback local mantiene el Index funcionando también de forma independiente.
+      }
+
+      const now = Date.now();
+      const cached = localApiState.cache[action];
+      if (!options.force && cached && (now - cached.time) < API_CACHE_TTL_MS) {
+        return Promise.resolve(cached.data);
+      }
+
+      if (!options.force && localApiState.inflight[action]) {
+        return localApiState.inflight[action];
+      }
+
+      function requestOnce() {
+        return new Promise((resolve, reject) => {
+          const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+          let settled = false;
+          let timer = null;
+
+          function cleanup() {
+            if (timer) window.clearTimeout(timer);
+            try { delete window[callbackName]; } catch (error) { window[callbackName] = undefined; }
+            const pendingScript = document.getElementById(callbackName);
+            if (pendingScript) pendingScript.remove();
+          }
+
+          window[callbackName] = function (response) {
+            if (settled) return;
+            settled = true;
+            cleanup();
 
             if (!response || response.status !== 'ok') {
               reject(new Error(response && response.message ? response.message : 'Respuesta incorrecta de Apps Script'));
@@ -10988,49 +11320,85 @@ window.EDCNps = (() => {
             }
 
             resolve(response.data);
-          } catch (error) {
-            reject(error);
-          }
-        };
+          };
 
-        const script = document.createElement('script');
-        script.id = callbackName;
-        script.src =
-          APPS_SCRIPT_API_URL +
-          '?api=1' +
-          '&action=' + encodeURIComponent(action) +
-          '&callback=' + encodeURIComponent(callbackName) +
-          '&t=' + Date.now();
+          const script = document.createElement('script');
+          script.id = callbackName;
+          script.async = true;
+          script.src =
+            APPS_SCRIPT_API_URL +
+            '?api=1' +
+            '&action=' + encodeURIComponent(action) +
+            '&callback=' + encodeURIComponent(callbackName) +
+            '&t=' + Date.now();
 
-        script.onerror = function () {
-          delete window[callbackName];
-          reject(new Error('No se pudo conectar con Apps Script. Revisa despliegue, permisos y URL /exec.'));
-        };
+          script.onerror = function () {
+            if (settled) return;
+            settled = true;
+            cleanup();
+            reject(new Error('No se pudo conectar con Apps Script. Revisa despliegue, permisos y URL /exec.'));
+          };
 
-        document.body.appendChild(script);
+          document.body.appendChild(script);
 
-        setTimeout(() => {
-          if (window[callbackName]) {
-            delete window[callbackName];
-            const pendingScript = document.getElementById(callbackName);
-            if (pendingScript) pendingScript.remove();
+          timer = window.setTimeout(function () {
+            if (settled) return;
+            settled = true;
+            cleanup();
             reject(new Error('Timeout: Apps Script no respondió'));
+          }, 20000);
+        });
+      }
+
+      const request = requestOnce()
+        .catch(function (error) {
+          // Un único reintento evita que un fallo puntual de red deje el dashboard vacío.
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, 450);
+          }).then(requestOnce);
+        })
+        .then(function (data) {
+          localApiState.cache[action] = { data: data, time: Date.now() };
+          return data;
+        })
+        .finally(function () {
+          if (localApiState.inflight[action] === request) {
+            delete localApiState.inflight[action];
           }
-        }, 20000);
-      });
+        });
+
+      localApiState.inflight[action] = request;
+      return request;
     }
 
     window.callAppsScriptApi = callAppsScriptApi;
 
     // --- INIT ---
+    let ftesInitialLoadStarted = false;
+
+    function ensureFtesInitialDataLoaded() {
+      if (ftesInitialLoadStarted) return;
+      ftesInitialLoadStarted = true;
+
+      // Se escalonan unos milisegundos para no lanzar 5 peticiones pesadas
+      // exactamente a la vez. Si el usuario abre FTEs antes, se inicia al instante.
+      loadFtesData();
+      window.setTimeout(loadFtesStructureData, 120);
+      window.setTimeout(loadFtesPeopleData, 240);
+      window.setTimeout(loadFtesKpisData, 360);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
       initClock();
       bindStaticEvents();
+
+      // Presupuesto es prioritario: se solicita primero y puede reutilizar
+      // la precarga compartida que inicia el HTML principal del Sites.
       loadPresupuestoData();
-      loadFtesData();
-      loadFtesStructureData();
-      loadFtesPeopleData();
-      loadFtesKpisData();
+
+      // FTEs se precarga enseguida, pero sin competir en el mismo milisegundo
+      // con Presupuesto.
+      window.setTimeout(ensureFtesInitialDataLoaded, 550);
     });
 
     function initClock() {
@@ -11148,6 +11516,7 @@ window.EDCNps = (() => {
       activeModule = tab === 'ftes' ? 'ftes' : 'presupuesto';
 
       const isFtes = activeModule === 'ftes';
+      if (isFtes) ensureFtesInitialDataLoaded();
       document.getElementById('tabPresupuesto').classList.toggle('active', !isFtes);
       document.getElementById('tabFtes').classList.toggle('active', isFtes);
 
@@ -14563,7 +14932,31 @@ window.EDCNps = (() => {
     setTimeout(() => { el.style.display = 'none'; }, 500);
   }
 
-  window.loadEmbeddedFtesDashboard = function () {
+  function isEmbeddedFtesFrameActuallyVisible(frame) {
+    if (!frame) return false;
+
+    let node = frame;
+    while (node && node !== document.body) {
+      if (node.classList && node.classList.contains('hidden')) return false;
+
+      const style = window.getComputedStyle ? window.getComputedStyle(node) : null;
+      if (style && (style.display === 'none' || style.visibility === 'hidden')) return false;
+
+      node = node.parentElement;
+    }
+
+    const rect = frame.getBoundingClientRect ? frame.getBoundingClientRect() : null;
+    if (!rect || rect.width < 10 || rect.height < 10) return false;
+
+    // Evita cargar el iframe que SteerCo mantiene aparcado fuera de pantalla.
+    if (rect.right < 0 || rect.bottom < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight + 500) {
+      return false;
+    }
+
+    return true;
+  }
+
+  window.loadEmbeddedFtesDashboard = function (targetFrameId) {
     const template = document.getElementById('ftes-dashboard-srcdoc-template');
     if (!template) return;
 
@@ -14574,9 +14967,18 @@ window.EDCNps = (() => {
       { id: 'steerco-ftes-frame', loader: 'steerco-ftes-loading' }
     ];
 
+    const requestedFrameId = typeof targetFrameId === 'string' ? targetFrameId : '';
+
     frames.forEach(item => {
       const frame = document.getElementById(item.id);
       if (!frame || frame.dataset.ftesLoaded === '1') return;
+
+      // ÚNICA OPTIMIZACIÓN:
+      // - Si se solicita un iframe concreto, carga solo ese.
+      // - Si la llamada es genérica, carga únicamente el iframe que está realmente visible.
+      // Así no arrancan a la vez los dashboards General, Follow up y SteerCo.
+      if (requestedFrameId && item.id !== requestedFrameId) return;
+      if (!requestedFrameId && !isEmbeddedFtesFrameActuallyVisible(frame)) return;
 
       const isSteercoFrame = item.id === 'steerco-ftes-frame';
       const steercoCountry = isSteercoFrame && window.steercoSelectedCountry
@@ -14585,6 +14987,7 @@ window.EDCNps = (() => {
 
       frame.dataset.ftesLoaded = '1';
       frame.onload = function () {
+        frame.dataset.ftesReady = '1';
         hideLoader(item.loader);
         if (isSteercoFrame && window.steercoSelectedCountry && typeof window.applySteercoCountryToFtesDashboard === 'function') {
           window.applySteercoCountryToFtesDashboard(window.steercoSelectedCountry);
@@ -16529,16 +16932,13 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     const frame = getMonthlyFtesFrame();
     if (!frame) return false;
 
-    const now = Date.now();
-    const lastReload = Number(frame.dataset.monthlyLastReload || 0);
-
-    // Evita recargas continuas mientras el iframe está arrancando.
-    if (!lastReload || now - lastReload > 1800) {
-      frame.dataset.monthlyLastReload = String(now);
-      reloadMonthlyInvestmentDashboard(q);
+    // Si el mismo iframe ya está arrancando, NO lo reconstruimos. Reinsertar
+    // srcdoc durante la carga abortaba el dashboard y volvía a disparar Apps Script.
+    if (frame.dataset.ftesLoaded === '1' || frame.dataset.monthlyInvestmentLoaded === '1') {
+      return false;
     }
 
-    return false;
+    return reloadMonthlyInvestmentDashboard(q);
   };
 
   window.refreshMonthlyInvestmentFrame = function () {
@@ -16550,30 +16950,21 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     if (applyQuarterInsideMonthlyFrame(quarter)) {
       hideMonthlyFtesLoader();
 
-      try {
-        const win = frame.contentWindow;
-        if (win) {
-          [
-            'loadPresupuestoData',
-            'loadFtesData',
-            'loadFtesStructureData',
-            'loadFtesPeopleData',
-            'loadFtesKpisData'
-          ].forEach(function (functionName) {
-            try {
-              if (typeof win[functionName] === 'function') {
-                win[functionName]();
-              }
-            } catch (e) {}
-          });
-        }
-      } catch (e) {}
-
+      // Los datos se cargan una sola vez dentro del iframe y se comparten mediante
+      // el hub. Al volver a la pestaña solo re-renderizamos el quarter seleccionado.
       window.setTimeout(function () {
         applyQuarterInsideMonthlyFrame(quarter);
-      }, 300);
+      }, 180);
 
       return true;
+    }
+
+    // Si ya hay una carga en curso, dejamos que termine. No destruimos el iframe.
+    if (frame.dataset.ftesLoaded === '1' || frame.dataset.monthlyInvestmentLoaded === '1') {
+      window.setTimeout(function () {
+        applyQuarterInsideMonthlyFrame(quarter);
+      }, 260);
+      return false;
     }
 
     return reloadMonthlyInvestmentDashboard(quarter);
@@ -16595,28 +16986,10 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
   }
 
   function initializeMonthlyInvestment() {
+    // Solo enlazamos eventos. El iframe se crea cuando el usuario entra realmente
+    // en Gestión de la inversión. Los datos, mientras tanto, ya se precalientan
+    // en el hub compartido del HTML principal.
     bindMonthlyInvestmentFrame();
-
-    const frame = getMonthlyFtesFrame();
-    if (!frame) return;
-
-    // Si el iframe antiguo se quedó vacío, se sustituye por una copia
-    // limpia del mismo dashboard de Presupuestos/FTEs.
-    window.setTimeout(function () {
-      let healthy = false;
-
-      try {
-        healthy = !!(
-          frame.contentWindow &&
-          frame.contentWindow.document &&
-          frame.contentWindow.document.getElementById('quarterFilter')
-        );
-      } catch (e) {}
-
-      if (!healthy) {
-        reloadMonthlyInvestmentDashboard(window.monthlySelectedQuarter || 'Q3');
-      }
-    }, 350);
   }
 
   if (document.readyState === 'loading') {
@@ -16913,6 +17286,328 @@ if (panel.contains(event.target) || clickPath.includes(panel)) return;
     }
     if (typeof updateIcons === 'function') updateIcons();
   };
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   STEERCO · PRESUPUESTO/FTEs · CARGA RÁPIDA Y ESTABLE
+   - Sin precarga del iframe en segundo plano.
+   - Sin reintentos recursivos de país/Q.
+   - El iframe carga UNA vez al entrar en Presupuesto/FTEs.
+   - País + Q se aplican cuando los selectores reales existen.
+   ========================================================= */
+(function () {
+  const FAST_SYNC_INTERVAL = 120;
+  const FAST_SYNC_MAX_ATTEMPTS = 120;
+
+  function getSteercoBudgetFrame() {
+    return document.getElementById('steerco-ftes-frame');
+  }
+
+  function getSteercoBudgetView() {
+    return document.getElementById('steerco-ftes-view');
+  }
+
+  function getSteercoBudgetWrapper() {
+    return document.getElementById('steerco-ftes-wrapper');
+  }
+
+  function isSteercoBudgetVisible() {
+    const view = getSteercoBudgetView();
+    return !!(view && !view.classList.contains('hidden') && view.style.display !== 'none');
+  }
+
+  function budgetCountryValue(country) {
+    if (typeof window.getSteercoBudgetCountry === 'function') {
+      return window.getSteercoBudgetCountry(country);
+    }
+    return String(country || '')
+      .trim()
+      .toUpperCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function budgetQuarterValue(quarter) {
+    const q = String(quarter || window.steercoSelectedQuarter || 'Q3').toUpperCase();
+    return q === 'ALL' ? 'TOTAL_2026' : q;
+  }
+
+  function hideSteercoBudgetLoader() {
+    const loader = document.getElementById('steerco-ftes-loading');
+    if (!loader) return;
+    loader.style.opacity = '0';
+    setTimeout(function () {
+      loader.style.display = 'none';
+    }, 220);
+  }
+
+  function showSteercoBudgetLoader() {
+    const loader = document.getElementById('steerco-ftes-loading');
+    if (!loader) return;
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+  }
+
+  // Sustituye el antiguo preload por una preparación del contenedor SIN cargar el iframe.
+  window.ensurePreloadedSteercoFtesDashboard = function (country) {
+    const view = getSteercoBudgetView();
+    if (!view) return null;
+
+    let wrapper = getSteercoBudgetWrapper();
+
+    if (!wrapper) {
+      view.innerHTML = typeof window.getSteercoFtesWrapperHtml === 'function'
+        ? window.getSteercoFtesWrapperHtml()
+        : `
+          <div id="steerco-ftes-wrapper"
+               class="bg-white rounded-2xl border border-slate-200 shadow-sm w-full h-full min-h-0 flex flex-col relative overflow-hidden">
+            <div id="steerco-ftes-loading"
+                 class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center transition-opacity duration-300">
+              <div class="w-12 h-12 rounded-full border-4 border-blue-100 border-t-[#004481] animate-spin mb-4"></div>
+              <p class="text-[#004481] font-bold text-sm tracking-wide">Cargando Presupuesto y FTEs...</p>
+            </div>
+            <iframe id="steerco-ftes-frame"
+                    class="w-full h-full flex-1 border-none bg-[#F8FAFC]"
+                    title="Dashboard FTEs y Presupuesto - SteerCo"
+                    allowfullscreen></iframe>
+          </div>
+        `;
+      wrapper = getSteercoBudgetWrapper();
+    }
+
+    if (!wrapper) return null;
+
+    const displayCountry = typeof window.getSteercoDisplayCountry === 'function'
+      ? window.getSteercoDisplayCountry(country)
+      : country;
+
+    wrapper.dataset.country = displayCountry || '';
+    wrapper.dataset.budgetCountry = budgetCountryValue(displayCountry);
+
+    const frame = getSteercoBudgetFrame();
+    if (frame) {
+      frame.dataset.steercoCountry = displayCountry || '';
+      frame.dataset.steercoBudgetCountry = budgetCountryValue(displayCountry);
+    }
+
+    // IMPORTANTE: aquí NO cargamos srcdoc.
+    return wrapper;
+  };
+
+  window.syncSteercoBudgetFast = function (country, quarter) {
+    const frame = getSteercoBudgetFrame();
+    if (!frame || frame.dataset.fastBudgetLoaded !== '1') return false;
+
+    const targetCountry = budgetCountryValue(country || window.steercoSelectedCountry);
+    const targetQuarter = budgetQuarterValue(quarter || window.steercoSelectedQuarter || 'Q3');
+
+    if (!targetCountry) return false;
+
+    if (frame.__fastSteercoSyncTimer) {
+      clearInterval(frame.__fastSteercoSyncTimer);
+      frame.__fastSteercoSyncTimer = null;
+    }
+
+    let attempts = 0;
+
+    function tryApply() {
+      attempts += 1;
+
+      try {
+        const win = frame.contentWindow;
+        const doc = frame.contentDocument || (win && win.document);
+
+        if (!win || !doc) return false;
+
+        const countrySelect = doc.getElementById('countryFilter');
+        const quarterSelect = doc.getElementById('quarterFilter');
+
+        if (!countrySelect || !quarterSelect) return false;
+
+        const hasCountry = Array.from(countrySelect.options || [])
+          .some(function (option) { return option.value === targetCountry; });
+
+        const hasQuarter = Array.from(quarterSelect.options || [])
+          .some(function (option) { return option.value === targetQuarter; });
+
+        // Todavía está cargando los datos de presupuesto:
+        // esperamos sin forzar renders ni volver a llamar Apps Script.
+        if (!hasCountry || !hasQuarter) return false;
+
+        const FrameEvent = win.Event || Event;
+
+        const countryChanged = countrySelect.value !== targetCountry;
+        const quarterChanged = quarterSelect.value !== targetQuarter;
+
+        // Primero dejamos ambos selectores en el valor correcto.
+        countrySelect.value = targetCountry;
+        quarterSelect.value = targetQuarter;
+
+        // Solo disparamos los eventos UNA VEZ, cuando los datos ya están disponibles.
+        if (countryChanged) {
+          countrySelect.dispatchEvent(new FrameEvent('change', { bubbles: true }));
+        }
+
+        if (quarterChanged) {
+          quarterSelect.dispatchEvent(new FrameEvent('change', { bubbles: true }));
+        }
+
+        // Un único render final.
+        setTimeout(function () {
+          try {
+            if (typeof win.updateFilterIcon === 'function') win.updateFilterIcon();
+          } catch (e) {}
+
+          try {
+            if (typeof win.renderActiveModule === 'function') win.renderActiveModule();
+          } catch (e) {}
+        }, 40);
+
+        if (frame.__fastSteercoSyncTimer) {
+          clearInterval(frame.__fastSteercoSyncTimer);
+          frame.__fastSteercoSyncTimer = null;
+        }
+
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Primer intento inmediato.
+    if (tryApply()) return true;
+
+    // Después solo comprobamos si los selectores ya están preparados.
+    // No se fuerza ningún render durante la espera.
+    frame.__fastSteercoSyncTimer = setInterval(function () {
+      if (tryApply() || attempts >= FAST_SYNC_MAX_ATTEMPTS) {
+        clearInterval(frame.__fastSteercoSyncTimer);
+        frame.__fastSteercoSyncTimer = null;
+      }
+    }, FAST_SYNC_INTERVAL);
+
+    return false;
+  };
+
+  // Anula los antiguos reintentos recursivos.
+  window.applySteercoCountryToFtesDashboard = function (country) {
+    if (!isSteercoBudgetVisible()) return false;
+    return window.syncSteercoBudgetFast(
+      country || window.steercoSelectedCountry,
+      window.steercoSelectedQuarter || 'Q3'
+    );
+  };
+
+  window.applySteercoQuarterToFtesDashboard = function (quarter) {
+    window.steercoSelectedQuarter = String(quarter || window.steercoSelectedQuarter || 'Q3').toUpperCase();
+
+    if (!isSteercoBudgetVisible()) return false;
+
+    return window.syncSteercoBudgetFast(
+      window.steercoSelectedCountry,
+      window.steercoSelectedQuarter
+    );
+  };
+
+  window.loadSteercoBudgetFast = function () {
+    const frame = getSteercoBudgetFrame();
+    if (!frame) return false;
+
+    // Asegura que Presupuesto ya esté en memoria compartida antes de sincronizar país/Q.
+    try {
+      if (typeof window.edcFtesApiRequest === 'function') {
+        window.edcFtesApiRequest('getPresupuestoData').catch(function () {});
+      }
+    } catch (e) {}
+
+    // Si ya está cargado, NO reconstruimos ni recargamos el iframe.
+    if (frame.dataset.fastBudgetLoaded === '1') {
+      hideSteercoBudgetLoader();
+      window.syncSteercoBudgetFast(
+        window.steercoSelectedCountry,
+        window.steercoSelectedQuarter || 'Q3'
+      );
+      return true;
+    }
+
+    const template = document.getElementById('ftes-dashboard-srcdoc-template');
+    if (!template) return false;
+
+    showSteercoBudgetLoader();
+
+    // Neutraliza el flag antiguo por si otra función intentó prepararlo antes.
+    frame.dataset.ftesLoaded = '1';
+    frame.dataset.fastBudgetLoaded = '1';
+
+    frame.onload = function () {
+      // Mostramos el dashboard inmediatamente cuando el HTML del iframe ya existe.
+      // Los datos siguen cargando dentro sin bloquear toda la vista con la pantalla blanca.
+      hideSteercoBudgetLoader();
+
+      setTimeout(function () {
+        window.syncSteercoBudgetFast(
+          window.steercoSelectedCountry,
+          window.steercoSelectedQuarter || 'Q3'
+        );
+      }, 80);
+    };
+
+    // Sin scripts extra inyectados, sin país bootstrap y sin duplicar cargas.
+    frame.srcdoc = template.innerHTML;
+
+    return true;
+  };
+
+  window.mountSteercoFtesDashboard = function (country) {
+    const selectedCountry = country || window.steercoSelectedCountry;
+    if (!selectedCountry) return null;
+
+    const wrapper = window.ensurePreloadedSteercoFtesDashboard(selectedCountry);
+    if (!wrapper) return null;
+
+    if (typeof window.showSteercoStageView === 'function') {
+      window.showSteercoStageView('ftes');
+    } else {
+      const view = getSteercoBudgetView();
+      if (view) {
+        view.classList.remove('hidden');
+        view.style.display = '';
+      }
+    }
+
+    // ÚNICA carga del iframe.
+    window.loadSteercoBudgetFast();
+
+    // Si ya estaba cargado, sincronizamos al instante.
+    window.syncSteercoBudgetFast(
+      selectedCountry,
+      window.steercoSelectedQuarter || 'Q3'
+    );
+
+    if (typeof window.resetSteercoContentScroll === 'function') {
+      window.resetSteercoContentScroll('auto');
+    }
+
+    return wrapper;
+  };
+
+  // Si ya existe el iframe en el DOM, eliminamos temporizadores antiguos
+  // que pudieran haber quedado registrados por funciones previas de esta misma página.
+  const existingFrame = getSteercoBudgetFrame();
+
+  if (existingFrame) {
+    if (existingFrame.__steercoBudgetSyncTimer) {
+      clearInterval(existingFrame.__steercoBudgetSyncTimer);
+      existingFrame.__steercoBudgetSyncTimer = null;
+    }
+    if (existingFrame.__fastSteercoSyncTimer) {
+      clearInterval(existingFrame.__fastSteercoSyncTimer);
+      existingFrame.__fastSteercoSyncTimer = null;
+    }
+  }
 })();
 </script>
 

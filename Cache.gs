@@ -38,6 +38,10 @@ const GTH_DATASETS = {
   digitalPenYoy: function () { return getDigitalPenYoyByCountry_(); },
   digitalPenHistorico: function () { return getDigitalPenHistoricoByCountry_(); },
   digitalPenRealTarget: function () { return getDigitalPenRealTargetByCountry_(); },
+  ftTransformedReal: function () { return getFtTransformedRealByCountry_(); },
+  digitalPen3x3Real: function () { return getDigitalPen3x3RealByCountry_(); },
+  ratingIosReal: function () { return getRatingIosRealByCountry_(); },
+  ratingAndroidReal: function () { return getRatingAndroidRealByCountry_(); },
   adopcion:      function () { return gthBuildAdopcion_(); }
 };
 
@@ -128,6 +132,10 @@ function gthResolveDataset_(action) {
     getDigitalPenYoyByCountry: 'digitalPenYoy',
     getDigitalPenHistoricoByCountry: 'digitalPenHistorico',
     getDigitalPenRealTargetByCountry: 'digitalPenRealTarget',
+    getFtTransformedRealByCountry: 'ftTransformedReal',
+    getDigitalPen3x3RealByCountry: 'digitalPen3x3Real',
+    getRatingIosRealByCountry: 'ratingIosReal',
+    getRatingAndroidRealByCountry: 'ratingAndroidReal',
     getAdopcionSnapshot: 'adopcion',
     refreshAdopcion: 'adopcion',
     refreshCatalogo: 'catalogo',
@@ -139,7 +147,11 @@ function gthResolveDataset_(action) {
     refreshDigitalPenSites: 'digitalPenSites',
     refreshDigitalPenYoy: 'digitalPenYoy',
     refreshDigitalPenHistorico: 'digitalPenHistorico',
-    refreshDigitalPenRealTarget: 'digitalPenRealTarget'
+    refreshDigitalPenRealTarget: 'digitalPenRealTarget',
+    refreshFtTransformedReal: 'ftTransformedReal',
+    refreshDigitalPen3x3Real: 'digitalPen3x3Real',
+    refreshRatingIosReal: 'ratingIosReal',
+    refreshRatingAndroidReal: 'ratingAndroidReal'
   };
   return map[action] || (GTH_DATASETS[action] ? action : null);
 }

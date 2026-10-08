@@ -1356,6 +1356,79 @@ function getTrafficToNextGenTotalsByCountry_() {
 }
 
 /* =========================================================
+   LECTOR GENÉRICO POR FILA ANCLA EN 04_RAW_KPIS
+   Para KPIs cuya fila exacta (no solo el texto de Metric) ya se conoce
+   de antemano (p.ej. "FT Transformadas" = fila 24, "Digital Pen 3x3" =
+   fila 59, "Rating iOS" = fila 41, "Rating Android" = fila 47, todas con
+   BU=TOTAL en esa fila): apunta a esa fila exacta para el valor TOTAL (así
+   no se puede confundir con una fila "Target" que comparta el mismo texto
+   de Metric) y localiza sus filas hermanas por país buscando el MISMO
+   texto de Metric que tiene esa fila ancla.
+   ========================================================= */
+function getRawKpisSeriesByAnchorRow_(anchorRow1Based) {
+  const header = gthRawKpisHeader_();
+  const norm = gthNormalizeLabel_;
+
+  const anchorIndex = anchorRow1Based - 1; // values[] es 0-indexed, las filas de la hoja son 1-indexed
+  if (anchorIndex < 0 || anchorIndex >= header.values.length) return {};
+  const anchorRow = header.values[anchorIndex];
+  const anchorMetric = norm(anchorRow[header.colMetric]);
+  if (!anchorMetric) return {};
+
+  const quarterLabelSet = {};
+  header.monthCols.forEach(function (m) { quarterLabelSet[gthMonthToQuarterLabel_(m)] = true; });
+  const quarterLabels = Object.keys(quarterLabelSet);
+
+  const result = {};
+  quarterLabels.forEach(function (quarterLabel) {
+    const candidateCols = gthCandidateMonthCols_(header.monthCols, quarterLabel);
+    const quarterResult = {};
+    for (let r = header.headerRowIndex + 1; r < header.values.length; r++) {
+      const row = header.values[r];
+      const metric = norm(row[header.colMetric]);
+      if (metric !== anchorMetric) continue;
+
+      const country = GTH_RAW_KPIS_COUNTRY_MAP_[norm(row[header.colBU])];
+      if (!country) continue;
+
+      const value = gthFirstReportedValue_(row, candidateCols);
+      if (value === null) continue;
+
+      quarterResult[country] = value;
+    }
+    result[quarterLabel] = quarterResult;
+  });
+
+  return result;
+}
+
+/** % real de "FT Transformadas" (fila 24 de 04_RAW_KPIS, BU=TOTAL), por
+ *  trimestre y país: el valor que va en el centro del gauge "FT
+ *  Transformadas" del resumen de KPIs (el target de ese gauge sigue
+ *  saliendo de Layout KPIs EDC, sin cambios). */
+function getFtTransformedRealByCountry_() {
+  return getRawKpisSeriesByAnchorRow_(24);
+}
+
+/** % real de "Digital Pen. 3x3" (fila 59 de 04_RAW_KPIS, BU=TOTAL), por
+ *  trimestre y país: el valor que va en el centro de ese gauge. */
+function getDigitalPen3x3RealByCountry_() {
+  return getRawKpisSeriesByAnchorRow_(59);
+}
+
+/** Rating iOS real (fila 41 de 04_RAW_KPIS, BU=TOTAL), por trimestre y
+ *  país: el valor que va en el centro del gauge "Rating iOS". */
+function getRatingIosRealByCountry_() {
+  return getRawKpisSeriesByAnchorRow_(41);
+}
+
+/** Rating Android real (fila 47 de 04_RAW_KPIS, BU=TOTAL), por trimestre
+ *  y país: el valor que va en el centro del gauge "Rating And.". */
+function getRatingAndroidRealByCountry_() {
+  return getRawKpisSeriesByAnchorRow_(47);
+}
+
+/* =========================================================
    DIGITAL PENETRATION 3X3
    Pestañas: 19_DIGITALPEN_SITES (cajitas con cifra + variación YoY, a
    cierre del último mes informado) y 20_DIGITALPEN_HISTORICO_RAW

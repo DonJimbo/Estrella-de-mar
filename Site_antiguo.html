@@ -6703,8 +6703,14 @@ window.EDCNps = (() => {
         function renderRatingUI() {
             if(!ratingDataGlobal) return;
             const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value, rD=ratingDataGlobal[cQ];
-            if(!rD) { window.toggleEmptyState('rating-content-wrapper', true, `Sin datos para ${cQ}`); return; }
-            window.toggleEmptyState('rating-content-wrapper', !rD.ios.real.some(v=>v!==null)&&!rD.android.real.some(v=>v!==null), `Pendiente de datos (${cQ})`);
+            // Real: 04_RAW_KPIS (ratingIosRealGlobal/ratingAndroidRealGlobal). Target:
+            // sigue saliendo de Layout KPIs EDC (rD), sin cambios.
+            const newIosReal = ratingIosRealGlobal?.[cQ] || {};
+            const newAndroidReal = ratingAndroidRealGlobal?.[cQ] || {};
+            const hasNewData = Object.keys(newIosReal).length>0 || Object.keys(newAndroidReal).length>0;
+            if(!rD && !hasNewData) { window.toggleEmptyState('rating-content-wrapper', true, `Sin datos para ${cQ}`); return; }
+            const hasOldData = !!rD && (rD.ios.real.some(v=>v!==null)||rD.android.real.some(v=>v!==null));
+            window.toggleEmptyState('rating-content-wrapper', !hasOldData && !hasNewData, `Pendiente de datos (${cQ})`);
 
             const ratingCountries=countryOrder;
             const cArr=geo==='ALL'?ratingCountries:(geo==='Holding'?[]:[geo]);
@@ -6712,7 +6718,10 @@ window.EDCNps = (() => {
             if(!container) return;
             container.className=`rating-country-grid${cArr.length===1?' rating-single':''}`;
             const ratingPlatform = (os, country) => {
-                const idx=ratingCountries.indexOf(country), real=rD?.[os]?.real?.[idx]??null, target=rD?.[os]?.target?.[idx]??null;
+                const idx=ratingCountries.indexOf(country);
+                const newRealGlobal = os==='ios' ? ratingIosRealGlobal : ratingAndroidRealGlobal;
+                const real = newRealGlobal?.[cQ]?.[country] ?? rD?.[os]?.real?.[idx] ?? null;
+                const target = rD?.[os]?.target?.[idx]??null;
                 const label=os==='ios'?'App Store':'Google Play';
                 if(real==null) return `<div class="rating-platform is-empty"><span class="rating-platform-label">${label}</span><span class="rating-empty-value">Sin datos</span></div>`;
                 const stars=Math.max(0,Math.min(100,(real/5)*100));
@@ -7103,6 +7112,7 @@ window.EDCNps = (() => {
                     ratingIosRealGlobal = (data && typeof data === 'object') ? data : null;
                     if (!ratingIosRealGlobal) console.warn('No se han encontrado datos válidos de Rating iOS en 04_RAW_KPIS.');
                     if (typeof renderOverview === 'function') renderOverview();
+                    if (typeof renderRatingUI === 'function') renderRatingUI();
                     return ratingIosRealGlobal;
                 })
                 .catch(error => {
@@ -7123,6 +7133,7 @@ window.EDCNps = (() => {
                     ratingAndroidRealGlobal = (data && typeof data === 'object') ? data : null;
                     if (!ratingAndroidRealGlobal) console.warn('No se han encontrado datos válidos de Rating Android en 04_RAW_KPIS.');
                     if (typeof renderOverview === 'function') renderOverview();
+                    if (typeof renderRatingUI === 'function') renderRatingUI();
                     return ratingAndroidRealGlobal;
                 })
                 .catch(error => {

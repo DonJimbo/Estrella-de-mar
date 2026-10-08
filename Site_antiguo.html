@@ -5986,14 +5986,14 @@ window.EDCNps = (() => {
             const cLabel = geo === 'ALL' ? 'TOTAL' : geo;
             const cKey = geo === 'ALL' ? 'global' : window.getFtKey(geo);
             
-            // FT transformadas: real desde 04_RAW_KPIS (EDC Base de datos limpia
-            // SITES); si todavía no ha llegado, se usa PPT Status como reserva.
-            let ft_r = ftTransformedRealGlobal?.[currentQ]?.[cLabel] ?? featuresData.realByQuarter?.[currentQ]?.[cKey] ?? null;
-            let ft_t = featuresData.targetByQuarter?.[currentQ]?.[cKey] ?? null;
+            // FT transformadas: real y target desde 04_RAW_KPIS (EDC Base de datos
+            // limpia SITES); si todavía no han llegado, se usa PPT Status como reserva.
+            let ft_r = ftTransformedRealGlobal?.[currentQ]?.[cLabel]?.real ?? featuresData.realByQuarter?.[currentQ]?.[cKey] ?? null;
+            let ft_t = ftTransformedRealGlobal?.[currentQ]?.[cLabel]?.target ?? featuresData.targetByQuarter?.[currentQ]?.[cKey] ?? null;
 
             let tr_r=getTrafficNextGenValue(currentQ,cLabel);
-            let dp_r = digitalPen3x3RealGlobal?.[currentQ]?.[cLabel] ?? digitalPenDataGlobal[currentQ]?.[cLabel]?.real ?? null;
-            let dp_t = digitalPenDataGlobal[currentQ]?.[cLabel]?.target ?? null;
+            let dp_r = digitalPen3x3RealGlobal?.[currentQ]?.[cLabel]?.real ?? digitalPenDataGlobal[currentQ]?.[cLabel]?.real ?? null;
+            let dp_t = digitalPen3x3RealGlobal?.[currentQ]?.[cLabel]?.target ?? digitalPenDataGlobal[currentQ]?.[cLabel]?.target ?? null;
 
             let iosR=null, iosT=null, andR=null, andT=null;
             if(ratingDataGlobal&&ratingDataGlobal[currentQ]){
@@ -6007,10 +6007,12 @@ window.EDCNps = (() => {
                     andT = qD.android.target[idx];
                 }
             }
-            // Rating iOS/Android: real desde 04_RAW_KPIS, con el mismo respaldo
-            // de Layout KPIs EDC que antes si todavía no ha llegado.
-            iosR = ratingIosRealGlobal?.[currentQ]?.[cLabel] ?? iosR;
-            andR = ratingAndroidRealGlobal?.[currentQ]?.[cLabel] ?? andR;
+            // Rating iOS/Android: real y target desde 04_RAW_KPIS, con el mismo
+            // respaldo de Layout KPIs EDC que antes si todavía no han llegado.
+            iosR = ratingIosRealGlobal?.[currentQ]?.[cLabel]?.real ?? iosR;
+            iosT = ratingIosRealGlobal?.[currentQ]?.[cLabel]?.target ?? iosT;
+            andR = ratingAndroidRealGlobal?.[currentQ]?.[cLabel]?.real ?? andR;
+            andT = ratingAndroidRealGlobal?.[currentQ]?.[cLabel]?.target ?? andT;
             if((iosR===null||iosR===undefined) && ratingDataGlobal&&ratingDataGlobal[currentQ]){
                 const qD = ratingDataGlobal[currentQ];
                 if(geo==='ALL'){
@@ -6703,8 +6705,8 @@ window.EDCNps = (() => {
         function renderRatingUI() {
             if(!ratingDataGlobal) return;
             const geo=document.getElementById('fGeo').value, cQ=document.getElementById('fTri').value==='ALL'?getLastClosedFeatureQuarter():document.getElementById('fTri').value, rD=ratingDataGlobal[cQ];
-            // Real: 04_RAW_KPIS (ratingIosRealGlobal/ratingAndroidRealGlobal). Target:
-            // sigue saliendo de Layout KPIs EDC (rD), sin cambios.
+            // Real y target: 04_RAW_KPIS (ratingIosRealGlobal/ratingAndroidRealGlobal),
+            // con Layout KPIs EDC (rD) como respaldo si todavía no han llegado.
             const newIosReal = ratingIosRealGlobal?.[cQ] || {};
             const newAndroidReal = ratingAndroidRealGlobal?.[cQ] || {};
             const hasNewData = Object.keys(newIosReal).length>0 || Object.keys(newAndroidReal).length>0;
@@ -6720,8 +6722,8 @@ window.EDCNps = (() => {
             const ratingPlatform = (os, country) => {
                 const idx=ratingCountries.indexOf(country);
                 const newRealGlobal = os==='ios' ? ratingIosRealGlobal : ratingAndroidRealGlobal;
-                const real = newRealGlobal?.[cQ]?.[country] ?? rD?.[os]?.real?.[idx] ?? null;
-                const target = rD?.[os]?.target?.[idx]??null;
+                const real = newRealGlobal?.[cQ]?.[country]?.real ?? rD?.[os]?.real?.[idx] ?? null;
+                const target = newRealGlobal?.[cQ]?.[country]?.target ?? rD?.[os]?.target?.[idx] ?? null;
                 const label=os==='ios'?'App Store':'Google Play';
                 if(real==null) return `<div class="rating-platform is-empty"><span class="rating-platform-label">${label}</span><span class="rating-empty-value">Sin datos</span></div>`;
                 const stars=Math.max(0,Math.min(100,(real/5)*100));
@@ -7077,8 +7079,8 @@ window.EDCNps = (() => {
                 .then(data => {
                     digitalPen3x3RealGlobal = (data && typeof data === 'object') ? data : null;
                     if (!digitalPen3x3RealGlobal) console.warn('No se han encontrado datos válidos de Digital Pen. 3x3 en 04_RAW_KPIS.');
-                    // Sustituye el "real" (no el target) de digitalPenDataGlobal por este,
-                    // más fiable: así la gráfica "Digital Penetration 3x3 por País" y el
+                    // Sustituye el real Y el target de digitalPenDataGlobal por estos, más
+                    // fiables: así la gráfica "Digital Penetration 3x3 por País" y el
                     // gauge del resumen muestran siempre el mismo valor.
                     if (digitalPen3x3RealGlobal) {
                         Object.keys(digitalPen3x3RealGlobal).forEach(quarter => {
@@ -7086,7 +7088,9 @@ window.EDCNps = (() => {
                             if (!digitalPenDataGlobal[quarter]) digitalPenDataGlobal[quarter] = {};
                             Object.keys(digitalPen3x3RealGlobal[quarter]).forEach(country => {
                                 if (!digitalPenDataGlobal[quarter][country]) digitalPenDataGlobal[quarter][country] = {real: null, target: null};
-                                digitalPenDataGlobal[quarter][country].real = digitalPen3x3RealGlobal[quarter][country];
+                                const entry = digitalPen3x3RealGlobal[quarter][country];
+                                if (entry.real !== null && entry.real !== undefined) digitalPenDataGlobal[quarter][country].real = entry.real;
+                                if (entry.target !== null && entry.target !== undefined) digitalPenDataGlobal[quarter][country].target = entry.target;
                             });
                         });
                     }

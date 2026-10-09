@@ -6974,6 +6974,41 @@ window.EDCNps = (() => {
             }, 1200);
         }, { once: true });
 
+        // Enlace directo a una parte concreta del site: #<id-de-la-sección>
+        // (p.ej. "...#section-traffic" para Traffic to Next Gen, o
+        // "...#ep-nextgen" para Uso de NextGen por bloque funcional). Al
+        // cargar la página, si el hash coincide con el id de un elemento
+        // dentro de una página (.page-section), cambia a esa página y hace
+        // scroll hasta ese elemento. Si el gadget de Sites sirve este HTML
+        // como un iframe aislado (sandbox), el hash de la URL de Sites no
+        // llega hasta aquí y esto no tendrá efecto: solo funciona si el hash
+        // viaja hasta el propio documento que ejecuta este script (por
+        // ejemplo, abriendo directamente la URL del Apps Script que sirve
+        // esta página, no la de Sites).
+        function gthHandleDeepLinkHash_() {
+            const raw = (window.location.hash || '').replace(/^#/, '').trim();
+            if (!raw) return;
+            let target;
+            try { target = document.getElementById(raw); } catch (error) { return; }
+            if (!target) return;
+            const pageSection = target.closest ? target.closest('.page-section') : null;
+            if (pageSection && pageSection.id && typeof window.switchPage === 'function') {
+                const navButton = typeof window.getSiteNavButtonForPage === 'function'
+                    ? window.getSiteNavButtonForPage(pageSection.id)
+                    : null;
+                window.switchPage(pageSection.id, navButton);
+            }
+            window.setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 260);
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', gthHandleDeepLinkHash_, { once: true });
+        } else {
+            gthHandleDeepLinkHash_();
+        }
+        window.addEventListener('hashchange', gthHandleDeepLinkHash_);
+
         function ngMatchesSearch(label) {
             if (!ngState.search) return true;
             return String(label).toLowerCase().indexOf(ngState.search) >= 0;

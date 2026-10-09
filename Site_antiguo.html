@@ -5795,9 +5795,10 @@ window.EDCNps = (() => {
                         };
                     });
 
-                    // Digital Penetration 3x3 (real y target): se carga aparte desde
-                    // 20_DIGITALPEN_HISTORICO_RAW (vía API, no desde este xlsx) más abajo,
-                    // junto con loadDigitalPenSitesData/loadDigitalPenYoyData/loadDigitalPenHistoricoData.
+                    // Digital Penetration 3x3 (real y target), NextGen por bloque, Avance
+                    // total, Traffic to NextGen, FT Transformadas y Rating iOS/Android: se
+                    // cargan aparte desde EDC Base de datos limpia SITES (vía API, no desde
+                    // este xlsx) más abajo, en un único viaje de red (loadGthSiteBootstrapData).
 
                     const ratingColsMap = {'25Q1':{real:'AL',target:'AY',fallback:'AV'},'25Q2':{real:'AO',target:'BB',fallback:'AV'},'25Q3':{real:'AR',target:'BE',fallback:'AV'},'25Q4':{real:'AU',target:'BH',fallback:'AV'},'26Q1':{real:'BK',target:'BX',fallback:'BU'},'26Q2':{real:'BN',target:'CA',fallback:'BU'},'26Q3':{real:'BQ',target:'CD',fallback:'BU'},'26Q4':{real:'BT',target:'CG',fallback:'BU'},'27Q1':{real:'BW',target:'CJ',fallback:'BX'},'27Q2':{real:'BZ',target:'CM',fallback:'CA'},'27Q3':{real:'CC',target:'CP',fallback:'CD'},'27Q4':{real:'CF',target:'CS',fallback:'CG'}};
                     const iosRows = [42,43,44,45,46], androidRows = [48,49,50,51,52];
@@ -5853,17 +5854,7 @@ window.EDCNps = (() => {
 
                     // USO DE NEXTGEN POR BLOQUE FUNCIONAL: se carga aparte desde 17_NEXTGEN_SITES
                     // y 04_RAW_KPIS (vía API, no desde este xlsx) para no alterar el resto de cálculos.
-                    loadNextGenByBlockData();
-                    loadNextGenCountryAvanceData();
-                    loadNextGenTrafficTotalsData();
-                    loadDigitalPenSitesData();
-                    loadDigitalPenYoyData();
-                    loadDigitalPenHistoricoData();
-                    loadDigitalPenRealTargetData();
-                    loadFtTransformedRealData();
-                    loadDigitalPen3x3RealData();
-                    loadRatingIosRealData();
-                    loadRatingAndroidRealData();
+                    loadGthSiteBootstrapData();
 
                     if (typeof window.setPrimaryDashboardsReady === 'function') window.setPrimaryDashboardsReady();
                     (window.refreshCurrentDashboard || window.applyFilters)();
@@ -6879,209 +6870,61 @@ window.EDCNps = (() => {
             return (!el || el.value === 'ALL' || !el.value) ? getLastClosedFeatureQuarter() : el.value;
         }
 
-        let nextGenByBlockLoadPromise = null;
-        function loadNextGenByBlockData() {
+        // Todos los datasets en vivo de "EDC Base de datos limpia SITES" que
+        // necesita el site principal (NextGen por bloque, Avance total por
+        // país, Traffic to NextGen, Digital Pen. 3x3 en sus 4 variantes, FT
+        // Transformadas, Rating iOS/Android) se piden en UN SOLO viaje de red
+        // (getSiteBootstrap), no en 11 llamadas paralelas: este proyecto de
+        // Apps Script es el mismo que sirve Presupuesto/FTEs, y 11 peticiones
+        // simultáneas saturaban las ejecuciones concurrentes disponibles y
+        // ralentizaban todo el site. El servidor calcula los 11 de una vez en
+        // una sola ejecución (ver getSiteBootstrap en Código.gs) y aísla el
+        // error de cada dataset por separado, así que si uno falla el resto
+        // llegan igual.
+        let gthSiteBootstrapLoadPromise = null;
+        function loadGthSiteBootstrapData() {
             if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 17_NEXTGEN_SITES.');
-                return nextGenByBlockLoadPromise || Promise.resolve(null);
+                console.warn('catalogoApi no está disponible todavía para cargar los datos en vivo de EDC Base de datos limpia SITES.');
+                return gthSiteBootstrapLoadPromise || Promise.resolve(null);
             }
-            nextGenByBlockLoadPromise = window.catalogoApi('getNextGenSitesData')
+            gthSiteBootstrapLoadPromise = window.catalogoApi('getSiteBootstrap')
                 .then(data => {
-                    nextGenByBlockDataGlobal = (data && typeof data === 'object') ? data : null;
+                    if (!data || typeof data !== 'object') {
+                        console.warn('No se ha podido cargar el bootstrap de datos en vivo de EDC Base de datos limpia SITES.');
+                        return null;
+                    }
+
+                    nextGenByBlockDataGlobal = (data.nextgenSites && typeof data.nextgenSites === 'object') ? data.nextgenSites : null;
                     if (!nextGenByBlockDataGlobal) console.warn('No se han encontrado datos válidos en 17_NEXTGEN_SITES.');
-                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
-                    return nextGenByBlockDataGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudieron cargar los datos de Uso de NextGen por bloque funcional (17_NEXTGEN_SITES).', error);
-                    return null;
-                });
-            return nextGenByBlockLoadPromise;
-        }
 
-        // Avance total por país (% EDC Transformed Funcionalities), mismos datos
-        // que "Features Transformadas Web Empresas" en KPIs: 04_RAW_KPIS.
-        let nextGenCountryAvanceLoadPromise = null;
-        function loadNextGenCountryAvanceData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 04_RAW_KPIS.');
-                return nextGenCountryAvanceLoadPromise || Promise.resolve(null);
-            }
-            nextGenCountryAvanceLoadPromise = window.catalogoApi('getFeatureTransformedTotalsByCountry')
-                .then(data => {
-                    nextGenCountryAvanceGlobal = (data && typeof data === 'object') ? data : null;
+                    nextGenCountryAvanceGlobal = (data.featureTransformedTotals && typeof data.featureTransformedTotals === 'object') ? data.featureTransformedTotals : null;
                     if (!nextGenCountryAvanceGlobal) console.warn('No se han encontrado datos válidos de avance total por país en 04_RAW_KPIS.');
-                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
-                    return nextGenCountryAvanceGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el avance total por país (04_RAW_KPIS).', error);
-                    return null;
-                });
-            return nextGenCountryAvanceLoadPromise;
-        }
 
-        // Total de uso de NextGen por país ("SENDA - Traffic to NextGen"),
-        // mismos datos que la gráfica "Distribución (NextGen vs Legacy)" en
-        // KPIs: 04_RAW_KPIS. Se usa tanto para esa gráfica como para la
-        // tarjeta de totales de "Uso de NextGen por bloque funcional".
-        let nextGenTrafficTotalsLoadPromise = null;
-        function loadNextGenTrafficTotalsData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 04_RAW_KPIS.');
-                return nextGenTrafficTotalsLoadPromise || Promise.resolve(null);
-            }
-            nextGenTrafficTotalsLoadPromise = window.catalogoApi('getTrafficToNextGenTotalsByCountry')
-                .then(data => {
-                    nextGenTrafficTotalsGlobal = (data && typeof data === 'object') ? data : null;
+                    nextGenTrafficTotalsGlobal = (data.trafficToNextGenTotals && typeof data.trafficToNextGenTotals === 'object') ? data.trafficToNextGenTotals : null;
                     if (!nextGenTrafficTotalsGlobal) console.warn('No se han encontrado datos válidos de Traffic to NextGen por país en 04_RAW_KPIS.');
-                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
-                    if (document.getElementById('evolutionChart') && typeof renderTrafficCharts === 'function') renderTrafficCharts();
-                    // Si no se repinta aquí, el gauge "Traffic NextGen" de KPIs se queda
-                    // en 0%/N-D hasta que el usuario toca algún filtro a mano: estos datos
-                    // llegan de forma asíncrona, después del primer renderOverview().
-                    if (typeof renderOverview === 'function') renderOverview();
-                    return nextGenTrafficTotalsGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el Traffic to NextGen por país (04_RAW_KPIS).', error);
-                    return null;
-                });
-            return nextGenTrafficTotalsLoadPromise;
-        }
 
-        // Cajitas de Digital Penetration 3x3 (cifra + variación YoY, a cierre
-        // del último mes informado): 19_DIGITALPEN_SITES.
-        let digitalPenSitesLoadPromise = null;
-        function loadDigitalPenSitesData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 19_DIGITALPEN_SITES.');
-                return digitalPenSitesLoadPromise || Promise.resolve(null);
-            }
-            digitalPenSitesLoadPromise = window.catalogoApi('getDigitalPenSitesData')
-                .then(data => {
-                    digitalPenSitesGlobal = (data && typeof data === 'object') ? data : null;
+                    digitalPenSitesGlobal = (data.digitalPenSites && typeof data.digitalPenSites === 'object') ? data.digitalPenSites : null;
                     if (!digitalPenSitesGlobal) console.warn('No se han encontrado datos válidos en 19_DIGITALPEN_SITES.');
-                    if (typeof renderDigitalPenSitesCards === 'function') renderDigitalPenSitesCards();
-                    return digitalPenSitesGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudieron cargar las cajitas de Digital Penetration 3x3 (19_DIGITALPEN_SITES).', error);
-                    return null;
-                });
-            return digitalPenSitesLoadPromise;
-        }
 
-        // Variación YoY (en puntos) del Digital Penetration 3x3 total, por
-        // trimestre y país: 20_DIGITALPEN_HISTORICO_RAW.
-        let digitalPenYoyLoadPromise = null;
-        function loadDigitalPenYoyData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 20_DIGITALPEN_HISTORICO_RAW.');
-                return digitalPenYoyLoadPromise || Promise.resolve(null);
-            }
-            digitalPenYoyLoadPromise = window.catalogoApi('getDigitalPenYoyByCountry')
-                .then(data => {
-                    digitalPenYoyGlobal = (data && typeof data === 'object') ? data : null;
+                    digitalPenYoyGlobal = (data.digitalPenYoy && typeof data.digitalPenYoy === 'object') ? data.digitalPenYoy : null;
                     if (!digitalPenYoyGlobal) console.warn('No se han encontrado datos válidos en 20_DIGITALPEN_HISTORICO_RAW.');
-                    if (typeof renderDigitalPenSitesCards === 'function') renderDigitalPenSitesCards();
-                    return digitalPenYoyGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar la variación YoY de Digital Penetration 3x3 (20_DIGITALPEN_HISTORICO_RAW).', error);
-                    return null;
-                });
-            return digitalPenYoyLoadPromise;
-        }
 
-        // Histórico trimestral de Digital Penetration 3x3 por segmento
-        // (Total/Commercial/SMEs), para comparar año actual vs año
-        // anterior en las gráficas de la vista por país: 20_DIGITALPEN_HISTORICO_RAW.
-        let digitalPenHistoricoLoadPromise = null;
-        function loadDigitalPenHistoricoData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar 20_DIGITALPEN_HISTORICO_RAW.');
-                return digitalPenHistoricoLoadPromise || Promise.resolve(null);
-            }
-            digitalPenHistoricoLoadPromise = window.catalogoApi('getDigitalPenHistoricoByCountry')
-                .then(data => {
-                    digitalPenHistoricoGlobal = (data && typeof data === 'object') ? data : null;
+                    digitalPenHistoricoGlobal = (data.digitalPenHistorico && typeof data.digitalPenHistorico === 'object') ? data.digitalPenHistorico : null;
                     if (!digitalPenHistoricoGlobal) console.warn('No se han encontrado datos válidos de histórico en 20_DIGITALPEN_HISTORICO_RAW.');
-                    if (typeof renderDigitalPenSitesCards === 'function') renderDigitalPenSitesCards();
-                    return digitalPenHistoricoGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el histórico de Digital Penetration 3x3 (20_DIGITALPEN_HISTORICO_RAW).', error);
-                    return null;
-                });
-            return digitalPenHistoricoLoadPromise;
-        }
 
-        // Real y target del Digital Penetration 3x3 total, por trimestre y país:
-        // 20_DIGITALPEN_HISTORICO_RAW (antes se leía de "Consolidado KPIs EDC
-        // 2026" en Layout KPIs EDC). Alimenta digitalPenDataGlobal, que usan la
-        // tarjeta "Digital Pen. 3x3" del resumen de KPIs y la gráfica
-        // "Digital Penetration 3x3 por País".
-        let digitalPenRealTargetLoadPromise = null;
-        function loadDigitalPenRealTargetData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar el real/target de Digital Penetration 3x3.');
-                return digitalPenRealTargetLoadPromise || Promise.resolve(null);
-            }
-            digitalPenRealTargetLoadPromise = window.catalogoApi('getDigitalPenRealTargetByCountry')
-                .then(data => {
-                    digitalPenRealTargetGlobal = (data && typeof data === 'object') ? data : null;
-                    digitalPenDataGlobal = digitalPenRealTargetGlobal || {};
+                    // Real y target del Digital Penetration 3x3 total: 20_DIGITALPEN_HISTORICO_RAW.
+                    digitalPenRealTargetGlobal = (data.digitalPenRealTarget && typeof data.digitalPenRealTarget === 'object') ? data.digitalPenRealTarget : null;
+                    digitalPenDataGlobal = digitalPenRealTargetGlobal || digitalPenDataGlobal || {};
                     if (!digitalPenRealTargetGlobal) console.warn('No se han encontrado datos válidos de real/target de Digital Penetration 3x3 en 20_DIGITALPEN_HISTORICO_RAW.');
-                    if (typeof renderOverview === 'function') renderOverview();
-                    if (typeof renderDigitalPenBarChart === 'function') renderDigitalPenBarChart();
-                    return digitalPenRealTargetGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el real/target de Digital Penetration 3x3 (20_DIGITALPEN_HISTORICO_RAW).', error);
-                    digitalPenDataGlobal = digitalPenDataGlobal || {};
-                    return null;
-                });
-            return digitalPenRealTargetLoadPromise;
-        }
 
-        // Real de "FT Transformadas", "Digital Pen. 3x3", "Rating iOS" y
-        // "Rating Android" (los 4 gauges del resumen de KPIs), por trimestre y
-        // país: 04_RAW_KPIS, filas 24/59/41/47 (ver getRawKpisSeriesByAnchorRow_
-        // en Código.gs). El target de cada uno sigue saliendo de donde salía.
-        let ftTransformedRealLoadPromise = null;
-        function loadFtTransformedRealData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar el real de FT Transformadas.');
-                return ftTransformedRealLoadPromise || Promise.resolve(null);
-            }
-            ftTransformedRealLoadPromise = window.catalogoApi('getFtTransformedRealByCountry')
-                .then(data => {
-                    ftTransformedRealGlobal = (data && typeof data === 'object') ? data : null;
+                    ftTransformedRealGlobal = (data.ftTransformedReal && typeof data.ftTransformedReal === 'object') ? data.ftTransformedReal : null;
                     if (!ftTransformedRealGlobal) console.warn('No se han encontrado datos válidos de FT Transformadas en 04_RAW_KPIS.');
-                    if (typeof renderOverview === 'function') renderOverview();
-                    return ftTransformedRealGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el real de FT Transformadas (04_RAW_KPIS).', error);
-                    return null;
-                });
-            return ftTransformedRealLoadPromise;
-        }
 
-        let digitalPen3x3RealLoadPromise = null;
-        function loadDigitalPen3x3RealData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar el real de Digital Pen. 3x3.');
-                return digitalPen3x3RealLoadPromise || Promise.resolve(null);
-            }
-            digitalPen3x3RealLoadPromise = window.catalogoApi('getDigitalPen3x3RealByCountry')
-                .then(data => {
-                    digitalPen3x3RealGlobal = (data && typeof data === 'object') ? data : null;
+                    // Sustituye el real Y el target de digitalPenDataGlobal por estos (04_RAW_KPIS,
+                    // filas 24/59/41/47), más fiables: así la gráfica "Digital Penetration 3x3
+                    // por País" y el gauge del resumen muestran siempre el mismo valor.
+                    digitalPen3x3RealGlobal = (data.digitalPen3x3Real && typeof data.digitalPen3x3Real === 'object') ? data.digitalPen3x3Real : null;
                     if (!digitalPen3x3RealGlobal) console.warn('No se han encontrado datos válidos de Digital Pen. 3x3 en 04_RAW_KPIS.');
-                    // Sustituye el real Y el target de digitalPenDataGlobal por estos, más
-                    // fiables: así la gráfica "Digital Penetration 3x3 por País" y el
-                    // gauge del resumen muestran siempre el mismo valor.
                     if (digitalPen3x3RealGlobal) {
                         Object.keys(digitalPen3x3RealGlobal).forEach(quarter => {
                             if (!digitalPenDataGlobal) digitalPenDataGlobal = {};
@@ -7094,73 +6937,37 @@ window.EDCNps = (() => {
                             });
                         });
                     }
+
+                    ratingIosRealGlobal = (data.ratingIosReal && typeof data.ratingIosReal === 'object') ? data.ratingIosReal : null;
+                    if (!ratingIosRealGlobal) console.warn('No se han encontrado datos válidos de Rating iOS en 04_RAW_KPIS.');
+
+                    ratingAndroidRealGlobal = (data.ratingAndroidReal && typeof data.ratingAndroidReal === 'object') ? data.ratingAndroidReal : null;
+                    if (!ratingAndroidRealGlobal) console.warn('No se han encontrado datos válidos de Rating Android en 04_RAW_KPIS.');
+
+                    if (typeof renderNextGenByBlock === 'function') renderNextGenByBlock();
+                    if (typeof renderDigitalPenSitesCards === 'function') renderDigitalPenSitesCards();
                     if (typeof renderOverview === 'function') renderOverview();
                     if (typeof renderDigitalPenBarChart === 'function') renderDigitalPenBarChart();
-                    return digitalPen3x3RealGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el real de Digital Pen. 3x3 (04_RAW_KPIS).', error);
-                    return null;
-                });
-            return digitalPen3x3RealLoadPromise;
-        }
-
-        let ratingIosRealLoadPromise = null;
-        function loadRatingIosRealData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar el real de Rating iOS.');
-                return ratingIosRealLoadPromise || Promise.resolve(null);
-            }
-            ratingIosRealLoadPromise = window.catalogoApi('getRatingIosRealByCountry')
-                .then(data => {
-                    ratingIosRealGlobal = (data && typeof data === 'object') ? data : null;
-                    if (!ratingIosRealGlobal) console.warn('No se han encontrado datos válidos de Rating iOS en 04_RAW_KPIS.');
-                    if (typeof renderOverview === 'function') renderOverview();
                     if (typeof renderRatingUI === 'function') renderRatingUI();
-                    return ratingIosRealGlobal;
-                })
-                .catch(error => {
-                    console.warn('No se pudo cargar el real de Rating iOS (04_RAW_KPIS).', error);
-                    return null;
-                });
-            return ratingIosRealLoadPromise;
-        }
+                    // Si no se repinta aquí, el gauge "Traffic NextGen" de KPIs se queda en
+                    // 0%/N-D hasta que el usuario toca algún filtro a mano: estos datos llegan
+                    // de forma asíncrona, después del primer renderOverview() del arranque.
+                    if (document.getElementById('evolutionChart') && typeof renderTrafficCharts === 'function') renderTrafficCharts();
 
-        let ratingAndroidRealLoadPromise = null;
-        function loadRatingAndroidRealData() {
-            if (typeof window.catalogoApi !== 'function') {
-                console.warn('catalogoApi no está disponible todavía para cargar el real de Rating Android.');
-                return ratingAndroidRealLoadPromise || Promise.resolve(null);
-            }
-            ratingAndroidRealLoadPromise = window.catalogoApi('getRatingAndroidRealByCountry')
-                .then(data => {
-                    ratingAndroidRealGlobal = (data && typeof data === 'object') ? data : null;
-                    if (!ratingAndroidRealGlobal) console.warn('No se han encontrado datos válidos de Rating Android en 04_RAW_KPIS.');
-                    if (typeof renderOverview === 'function') renderOverview();
-                    if (typeof renderRatingUI === 'function') renderRatingUI();
-                    return ratingAndroidRealGlobal;
+                    return data;
                 })
                 .catch(error => {
-                    console.warn('No se pudo cargar el real de Rating Android (04_RAW_KPIS).', error);
+                    console.warn('No se pudo cargar el bootstrap de datos en vivo (EDC Base de datos limpia SITES).', error);
+                    digitalPenDataGlobal = digitalPenDataGlobal || {};
                     return null;
                 });
-            return ratingAndroidRealLoadPromise;
+            return gthSiteBootstrapLoadPromise;
         }
 
         window.addEventListener('load', () => {
             window.setTimeout(() => {
                 const preload = () => {
-                    if (!nextGenByBlockDataGlobal) loadNextGenByBlockData();
-                    if (!nextGenCountryAvanceGlobal) loadNextGenCountryAvanceData();
-                    if (!nextGenTrafficTotalsGlobal) loadNextGenTrafficTotalsData();
-                    if (!digitalPenSitesGlobal) loadDigitalPenSitesData();
-                    if (!digitalPenYoyGlobal) loadDigitalPenYoyData();
-                    if (!digitalPenHistoricoGlobal) loadDigitalPenHistoricoData();
-                    if (!digitalPenRealTargetGlobal) loadDigitalPenRealTargetData();
-                    if (!ftTransformedRealGlobal) loadFtTransformedRealData();
-                    if (!digitalPen3x3RealGlobal) loadDigitalPen3x3RealData();
-                    if (!ratingIosRealGlobal) loadRatingIosRealData();
-                    if (!ratingAndroidRealGlobal) loadRatingAndroidRealData();
+                    if (!nextGenByBlockDataGlobal) loadGthSiteBootstrapData();
                 };
                 if ('requestIdleCallback' in window) window.requestIdleCallback(preload, { timeout: 2500 });
                 else preload();
